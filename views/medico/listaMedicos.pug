@@ -1,0 +1,23 @@
+
+extends ../layout
+
+
+block contenido
+
+    table 
+        thead  
+            tr 
+                th Dni
+                th Nombre 
+                th Teléfono
+                th Mail 
+        tbody 
+            each medico in medicos
+                tr  
+                    td= medico.dni
+                    td= medico.nombre_completo
+                    td= medico.telefono 
+                    td= medico.mail
+                    td
+                        a(href="/medico/edit" class="btn btn-info") Editar
+                        a(href="/editar" class="btn btn-danger") Borrar

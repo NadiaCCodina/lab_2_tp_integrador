@@ -1,0 +1,13 @@
+extends ../layout
+
+block content
+
+    form(action="/medico" method="post")
+        input(name="dni", type="Number", placeholder="Ingrese Dni" required)
+        br
+        input(name="nombre_completo", type="text", placeholder="Ingrese un nombre" required)
+        br
+        input(name="telefono", type="Number", placeholder="Ingrese un telefono" required)
+        br
+        input(type="mail", name="mail", placeholder="juan@mail.com" required)
+        input(type="submit" value="Agregar")
