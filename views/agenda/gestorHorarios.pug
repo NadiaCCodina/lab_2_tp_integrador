@@ -1,0 +1,28 @@
+extends ../layout
+
+
+block contenido 
+    
+    body
+    .container
+      h1 Ingresar Nuevo Horario
+
+      form(method="POST" action="/horario/nuevo")
+
+        .form-group
+          label(for="fecha") Fecha
+          input.form-control(type="date" id="fecha" name="fecha" required)
+
+        .form-group
+          label(for="hora_inicio") Hora de Inicio
+          input.form-control(type="time" id="hora_inicio" name="hora_inicio" required)
+
+        .form-group
+          label(for="hora_fin") Hora de Fin
+          input.form-control(type="time" id="hora_fin" name="hora_fin" required)
+
+        .form-group
+          label(for="clave_agenda") Clave de Agenda
+          input.form-control(type="text" id="clave_agenda" name="clave_agenda" required)
+
+        button.btn.btn-primary(type="submit") Guardar Horario
