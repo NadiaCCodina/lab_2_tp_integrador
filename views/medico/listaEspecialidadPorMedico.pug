@@ -1,0 +1,24 @@
+extends ../layout
+
+
+block contenido
+    h2 #{medicos[0].nombre_completo}   
+     
+    .form-group
+                            label(for='Especialidad') Especialidad
+                            select#especialidadInput.form-control(name='especialidad')
+                               each especialidad in especialidades
+                                   option(selected= especialidad_seleccionada === especialidad.matricula) #{especialidad.nombre_especialidad} 
+    table 
+        thead  
+            tr 
+             
+                th Matricula
+                th Especialidad 
+              
+        tbody 
+            each medico in medicos
+                tr  
+                    
+                    td= medico.matricula 
+                    td= medico.nombre_especialidad               

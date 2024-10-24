@@ -10,7 +10,7 @@ const createConnection = async () => {
             host: 'localhost',
             user: 'root',
             password: '',
-            database: 'tp_integrador_prueba',
+            database: 'laboratorio 2',
         });
 
         console.log('Conectado a la base de datos MySQL');

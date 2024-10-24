@@ -3,7 +3,7 @@ const createConnection = require("../config/bd");
 const Medico = {
     async get() {
         const conn = await createConnection();
-        const [medicos] = await conn.query("SELECT persona.dni, nombre_completo, mail, telefono FROM `medico`, persona WHERE persona.dni = medico.dni");
+        const [medicos] = await conn.query("SELECT persona.dni, nombre_completo, mail, telefono, estado FROM `medico`, persona WHERE persona.dni = medico.dni");
         return medicos;
     },
 
@@ -17,8 +17,8 @@ const Medico = {
             console.log("entro al if de medico")
             const [medicoResult] = await conn.query("INSERT INTO medico (dni) VALUES (?)", [medico.dni]);
             return medicoResult.affectedRows == 1
-        }else{return false}
-        
+        } else { return false }
+
     },
 
 
@@ -32,6 +32,48 @@ const Medico = {
             throw error;
         }
     }
-};
+    ,
 
+    async getByName(nombre) {
+        const conn = await createConnection();
+        const [medicos] = await conn.query("SELECT persona.dni, nombre_completo, mail, telefono FROM `medico`, persona WHERE nombre_completo LIKE ? AND persona.dni = medico.dni",
+            ['%' + nombre + '%']);
+        console.log(medicos)
+        return medicos;
+    },
+
+    async getByDni(dni) {
+        const conn = await createConnection();
+        const [medicos] = await conn.query("SELECT persona.dni, nombre_completo, mail, telefono FROM `medico`, persona WHERE persona.dni= ? AND persona.dni = medico.dni",
+            [dni]);
+        console.log(medicos)
+        return medicos;
+    },
+
+    async updateStatusIdle(dni) {
+        try {
+            const conn = await createConnection();
+            const [medicos] = await conn.query("UPDATE `medico` SET `estado`= 0 WHERE dni= ?",
+                [dni]);
+            return results.affectedRows == 1
+        }
+        catch (error) {
+            return false
+        }
+    },
+
+
+    async updateStatusActive(dni) {
+        try {
+            const conn = await createConnection();
+            const [medicos] = await conn.query("UPDATE `medico` SET `estado`= 1 WHERE dni= ?",
+                [dni]);
+            return results.affectedRows == 1
+        }
+        catch (error) {
+            return false
+        }
+    }
+
+}
 module.exports = Medico;
