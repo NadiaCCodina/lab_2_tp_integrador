@@ -55,7 +55,7 @@ module.exports = {
 
         if (Medico.update({ dni: dni, nombre_completo: nombre_completo, mail: mail, telefono: telefono })) {
             const medicos = await Medico.get();
-            res.render("medico/listaMedicos", { medicos: medicos });
+            res.render("medico/listaMedicos", { medicos: medicos, nombre_completo:nombre_completo });
         } else {
             // res.render("listaMedicos", { medicos: medicos });
 

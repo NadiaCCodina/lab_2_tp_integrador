@@ -4,11 +4,15 @@ block content
     -const med = medicos[0]
 
     form(action="/medico/actualizar" method="post")
+        label(for="dni") Dni
         input(name="dni", type="Number", value= `${med.dni}` required)
         br
+        label(for="nombre_completo") Nombre completo
         input(name="nombre_completo", type="text", value= `${med.nombre_completo}` required)
         br
+        label(for="telefono") Telefono
         input(name="telefono", type="Number", value= `${med.telefono}` required)
         br
+        label(for="mail") Mail
         input(type="mail", name="mail", value= `${med.mail}` required)
         input(type="submit" value="Editar")

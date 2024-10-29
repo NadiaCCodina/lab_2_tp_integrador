@@ -3,6 +3,13 @@ extends ../layout
 
 
 block contenido
+
+    if nombre_completo 
+        h1 Se actualizo correctamente: #{nombre_completo}
+    if medico 
+        h1 Se modifico la especialdad del medico  #{medico[0].nombre_completo}   
+    if medico_especilidad_baja 
+        h1 Se dio de baja la especialidad del medico  #{medico_especilidad_baja[0].nombre_completo}       
     form(action="/medico/busqueda/nombre" method="post")
         input(name="nombre", type="text", placeholder="Ingrese Apellido" required)
         input(type="submit" value="Buscar")   

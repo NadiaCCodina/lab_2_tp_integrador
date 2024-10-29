@@ -9,16 +9,16 @@ module.exports = {
         console.log(clave_medico)
 
         const dni = req.body.dni
-        const medico_arreglo = await Medico.getByDni(dni)
+        const medico = await Medico.getByDni(dni)
         const medicos = await Medico.get();
         const matricula = req.body.matricula
         const clave_especialidad = req.body.clave_especialidad
-        const medico = medico_arreglo[0]
+       
         console.log(matricula)
         console.log("especialidad" + clave_especialidad)
         if (EspecialidadMedico.addSpecialtyToDoctor(clave_medico, clave_especialidad, matricula)) {
             const especialidades = EspecialidadMedico.getEspecialidades()
-            res.render("medico/listaMedicos", { medicos: medicos });
+            res.render("medico/listaMedicos", {medico:medico, medicos: medicos });
         } else {
             const medicos = await Medico.get();
             res.render("medico/listaMedicos", { medicos: medicos })
@@ -30,12 +30,12 @@ module.exports = {
         const especialidades = await EspecialidadMedico.getEspecialidades();
 
         const dni = req.params.dni;
-        const medico_arreglo = await Medico.getByDni(dni)
+        //const medico_arreglo = await Medico.getByDni(dni)
         const medicos = await EspecialidadMedico.get(dni);
         console.log(especialidades)
 
         console.log("Especialidad " + dni)
-        const medico = await medico_arreglo[0]
+        const medico = await Medico.getByDni(dni)
         console.log(medico)
         if (especialidades) {
             res.render("medico/listaEspecialidadPorMedico", { medico: medico, medicos: medicos, especialidades: especialidades });
@@ -48,12 +48,12 @@ module.exports = {
         const matricula = req.params.matricula
         const dni = req.body.dni
         console.log(matricula + " matricula")
-        const medicos = await EspecialidadMedico.get(dni);
+        const medico_especilidad_baja = await EspecialidadMedico.get(dni);
         const borrarEspecialidad = await EspecialidadMedico.delete(matricula)
         console.log(borrarEspecialidad)
         if (borrarEspecialidad) {
             const medicos = await Medico.get();
-            res.render("medico/listaMedicos", { medicos: medicos })
+            res.render("medico/listaMedicos", { medico_especilidad_baja:medico_especilidad_baja, medicos: medicos })
         }
 
     }
