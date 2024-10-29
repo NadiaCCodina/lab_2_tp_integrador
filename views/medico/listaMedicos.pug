@@ -30,7 +30,10 @@ block contenido
                     td= medico.mail
                     td= medico.estado == 1 ? 'Activo' : 'Inactivo'
                     td
-                        a(href="/medico/edit" class="btn btn-info") Editar
+                     
+                        form(action="/medico/edit/"+medico.dni  method= "post")
+                            button Editar
+                            br
                         form(action="/medico/especialidades/"+medico.dni  method= "post")
                             button Ver Especialidades
                             br

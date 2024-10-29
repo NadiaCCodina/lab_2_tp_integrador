@@ -6,7 +6,7 @@ router.get("/medico/vista", controlador.vistaCrearMedico);
 router.post("/medico", controlador.guardar)
 router.get("/medico/lista",controlador.mostrar)
 
-router.get("/medico/edit", controlador.vistaActualizarMedico);
+router.post("/medico/edit/:dni", controlador.vistaActualizarMedico);
 router.post("/medico/actualizar", controlador.actualizar)
 router.post("/medico/busqueda/nombre",controlador.mostrarPorNombre)
 router.post("/medico/busqueda/dni",controlador.mostrarPorDni)

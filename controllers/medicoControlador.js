@@ -10,9 +10,10 @@ module.exports = {
     },
 
     async vistaActualizarMedico(req, res) {
-
+        const dni = req.params.dni
+        const medicos = await Medico.getByDni(dni)
         console.log("entro al get")
-        res.render("medico/actualizarMedico", {})
+        res.render("medico/actualizarMedico", {medicos:medicos})
     },
 
     async guardar(req, res) {
@@ -25,7 +26,7 @@ module.exports = {
         //sanitizar
         if (Medico.create({ dni: dni, nombre_completo: nombre_completo, mail: mail, telefono: telefono })) {
             const medicos = await Medico.get();
-            res.render("medico/listaMedicos", { medicos: medicos });
+            res.render("medico/listaMedicos", { medicos: medicos, nombre_completo:nombre_completo });
         } else {
             // res.render("listaMedicos", { medicos: medicos });
 
@@ -45,8 +46,8 @@ module.exports = {
     },
 
     async actualizar(req, res) {
-
-
+      
+        
         const dni = req.body.dni;
         const nombre_completo = req.body.nombre_completo;
         const mail = req.body.mail;

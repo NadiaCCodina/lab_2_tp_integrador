@@ -1,13 +1,14 @@
 extends ../layout
 
 block content
+    -const med = medicos[0]
 
     form(action="/medico/actualizar" method="post")
-        input(name="dni", type="Number", placeholder="Ingrese Dni" required)
+        input(name="dni", type="Number", value= `${med.dni}` required)
         br
-        input(name="nombre_completo", type="text", placeholder="Ingrese un nombre" required)
+        input(name="nombre_completo", type="text", value= `${med.nombre_completo}` required)
         br
-        input(name="telefono", type="Number", placeholder="Ingrese un telefono" required)
+        input(name="telefono", type="Number", value= `${med.telefono}` required)
         br
-        input(type="mail", name="mail", placeholder="juan@mail.com" required)
-        input(type="submit" value="Agregar")
+        input(type="mail", name="mail", value= `${med.mail}` required)
+        input(type="submit" value="Editar")

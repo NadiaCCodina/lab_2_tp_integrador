@@ -1,24 +1,43 @@
 extends ../layout
 
-
 block contenido
-    h2 #{medicos[0].nombre_completo}   
-     
-    .form-group
-                            label(for='Especialidad') Especialidad
-                            select#especialidadInput.form-control(name='especialidad')
-                               each especialidad in especialidades
-                                   option(selected= especialidad_seleccionada === especialidad.matricula) #{especialidad.nombre_especialidad} 
-    table 
-        thead  
-            tr 
-             
+
+    -const med = medico[0]
+
+    h2= med.nombre_completo
+    h2= med.dni
+    table
+        thead
+            tr
                 th Matricula
-                th Especialidad 
-              
-        tbody 
-            each medico in medicos
-                tr  
-                    
-                    td= medico.matricula 
-                    td= medico.nombre_especialidad               
+                th Especialidad
+        tbody
+             each medi in medicos
+                tr
+                td= medi.matricula
+                td
+                  form(action="/medico/desactivarespecialidad/" + medi.matricula, method="post")
+                      button(type="submit") Desactivar
+                      br
+                td= medi.nombre_especialidad
+
+                       
+    h2 Agregar especialidad
+  
+    form(action="/medico/nuevaespecialidad" method="post")
+        input(name="matricula", type="number", placeholder="Ingrese Matricula" required)
+        br
+        input(name="clave_medico", type="hidden", value= `${med.clave_medico}`, required)
+        br
+        input(name="dni", type="hidden", value= `${med.dni}`, required)
+        br
+        label(for='especialidad') Especialidad
+        
+        select#especialidadInput.form-control(name='clave_especialidad')
+            each especialidad in especialidades
+               option(value=`${especialidad.clave_especialidad}`)= especialidad.nombre_especialidad
+
+
+        input(type="submit" value="Agregar")
+
+   

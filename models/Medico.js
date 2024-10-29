@@ -36,7 +36,7 @@ const Medico = {
 
     async getByName(nombre) {
         const conn = await createConnection();
-        const [medicos] = await conn.query("SELECT persona.dni, nombre_completo, mail, telefono FROM `medico`, persona WHERE nombre_completo LIKE ? AND persona.dni = medico.dni",
+        const [medicos] = await conn.query("SELECT clave_medico, persona.dni, nombre_completo, mail, telefono FROM `medico`, persona WHERE nombre_completo LIKE ? AND persona.dni = medico.dni",
             ['%' + nombre + '%']);
         console.log(medicos)
         return medicos;
@@ -44,10 +44,10 @@ const Medico = {
 
     async getByDni(dni) {
         const conn = await createConnection();
-        const [medicos] = await conn.query("SELECT persona.dni, nombre_completo, mail, telefono FROM `medico`, persona WHERE persona.dni= ? AND persona.dni = medico.dni",
+        const [medico] = await conn.query("SELECT clave_medico, persona.dni, nombre_completo, mail, telefono FROM `medico`, persona WHERE persona.dni= ? AND persona.dni = medico.dni",
             [dni]);
-        console.log(medicos)
-        return medicos;
+        console.log(medico)
+        return medico;
     },
 
     async updateStatusIdle(dni) {
