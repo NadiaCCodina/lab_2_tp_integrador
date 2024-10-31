@@ -1,0 +1,12 @@
+
+
+block content
+    h1 Login    
+    if error 
+        h2= error 
+    form(action="/login" method="post")
+        input(name="usuario", type="text", placeholder="Ingrese un nombre de usuario" required)
+        br
+        input(name="contraseña", type="text", placeholder="Ingrese una contraseña" required)
+        br
+        input(type="submit" value="Ingresar")

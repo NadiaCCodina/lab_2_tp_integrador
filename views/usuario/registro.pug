@@ -1,0 +1,13 @@
+extends ../layout
+
+block content
+    if error
+        h2= error
+
+    h1 Registro    
+    form(action="/registro" method="post")
+        input(name="usuario", type="text", placeholder="Ingrese un nombre de usuario" required)
+        br
+        input(name="contraseña", type="text", placeholder="Ingrese una contraseña" required)
+        br
+        input(type="submit" value="Registrar")

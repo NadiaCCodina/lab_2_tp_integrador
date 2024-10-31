@@ -3,7 +3,8 @@ extends ../layout
 
 
 block contenido
-
+    if admi 
+        h1= admi
     if nombre_completo 
         h1 Se actualizo correctamente: #{nombre_completo}
     if medico 
