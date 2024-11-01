@@ -6,20 +6,21 @@ block contenido
 
     h2= med.nombre_completo
     h2= med.dni
-    table
-        thead
+    table.table.table-bordered.table-hover
+        thead.thead-light
             tr
                 th Matricula
                 th Especialidad
+                th Acciones
         tbody
              each medi in medicos
                 tr
                 td= medi.matricula
+                td= medi.nombre_especialidad
                 td
                   form(action="/medico/desactivarespecialidad/" + medi.matricula, method="post")
                       button(type="submit") Desactivar
-                      br
-                td= medi.nombre_especialidad
+                      
 
                        
     h2 Agregar especialidad
