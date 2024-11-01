@@ -10,4 +10,8 @@ block content
         br
         input(name="contraseña", type="text", placeholder="Ingrese una contraseña" required)
         br
+        select#especialidadInput.form-control(name='rol')
+            
+               option(value=`admin`)= "Administrador" 
+               option(value=`op`)= "Operador"
         input(type="submit" value="Registrar")

@@ -1,11 +1,11 @@
 const createConnection = require("../config/bd");
 const bcryptjs = require("bcryptjs")
 const Usuario = {
-    async create(usuario, contraseña) {
+    async create(usuario, contraseña, rol) {
         const conn = await createConnection();
         try {
-            const [result] = await conn.query("INSERT INTO `usuario`(`usuario`, `contraseña`) VALUES (?,?)",
-                [usuario, contraseña]);
+            const [result] = await conn.query("INSERT INTO `usuario`(`usuario`, `contraseña`, rol) VALUES (?,?,?)",
+                [usuario, contraseña, rol]);
             return result.affectedRows == 1
         }
         catch (error) {

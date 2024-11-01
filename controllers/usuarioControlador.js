@@ -18,9 +18,10 @@ module.exports = {
 
         const usuario = req.body.usuario
         const contraseña = req.body.contraseña
+        const rol = req.body.rol
         let contraseñaHash = await bcryptjs.hash(contraseña, 8)
         try {
-            await Usuario.create(usuario, contraseñaHash)
+            await Usuario.create(usuario, contraseñaHash, rol)
             res.render("usuario/login", {})
         }
         catch (error) {
