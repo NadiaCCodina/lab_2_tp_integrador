@@ -71,11 +71,12 @@ module.exports = {
             try {
                 const decodificada = await promisify(jwt.verify)(req.cookies.jwt, "clave_secreta")
                 const datosUsuario = await Usuario.getUsuario(decodificada.usuario)
-
+                console.log( datosUsuario)
+                console.log( decodificada)
                 //conexion.query('SELECT * FROM users WHERE id = ?', [decodificada.id], (error, results) => {
-                if (datosUsuario) { return next() }
-                req.user = res[0]
-                return next()
+                if (datosUsuario && datosUsuario[0].rol === "admin") { return next() }
+               else {
+                res.render('usuario/login', {errorAutorizacion: "No autorizado"})}
 
             } catch (error) {
                 console.log(error)
