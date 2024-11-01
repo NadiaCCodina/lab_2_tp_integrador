@@ -16,7 +16,7 @@ const Usuario = {
         
     },
 
-    async login(usuario){
+    async getUsuario(usuario){
         const conn = await createConnection();
         try {
             const [result] = await conn.query("SELECT  `usuario`, `contraseña`, `rol` FROM `usuario` WHERE usuario = (?)",
@@ -29,6 +29,22 @@ const Usuario = {
                 throw error;
     
             }
-    }
+    },
+
+    async getId(id){
+        const conn = await createConnection();
+        try {
+            const [result] = await conn.query("SELECT clave_usuario, `usuario`, `contraseña`, `rol` FROM `usuario` WHERE id = (?)",
+                [id] );
+                console.log(result)
+                return result
+                
+            } catch (error) {
+                console.log("entro al error de login")
+                throw error;
+    
+            }
+    },
+    
 }
 module.exports = Usuario

@@ -1,6 +1,9 @@
 const Usuario = require("../models/Usuario");
 const bcryptjs = require("bcryptjs")
 const Medico = require("../models/Medico");
+const jwt = require("jsonwebtoken")
+const { promisify } = require('util');
+
 module.exports = {
     async vistaRegistroUsuario(req, res) {
 
@@ -35,20 +38,57 @@ module.exports = {
     async login(req, res) {
         const usuario = req.body.usuario
         const contraseña = req.body.contraseña
-        if (!usuario || !contraseña){
+        if (!usuario || !contraseña) {
             res.render("usuario/login", { error: "Error al ingresar, intentelo de nuevo" })
         } else {
-           const datosUsuario= await Usuario.login(usuario)
-              
+            const datosUsuario = await Usuario.getUsuario(usuario)
+
             if (datosUsuario.length == 0 || !(await bcryptjs.compare(contraseña, datosUsuario[0].contraseña))) {
                 res.render("usuario/login", { error: "Error al ingresar, compruebe su contraseña" })
-            }else{
+            } else {
+                const usuario = datosUsuario[0].usuario
+                const rol = datosUsuario[0].rol
+                const token = jwt.sign({ usuario: usuario, rol: rol }, "clave_secreta", { expiresIn: '24h' })
+                console.log("token" + token)
+
+                const cookiesOptions = {
+                    expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+                    httpOnly: true
+                }
+                res.cookie("jwt", token, cookiesOptions)
                 const medicos = await Medico.get();
-                res.render("medico/listaMedicos", { medicos: medicos, admi: "Ingreso exitoso"});
+                res.render("medico/listaMedicos", { medicos: medicos, admi: "Ingreso exitoso" });
+
             }
 
         }
 
-    }
+    },
 
+    async isAuthenticated(req, res, next) {
+        console.log("req " + req.cookies.jwt)
+        if (req.cookies.jwt) {
+            try {
+                const decodificada = await promisify(jwt.verify)(req.cookies.jwt, "clave_secreta")
+                const datosUsuario = await Usuario.getUsuario(decodificada.usuario)
+
+                //conexion.query('SELECT * FROM users WHERE id = ?', [decodificada.id], (error, results) => {
+                if (datosUsuario) { return next() }
+                req.user = res[0]
+                return next()
+
+            } catch (error) {
+                console.log(error)
+                return next()
+            }
+        } else {
+            res.render('usuario/login', {errorAutorizacion: "No autorizado"})
+
+
+        }
+
+
+    }
 }
+
+

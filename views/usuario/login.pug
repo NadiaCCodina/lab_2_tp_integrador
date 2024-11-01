@@ -1,7 +1,9 @@
 
 
 block content
-    h1 Login    
+    h1 Login
+    if errorAutorizacion 
+        h2= errorAutorizacion   
     if error 
         h2= error 
     form(action="/login" method="post")

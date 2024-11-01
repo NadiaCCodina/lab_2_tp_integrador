@@ -1,16 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const controlador = require("../controllers/medicoControlador")
+const controladorUsuario = require("../controllers/usuarioControlador")
+router.get("/medico/vista", controladorUsuario.isAuthenticated, controlador.vistaCrearMedico);
+router.post("/medico", controladorUsuario.isAuthenticated, controlador.guardar)
+router.get("/medico/lista",controladorUsuario.isAuthenticated, controlador.mostrar)
 
-router.get("/medico/vista", controlador.vistaCrearMedico);
-router.post("/medico", controlador.guardar)
-router.get("/medico/lista",controlador.mostrar)
-
-router.post("/medico/edit/:dni", controlador.vistaActualizarMedico);
-router.post("/medico/actualizar", controlador.actualizar)
-router.post("/medico/busqueda/nombre",controlador.mostrarPorNombre)
-router.post("/medico/busqueda/dni",controlador.mostrarPorDni)
-router.post("/medico/desactivar/:dni",controlador.desactivar)
-router.post("/medico/activar/:dni",controlador.activar)
+router.post("/medico/edit/:dni",controladorUsuario.isAuthenticated, controlador.vistaActualizarMedico);
+router.post("/medico/actualizar",controladorUsuario.isAuthenticated, controlador.actualizar)
+router.post("/medico/busqueda/nombre",controladorUsuario.isAuthenticated,controlador.mostrarPorNombre)
+router.post("/medico/busqueda/dni",controladorUsuario.isAuthenticated,controlador.mostrarPorDni)
+router.post("/medico/desactivar/:dni",controladorUsuario.isAuthenticated,controlador.desactivar)
+router.post("/medico/activar/:dni",controladorUsuario.isAuthenticated,controlador.activar)
 
 module.exports= router;
