@@ -1,0 +1,35 @@
+extends ../layout
+
+block contenido
+    h1.text-center.mt-4 Lista de Pacientes
+    .container.mt-4
+        table.table.table-striped.table-hover
+            thead.thead-dark
+                tr 
+                    th Dni
+                    th Nombre Completo
+                    th Teléfono
+                    th Correo Electrónico
+                    th Obra Social
+                    th DNI Imagen
+                    th Acciones
+            tbody 
+                each paciente in pacientes
+                    tr  
+                        td= paciente.dni
+                        td= paciente.nombre_completo
+                        td= paciente.telefono 
+                        td= paciente.mail
+                        td= paciente.obra_social 
+                        td
+                            if paciente.dni_imagen
+                                img(src=`/uploads/${paciente.dni_imagen}`, alt="DNI", width="80") 
+                            else
+                                span.text-muted Sin imagen
+                        td
+                            a(href=`/paciente/editar?dni=${paciente.dni}` class="btn btn-info btn-sm mr-2")
+                                i.fa.fa-pencil-alt.mr-1 
+                                | Editar
+                            a(href=`/paciente/borrar?dni=${paciente.dni}` class="btn btn-danger btn-sm")
+                                i.fa.fa-trash-alt.mr-1 
+                                | Borrar
