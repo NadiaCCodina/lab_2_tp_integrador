@@ -7,10 +7,14 @@ block contenido
         h1= admi
     if nombre_completo 
         h1 Se actualizo correctamente: #{nombre_completo}
+    if nombre
+        h1 Se creo correctamente el medico: #{nombre}    
     if medico 
         h1 Se modifico la especialdad del medico  #{medico[0].nombre_completo}   
     if medico_especilidad_baja 
-        h1 Se dio de baja la especialidad del medico  #{medico_especilidad_baja[0].nombre_completo}       
+        h1 Se dio de baja la especialidad del medico  #{medico_especilidad_baja[0].nombre_completo}  
+    if resultMedico 
+        h1 El medico ya existe
     form(action="/medico/busqueda/nombre" method="post")
         input(name="nombre", type="text", placeholder="Ingrese Apellido" required)
         input(type="submit" value="Buscar")   
@@ -19,35 +23,36 @@ block contenido
         input(name="dni", type="Number", placeholder="Ingrese Dni" required)
         input(type="submit" value="Buscar")   
 
+    h1.text-center.mt-4 Lista de Pacientes
+    .container.mt-4
 
-
-    table.table.table-bordered.table-hover
-        thead.thead-light
-            tr 
-                th Dni
-                th Nombre 
-                th Teléfono
-                th Mail 
-                th Estado
-                th Acciones
-        tbody 
-            each medico in medicos
-                tr  
-                    td= medico.dni
-                    td= medico.nombre_completo
-                    td= medico.telefono 
-                    td= medico.mail
-                    td= medico.estado == 1 ? 'Activo' : 'Inactivo'
-                    td
+        table.table.table-bordered.table-hover
+            thead.thead-light
+                tr 
+                    th Dni
+                    th Nombre 
+                    th Teléfono
+                    th Mail 
+                    th Estado
+                    th Acciones
+            tbody 
+                each medico in medicos
+                    tr  
+                        td= medico.dni
+                        td= medico.nombre_completo
+                        td= medico.telefono 
+                        td= medico.mail
+                        td= medico.estado == 1 ? 'Activo' : 'Inactivo'
+                        td
                      
-                        form(action="/medico/edit/"+medico.dni  method= "post")
-                            button Editar
-                            br
-                        form(action="/medico/especialidades/"+medico.dni  method= "post")
-                            button Ver Especialidades
-                            br
-                        form(action="/medico/desactivar/"+medico.dni method= "post")
-                            button Desactivar
-                            br
-                        form(action="/medico/activar/"+medico.dni method= "post")
-                            button Activar                    
+                            form(action="/medico/edit/"+medico.dni  method= "post")
+                                button Editar
+                                br
+                            form(action="/medico/especialidades/"+medico.dni  method= "post")
+                                button Ver Especialidades
+                                br
+                            form(action="/medico/desactivar/"+medico.dni method= "post")
+                                button Desactivar
+                                br
+                            form(action="/medico/activar/"+medico.dni method= "post")
+                                button Activar                    

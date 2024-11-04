@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 const controlador = require("../controllers/medicoControlador")
 const controladorUsuario = require("../controllers/usuarioControlador")
+
 router.get("/medico/vista", controladorUsuario.isAuthenticated, controlador.vistaCrearMedico);
 router.post("/medico", controladorUsuario.isAuthenticated, controlador.guardar)
 router.get("/medico/lista",controladorUsuario.isAuthenticated, controlador.mostrar)
-
+router.post("/medico/verificarDni", controlador.verificarDni)
 router.post("/medico/edit/:dni",controladorUsuario.isAuthenticated, controlador.vistaActualizarMedico);
 router.post("/medico/actualizar",controladorUsuario.isAuthenticated, controlador.actualizar)
 router.post("/medico/busqueda/nombre",controladorUsuario.isAuthenticated,controlador.mostrarPorNombre)

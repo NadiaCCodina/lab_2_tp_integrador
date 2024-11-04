@@ -3,7 +3,7 @@ const createConnection = require("../config/bd");
 const Medico = {
     async get() {
         const conn = await createConnection();
-        const [medicos] = await conn.query("SELECT persona.dni, nombre_completo, mail, telefono, estado FROM `medico`, persona WHERE persona.dni = medico.dni");
+        const [medicos] = await conn.query("SELECT persona.dni, nombre_completo, mail, telefono, estado FROM `medico`, persona WHERE persona.dni = medico.dni ORDER BY  medico.clave_medico desc");
         return medicos;
     },
 
@@ -20,7 +20,19 @@ const Medico = {
         } else { return false }
 
     },
+    
+    async findPersonByDni(dni) {
+        const conn = await createConnection();
+        const [persona] = await conn.query("SELECT * FROM persona WHERE dni = ?", [dni]);
+        console.log("paso por el find person: ", persona, dni);
+        return persona.length > 0 ? persona : null;
+    },
 
+    async createM(dni) {
+        const conn = await createConnection();
+        const [medicoResult] = await conn.query("INSERT INTO medico (dni) VALUES (?)", [dni]);
+        return medicoResult.affectedRows == 1
+    },
 
     async update(medico) {
         const conn = await createConnection();
