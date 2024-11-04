@@ -3,7 +3,7 @@ const bcryptjs = require("bcryptjs")
 const Medico = require("../models/Medico");
 const jwt = require("jsonwebtoken")
 const { promisify } = require('util');
-
+const Paciente = require("../models/Paciente")
 module.exports = {
     async vistaRegistroUsuario(req, res) {
 
@@ -58,39 +58,80 @@ module.exports = {
                 }
                 res.cookie("jwt", token, cookiesOptions)
                 const medicos = await Medico.get();
-                res.render("medico/listaMedicos", { medicos: medicos, admi: "Ingreso exitoso" });
+                const pacientes = await Paciente.get();
+                if (rol == "admi") {
+                    res.render("medico/listaMedicos", { medicos: medicos, admi: "Ingreso exitoso" });
+                }
+                else {
+                    if (rol == "op") {
+                        res.render("paciente/listaPacientes", { pacientes: pacientes, admi: "Ingreso exitoso" })
+                    }
 
+
+                }
             }
 
         }
 
     },
 
-    async isAuthenticated(req, res, next) {
+    async isAuthenticatedAdmi(req, res, next) {
         console.log("req " + req.cookies.jwt)
         if (req.cookies.jwt) {
             try {
                 const decodificada = await promisify(jwt.verify)(req.cookies.jwt, "clave_secreta")
                 const datosUsuario = await Usuario.getUsuario(decodificada.usuario)
-                console.log( datosUsuario)
-                console.log( decodificada)
+                console.log(datosUsuario)
+                console.log(decodificada)
                 //conexion.query('SELECT * FROM users WHERE id = ?', [decodificada.id], (error, results) => {
-                if (datosUsuario && datosUsuario[0].rol === "admin") { return next() }
-               else {
-                res.render('usuario/login', {errorAutorizacion: "No autorizado"})}
+                if (datosUsuario && datosUsuario[0].rol === "admin") {
+                    return next()
+
+
+                } else {
+                    res.render('usuario/login', { errorAutorizacion: "No autorizado" })
+                }
+            } catch (error) {
+                console.log(error)
+                return next()
+            }
+        } else {
+            res.render('usuario/login', { errorAutorizacion: "No autorizado" })
+
+
+        }
+
+
+    },
+
+    async isAuthenticatedOp(req, res, next) {
+        console.log("req " + req.cookies.jwt)
+        if (req.cookies.jwt) {
+            try {
+                const decodificada = await promisify(jwt.verify)(req.cookies.jwt, "clave_secreta")
+                const datosUsuario = await Usuario.getUsuario(decodificada.usuario)
+                console.log(datosUsuario)
+                console.log(decodificada)
+                //conexion.query('SELECT * FROM users WHERE id = ?', [decodificada.id], (error, results) => {
+                if (datosUsuario && datosUsuario[0].rol === "op") { return next() }
+                else {
+
+                    res.render('usuario/login', { errorAutorizacion: "No autorizado" })
+                }
 
             } catch (error) {
                 console.log(error)
                 return next()
             }
         } else {
-            res.render('usuario/login', {errorAutorizacion: "No autorizado"})
+            res.render('usuario/login', { errorAutorizacion: "No autorizado" })
 
 
         }
 
 
     }
+
 }
 
 

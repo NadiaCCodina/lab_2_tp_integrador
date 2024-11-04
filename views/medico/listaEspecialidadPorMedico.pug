@@ -18,8 +18,8 @@ block contenido
                 td= medi.matricula
                 td= medi.nombre_especialidad
                 td
-                  form(action="/medico/desactivarespecialidad/" + medi.matricula, method="post")
-                      button(type="submit") Desactivar
+                  form(action="/medico/desactivarespecialidad/" + medi.matricula, dni : medi.dni, method="post")
+                      button.btn.btn-danger(type="submit") Desactivar
                       
 
                        

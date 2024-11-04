@@ -11,8 +11,8 @@ block contenido
         h1 Se creo correctamente el medico: #{nombre}    
     if medico 
         h1 Se modifico la especialdad del medico  #{medico[0].nombre_completo}   
-    if medico_especilidad_baja 
-        h1 Se dio de baja la especialidad del medico  #{medico_especilidad_baja[0].nombre_completo}  
+    if medico_especialidad_baja 
+        h1 Se dio de baja la especialidad del medico  
     if resultMedico 
         h1 El medico ya existe
     form(action="/medico/busqueda/nombre" method="post")
@@ -23,7 +23,7 @@ block contenido
         input(name="dni", type="Number", placeholder="Ingrese Dni" required)
         input(type="submit" value="Buscar")   
 
-    h1.text-center.mt-4 Lista de Pacientes
+    h1.text-center.mt-4 Lista de Medicos
     .container.mt-4
 
         table.table.table-bordered.table-hover
@@ -45,14 +45,14 @@ block contenido
                         td= medico.estado == 1 ? 'Activo' : 'Inactivo'
                         td
                      
-                            form(action="/medico/edit/"+medico.dni  method= "post")
-                                button Editar
+                            form(action="/medico/edit/"+medico.dni  method= "post"  )
+                               button.btn.btn-info  Editar
                                 br
                             form(action="/medico/especialidades/"+medico.dni  method= "post")
-                                button Ver Especialidades
+                               button.btn.btn-secondary Ver Especialidades
                                 br
                             form(action="/medico/desactivar/"+medico.dni method= "post")
-                                button Desactivar
+                                button.btn.btn-danger Desactivar
                                 br
                             form(action="/medico/activar/"+medico.dni method= "post")
-                                button Activar                    
+                                button.btn.btn-success Activar                    

@@ -46,14 +46,17 @@ module.exports = {
 
     async eliminarEspecialidadMedico(req, res) {
         const matricula = req.params.matricula
-        const dni = req.body.dni
+        const dni = req.params.dni
+        console.log("dni"+dni)
         console.log(matricula + " matricula")
+        const medico_especialidad_baja = await Medico.getByDni(dni)
         const medico_especilidad_baja = await EspecialidadMedico.get(dni);
         const borrarEspecialidad = await EspecialidadMedico.delete(matricula)
+        console.log("medico especilaidad "+medico_especialidad_baja)
         console.log(borrarEspecialidad)
         if (borrarEspecialidad) {
             const medicos = await Medico.get();
-            res.render("medico/listaMedicos", { medico_especilidad_baja:medico_especilidad_baja, medicos: medicos })
+            res.render("medico/listaMedicos", { medico_especilidad_baja:medico_especilidad_baja, medicos: medicos, medico_especialidad_baja:medico_especialidad_baja })
         }
 
     }

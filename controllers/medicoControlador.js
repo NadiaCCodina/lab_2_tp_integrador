@@ -123,6 +123,7 @@ module.exports = {
     async desactivar(req, res) {
         const dni = req.params.dni;
         console.log(dni)
+        
         if (Medico.updateStatusIdle(dni)) {
             const medicos = await Medico.get();
             res.render("medico/listaMedicos", { medicos: medicos })
