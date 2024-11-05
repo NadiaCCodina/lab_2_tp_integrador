@@ -1,0 +1,36 @@
+extends ../layoutOp
+
+
+block contenido  
+    if matriculaAgenda
+    h1 Se creo la agenda con la matricula #{matriculaAgenda}
+    form(action="/agendanueva"  method="post")
+        input(name="matricula", type="hidden", value= matricula, required)
+        br
+        h2.text-center Duracion de los turnos
+        select#intervalo_minutos.form-control.text-center(name='intervalo_minutos')
+                option(value='10') 10
+                option(value='15') 15
+                option(value='20') 20
+                option(value='25') 25
+                option(value='30') 30
+                option(value='40') 40
+                option(value='50') 50
+        
+        h2.text-center Clasificacion Obras Sociales
+
+        select#clasificacionInput.form-control.text-center(name='clasificacion')
+                each clasificacion in clasificaciones
+                    option(value=`${clasificacion.clave_clasificacion}`)= clasificacion.nombre_clasificacion
+
+        h2.text-center Cantidad sobreturnos
+        select#intervalo_minutos.form-control.text-center(name='sobreturnos')
+                option(value='1') 1
+                option(value='2') 2
+                option(value='3') 3
+                option(value='4') 4
+                option(value='5') 5
+
+    
+        button.btn.btn-danger(type="submit") Crear        
+            

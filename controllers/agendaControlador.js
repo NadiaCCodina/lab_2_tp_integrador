@@ -1,4 +1,9 @@
 const Agenda = require("../models/Agenda");
+const EspecialidadMedico =
+  require("../models/EspecialidadMedico");
+const Medico =
+  require("../models/Medico");
+
 
 module.exports = {
   async vistaAgenda(req, res) {
@@ -79,9 +84,65 @@ module.exports = {
 
       res.status(500).json({ message: 'Error al seleccionar horario' });
     }
-  }
+  },
+
+  async verEspecialidades(req, res) {
+    const especialidades = await EspecialidadMedico.getEspecialidades();
 
 
 
+    console.log(especialidades)
+
+    console.log("Especialidad " + especialidades)
+
+
+    if (especialidades) {
+      res.render("agenda/nuevaAgenda", { especialidades: especialidades })
+      console.log("entro al if de especialidad agenda");
+    } else {
+
+    }
+  },
+
+  async medicosPorEspecialidad(req, res) {
+    const clave_especialidad = req.query.clave_especialidad
+    console.log(clave_especialidad + "clave especialidad")
+    const medicos_especialidad = await EspecialidadMedico.getMedicosEspecialidad(clave_especialidad)
+    const especialidades = await EspecialidadMedico.getEspecialidades();
+
+    if (medicos_especialidad) {
+      res.render("agenda/nuevaAgenda", { especialidades: especialidades, medicos_especialidad: medicos_especialidad })
+
+
+    }
+
+  },
+
+
+  async mostrarConfiguracionAgenda(req, res) {
+    const matricula = req.params.matricula
+    console.log("matricula agenda" + matricula)
+    const clasificaciones = await Agenda.clasificacionCustom()
+    res.render("agenda/agendaConfiguracion", { matricula: matricula, clasificaciones: clasificaciones })
+  },
+
+  async guardarNuevaAgenda(req, res) {
+   
+    const matriculaAgenda= req.body.matricula
+    const sobreturnos = req.body.sobreturnos
+    const intervalo_minutos= req.body.intervalo_minutos
+    const clasificacion = req.body.clasificacion
+    const clasificaciones = await Agenda.clasificacionCustom()
+    console.log(matriculaAgenda+" matricula de guardar agenda "+ sobreturnos+ " "+ intervalo_minutos+" "+clasificacion) 
+    try{
+    if(await Agenda.creatAgenda(clasificacion, matriculaAgenda, sobreturnos, intervalo_minutos )){
+      console.log("entro al if de guardar agenda")
+      res.render("agenda/agendaConfiguracion", { matriculaAgenda: matriculaAgenda,clasificaciones:clasificaciones })
+    }
+     
+    }catch (error) {
+
+    }
+  },
 
 };

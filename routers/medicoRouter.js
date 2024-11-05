@@ -3,6 +3,7 @@ const router = express.Router();
 const controlador = require("../controllers/medicoControlador")
 const controladorUsuario = require("../controllers/usuarioControlador")
 
+
 router.get("/medico/vista", controladorUsuario.isAuthenticatedAdmi, controlador.vistaCrearMedico);
 router.post("/medico", controladorUsuario.isAuthenticatedAdmi, controlador.guardar)
 router.get("/medico/lista",controladorUsuario.isAuthenticatedAdmi, controlador.mostrar)

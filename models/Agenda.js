@@ -47,8 +47,34 @@ const Agenda = {
       console.error("Error al crear el horario:", error);
       throw error;
     }
-  }
+  },
+  async clasificacionCustom() {
 
+    try {
+      const conn = await createConnection()
+      const [clasificaciones] = await conn.query(" SELECT * FROM `clasificacion_custom`")
+
+      return clasificaciones
+    } catch (error) {
+      return false
+
+    }
+  },
+
+
+  async creatAgenda(clave_clasificacion, matricula, sobreturnos, intervalo) {
+    try {
+      const conn = await createConnection()
+      const [result] = await conn.query("INSERT INTO `agenda`(`clave_sucursal`, `clave_clasificacion`, `matricula_medico`, `cantidad_sobreturno`, `intervalo_minutos`) VALUES (1,?,?,?,?)",
+        [clave_clasificacion, matricula, sobreturnos, intervalo]
+
+      )
+      return result.affectedRows == 1
+    } catch (error) {
+      return false
+
+    }
+  }
 }
 
 module.exports = Agenda

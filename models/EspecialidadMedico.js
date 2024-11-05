@@ -29,6 +29,7 @@ const EspecialidadMedico = {
         );
         return result.affectedRows == 1
     },
+    
     async delete(matricula) {
         try {
             const conn = await createConnection();
@@ -40,6 +41,21 @@ const EspecialidadMedico = {
         catch (error) {
             return false
         }
+    },
+    async getMedicosEspecialidad(clave_especialidad) {
+        const conn = await createConnection();
+        const [medicos] = await conn.query("SELECT persona.nombre_completo, medico.clave_medico, `matricula` FROM `especialidad_medico`, medico, persona WHERE clave_especialidad = ? AND medico.clave_medico = especialidad_medico.clave_medico AND persona.dni = medico.dni;",
+            [clave_especialidad]
+        ); 
+        if (medicos.length > 0) {
+            console.log("modelo"+medicos)
+            return medicos  
+            
+        }
+        else {
+            return false
+        }
     }
+
 }
 module.exports = EspecialidadMedico;
