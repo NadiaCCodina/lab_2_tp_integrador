@@ -13,4 +13,6 @@ router.get("/nuevaagenda",controladorUsuario.isAuthenticatedOp, controlador.verE
 router.get('/seleccionar/medicoespecialidad',controladorUsuario.isAuthenticatedOp, controlador.medicosPorEspecialidad);
 router.post("/agenda/crear/:matricula", controladorUsuario.isAuthenticatedOp, controlador.mostrarConfiguracionAgenda )
 router.post("/agendanueva", controladorUsuario.isAuthenticatedOp, controlador.guardarNuevaAgenda )
+router.get("/agendas", controladorUsuario.isAuthenticatedOp, controlador.vistaAgenda )
+
 module.exports = router;

@@ -9,9 +9,9 @@ module.exports = {
   async vistaAgenda(req, res) {
     try {
       console.log("Entrando a vistaAgenda");
+      const agendas = await Agenda.getAgendas()
 
-
-      res.render("header", {});
+      res.render("agenda/agendas", {agendas:agendas});
     } catch (error) {
       console.error("Error al obtener la agenda: ", error);
       res.status(500).send("Error interno del servidor");
@@ -55,7 +55,7 @@ module.exports = {
       });
 
 
-      res.render("header", {});
+      res.render("headerOp", {});
 
 
 
@@ -144,5 +144,7 @@ module.exports = {
 
     }
   },
+
+
 
 };

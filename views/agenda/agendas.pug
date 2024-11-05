@@ -1,0 +1,17 @@
+extends ../layoutOp
+
+
+block contenido     
+    
+    
+    
+    each agenda in agendas
+        .card.text-center
+            .card-header
+                | Dr./Dra.
+            .card-body
+                h5.card-title #{agenda.nombre_completo}
+                p.card-text #{agenda.nombre_especialidad}
+                a.btn.btn-primary(href='#') Seleccionar
+            .card-footer.text-muted
+                

@@ -74,7 +74,17 @@ const Agenda = {
       return false
 
     }
-  }
-}
+  },
 
+  async getAgendas(){
+    try {
+      const conn = await createConnection()
+      const [agendas] = await conn.query("SELECT `clave_agenda`, `clave_sucursal`, `clave_clasificacion`, `matricula_medico`, persona.nombre_completo,especialidad.nombre_especialidad,`cantidad_sobreturno`, `intervalo_minutos` FROM `agenda`, medico, especialidad_medico, persona , especialidad WHERE especialidad_medico.matricula= agenda.matricula_medico AND especialidad_medico.clave_medico = medico.clave_medico AND persona.dni = medico.dni AND especialidad.clave_especialidad = especialidad_medico.clave_especialidad;")
+      return agendas
+    } catch (error) {
+      return false
+
+    }
+}
+}
 module.exports = Agenda
