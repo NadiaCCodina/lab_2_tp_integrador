@@ -145,6 +145,42 @@ module.exports = {
     }
   },
 
+  async agendaPorMedico(req, res) {
+    try {
+      const clave_medico =req.body.clave_medico
+      const agendaMedico = await Agenda.getAgendasPorMedico(clave_medico); 
+
+
+      res.render("agenda/mostrarAgendasPorMedico", { agendaMedico: agendaMedico });
+    } catch (error) {
+      console.error('Error al obtener la agenda:', error);
+      res.status(500).send('Error al obtener la agenda');
+    }
+  },
+
+  async horarioPorAgendaMedico(req, res) {
+    try {
+      const clave_agenda =req.query.clave_agenda
+      console.log("clave agnda de horarios "+clave_agenda)
+      const agendaMedico = await Agenda.getHorariosPorMedico(clave_agenda); 
+      const fecha = agendaMedico.fecha
+      console.log(fecha)
+      
+      agendaMedico.forEach(horario => {
+        const fecha = new Date(horario.fecha);
+        horario.fecha = fecha.toLocaleDateString('es-AR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+    });
+      res.render("agenda/mostrarAgendaPorMedico", { agendaMedico: agendaMedico });
+    } catch (error) {
+      console.error('Error al obtener la agenda:', error);
+      res.status(500).send('Error al obtener la agenda');
+    }
+  },
+  
 
 
 };

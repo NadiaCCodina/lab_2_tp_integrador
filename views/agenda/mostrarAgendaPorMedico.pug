@@ -1,0 +1,44 @@
+extends ../layoutOp
+
+block contenido
+
+  div.container.mt-5
+    h1.text-center Horarios de la Agenda
+
+    table.table.table-bordered.table-hover
+      thead.thead-light
+        tr
+          th Día
+          th Horario 
+          th Acción
+      tbody
+        each horario in agendaMedico
+          tr
+            td= horario.fecha
+            td= horario.hora_inicio
+            td
+              form(action="/seleccionar" method="POST" )
+                input(type="hidden" name="fecha" value=horario.fecha)
+                input(type="hidden" name="hora_inicio" value=horario.hora_inicio)
+                input(type="hidden" name="clave" value=horario.clave_horarios)
+                input(type="hidden" name="dni")
+                button.btn.btn-outline-primary(type='button', onclick="seleccionarHorario(this.form)") Seleccionar
+
+  script.
+    function seleccionarHorario(form) {
+
+      const dni = prompt("Para solicitar turno debe estar registrado en el sistema. Ingrese su DNI:");
+
+      if (dni) {
+        
+        form.dni.value = dni;
+      
+        form.submit();
+        return true;
+      } else {
+        alert('Debe ingresar un DNI para continuar.');
+        return false;
+      }
+    }
+
+    function 

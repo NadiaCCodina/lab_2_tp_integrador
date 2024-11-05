@@ -85,6 +85,37 @@ const Agenda = {
       return false
 
     }
-}
+},
+
+async getAgendasPorMedico(clave_medico){
+  try {
+    const conn = await createConnection()
+    const [agendaMedico] = await conn.query("SELECT `clave_agenda`, `clave_sucursal`, `clave_clasificacion`, `matricula_medico`, persona.nombre_completo,especialidad.nombre_especialidad,`cantidad_sobreturno`, `intervalo_minutos` FROM `agenda`, medico, especialidad_medico, persona , especialidad WHERE especialidad_medico.matricula= agenda.matricula_medico AND especialidad_medico.clave_medico = medico.clave_medico AND persona.dni = medico.dni AND especialidad.clave_especialidad = especialidad_medico.clave_especialidad AND medico.clave_medico = ?;",
+      [clave_medico]
+    )
+    
+    return agendaMedico
+  } catch (error) {
+    return false
+
+  }
+},
+
+async getHorariosPorMedico(clave_agenda){
+  try {
+    const conn = await createConnection()
+    const [horariosAgendaMedico] = await conn.query("SELECT `clave_horarios`, `fecha`, `hora_inicio`, clave_agenda, `hora_fin` FROM `horario` WHERE clave_agenda =  ?;",
+      [clave_agenda]
+    )
+    console.log(horariosAgendaMedico)
+    return horariosAgendaMedico
+  } catch (error) {
+    return false
+
+  }
+},
+
+
+
 }
 module.exports = Agenda
