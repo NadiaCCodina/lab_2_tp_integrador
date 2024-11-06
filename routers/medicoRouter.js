@@ -14,5 +14,6 @@ router.post("/medico/busqueda/nombre",controladorUsuario.isAuthenticatedAdmi,con
 router.post("/medico/busqueda/dni",controladorUsuario.isAuthenticatedAdmi,controlador.mostrarPorDni)
 router.post("/medico/desactivar/:dni",controladorUsuario.isAuthenticatedAdmi,controlador.desactivar)
 router.post("/medico/activar/:dni",controladorUsuario.isAuthenticatedAdmi,controlador.activar)
+router.post("/medico/busqueda/especialidad",controladorUsuario.isAuthenticatedAdmi,controlador.mostrarPorEspecialidad)                          
 
 module.exports= router;

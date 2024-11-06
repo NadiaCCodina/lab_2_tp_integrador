@@ -18,7 +18,14 @@ block contenido
     if duplicada 
         h1 Especialidad ya existente.    
 
-        
+    form(action="/medico/busqueda/especialidad" method="post")
+        select#especialidadInput.form-control(name='clave_especialidad')
+            each especialidad in especialidades
+                option(value=`${especialidad.clave_especialidad}`)= especialidad.nombre_especialidad
+
+
+            input.btn.btn-primary(type="submit" value="Seleccionar")     
+   
     form(action="/medico/busqueda/nombre" method="post")
         input(name="nombre", type="text", placeholder="Ingrese Apellido" required)
         input(type="submit" value="Buscar")   
