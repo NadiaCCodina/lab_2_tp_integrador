@@ -4,7 +4,7 @@ const Medico = require("../models/Medico");
 const jwt = require("jsonwebtoken")
 const { promisify } = require('util');
 const Paciente = require("../models/Paciente")
-
+const Especialidades = require("../models/EspecialidadMedico")
 module.exports = {
     async vistaRegistroUsuario(req, res) {
 
@@ -57,8 +57,9 @@ module.exports = {
                 res.cookie("jwt", token, cookiesOptions)
                 const medicos = await Medico.get();
                 const pacientes = await Paciente.get();
+                const especialidades = await Especialidades.getEspecialidades();
                 if (rol == "admin") {
-                    res.render("medico/listaMedicos", { medicos: medicos, admi: "Ingreso exitoso" });
+                    res.render("medico/listaMedicos", { medicos: medicos, especialidades:especialidades, admi: "Ingreso exitoso" });
                 }
                 else {
                     if (rol == "op") {
