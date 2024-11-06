@@ -115,6 +115,19 @@ const Agenda = {
     }
   },
 
+  async agendasPorEspecialidad(clave_especialidad) {
+    try {
+      const conn = await createConnection()
+      const [agendasEspecialidad] = await conn.query("SELECT `clave_agenda`, `clave_sucursal`, `clave_clasificacion`, `matricula_medico`, `cantidad_sobreturno`, `intervalo_minutos`, nombre_especialidad, persona.nombre_completo FROM `agenda`, especialidad, especialidad_medico, medico, persona WHERE agenda.matricula_medico = especialidad_medico.matricula AND especialidad_medico.clave_especialidad = especialidad.clave_especialidad AND medico.dni= persona.dni  AND medico.clave_medico = especialidad_medico.clave_medico AND especialidad.clave_especialidad= ?",
+        [clave_especialidad]
+      )
+      console.log(agendasEspecialidad)
+      return agendasEspecialidad
+    } catch (error) {
+      return false
+
+    }
+  },
 
 
 }

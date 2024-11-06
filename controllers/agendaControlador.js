@@ -10,8 +10,10 @@ module.exports = {
     try {
       console.log("Entrando a vistaAgenda");
       const agendas = await Agenda.getAgendas()
+      const especialidades = await EspecialidadMedico.getEspecialidades();
 
-      res.render("agenda/agendas", { agendas: agendas });
+
+      res.render("agenda/agendas", { agendas: agendas, especialidades:especialidades});
     } catch (error) {
       console.error("Error al obtener la agenda: ", error);
       res.status(500).send("Error interno del servidor");
@@ -172,6 +174,20 @@ module.exports = {
         });
       });
       res.render("agenda/mostrarAgendaPorMedico", { agendaMedico: agendaMedico });
+    } catch (error) {
+      console.error('Error al obtener la agenda:', error);
+      res.status(500).send('Error al obtener la agenda');
+    }
+  },
+
+  async agendaPorEspecialidad(req, res) {
+    try {
+      const clave_especialidad = req.query.clave_especialidad
+      const agendas = await Agenda.agendasPorEspecialidad(clave_especialidad);
+    
+      const especialidades = await EspecialidadMedico.getEspecialidades();
+     
+      res.render("agenda/agendas", { agendas: agendas, especialidades:especialidades });
     } catch (error) {
       console.error('Error al obtener la agenda:', error);
       res.status(500).send('Error al obtener la agenda');

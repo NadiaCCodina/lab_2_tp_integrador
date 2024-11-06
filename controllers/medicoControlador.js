@@ -122,7 +122,7 @@ module.exports = {
     async desactivar(req, res) {
         const dni = req.params.dni;
         console.log(dni)
-        const descativar = await Medico.updateStatusIdle(dni)
+        const descativar = await Medico.updateStatusDisable(dni)
         if (descativar) {
             const medicos = await Medico.get();
             res.render("medico/listaMedicos", { medicos: medicos })

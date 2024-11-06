@@ -20,7 +20,7 @@ const Medico = {
         } else { return false }
 
     },
-    
+
     async findPersonByDni(dni) {
         const conn = await createConnection();
         const [persona] = await conn.query("SELECT * FROM persona WHERE dni = ?", [dni]);
@@ -62,7 +62,7 @@ const Medico = {
         return medico;
     },
 
-    async updateStatusIdle(dni) {
+    async updateStatusDisable(dni) {
         try {
             const conn = await createConnection();
             const [results] = await conn.query("UPDATE `medico` SET `estado`= 0 WHERE dni= ?",
@@ -78,7 +78,7 @@ const Medico = {
     async updateStatusActive(dni) {
         const conn = await createConnection();
         try {
-           
+
             const [results] = await conn.query("UPDATE `medico` SET `estado`= 1 WHERE dni= ?",
                 [dni]);
             return results.affectedRows == 1
@@ -86,6 +86,14 @@ const Medico = {
         catch (error) {
             return false
         }
+    },
+
+    async getByEspecialidad(especialidad) {
+        const conn = await createConnection();
+        const [medicos] = await conn.query(
+            "SELECT medico.clave_medico, medico.dni, `estado`, nombre_completo, nombre_especialidad FROM `medico`, persona, especialidad_medico, especialidad WHERE persona.dni = medico.dni AND medico.clave_medico = especialidad_medico.clave_medico AND especialidad.clave_especialidad = especialidad_medico.clave_especialidad AND especialidad.clave_especialidad = ?",
+            [especialidad])
+        return medicos;
     }
 
 }

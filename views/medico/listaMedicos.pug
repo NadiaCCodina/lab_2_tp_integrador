@@ -17,6 +17,8 @@ block contenido
         h1 El medico ya existe
     if duplicada 
         h1 Especialidad ya existente.    
+
+        
     form(action="/medico/busqueda/nombre" method="post")
         input(name="nombre", type="text", placeholder="Ingrese Apellido" required)
         input(type="submit" value="Buscar")   
