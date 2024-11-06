@@ -1,8 +1,8 @@
 const Medico =
     require("../models/Medico");
-const Especialidad= 
+const Especialidad =
     require("../models/EspecialidadMedico")
-var url= require("url")
+var url = require("url")
 module.exports = {
     async vistaCrearMedico(req, res) {
 
@@ -14,62 +14,62 @@ module.exports = {
         const dni = req.params.dni
         const medicos = await Medico.getByDni(dni)
         console.log("entro al get")
-        res.render("medico/actualizarMedico", {medicos:medicos})
+        res.render("medico/actualizarMedico", { medicos: medicos })
     },
 
     async verificarDni(req, res) {
         const dni = req.body.dni;
-    
+
         try {
             const resultMedico = await Medico.getByDni(dni);
-            if(resultMedico && resultMedico.length>0){
+            if (resultMedico && resultMedico.length > 0) {
                 const medicos = await Medico.get();
-                res.render("medico/listaMedicos", {resultMedico:resultMedico, medicos:medicos})
-            }else{
+                res.render("medico/listaMedicos", { resultMedico: resultMedico, medicos: medicos })
+            } else {
 
-            const result = await Medico.findPersonByDni(dni);
-            const exist = result !== null;
-    
-            console.log("existe????: ", exist);
-            res.render("medico/nuevoMedico", { exist, dni, result});
+                const result = await Medico.findPersonByDni(dni);
+                const exist = result !== null;
+
+                console.log("existe????: ", exist);
+                res.render("medico/nuevoMedico", { exist, dni, result });
             }
         } catch (error) {
             console.error("Error al crear paciente:", error);
             res.status(500).send("Error en el servidor");
         }
     }
-        ,
+    ,
 
     async guardar(req, res) {
         const dni = req.body.dni;
         const nombre_completoc = req.body.nombre_completo;
         const mail = req.body.mail;
         const telefono = req.body.telefono;
-        const exist =req.body.exist
+        const exist = req.body.exist
         console.log(dni)
-        if (exist){
-            if(await Medico.createM(dni)){
+        if (exist) {
+            if (await Medico.createM(dni)) {
                 const medicos = await Medico.get();
-                res.redirect("/medico/lista?nombre="+nombre_completoc) 
+                res.redirect("/medico/lista?nombre=" + nombre_completoc)
             }
-        }else{
-        //validar la entrada
-        //sanitizar
-        if (await Medico.create({ dni: dni, nombre_completo: nombre_completoc, mail: mail, telefono: telefono })) {
-            const medicos = await Medico.get();
-            res.redirect("/medico/lista?nombre="+nombre_completoc);
         } else {
-            // res.render("listaMedicos", { medicos: medicos });
+            //validar la entrada
+            //sanitizar
+            if (await Medico.create({ dni: dni, nombre_completo: nombre_completoc, mail: mail, telefono: telefono })) {
+                const medicos = await Medico.get();
+                res.redirect("/medico/lista?nombre=" + nombre_completoc);
+            } else {
+                // res.render("listaMedicos", { medicos: medicos });
 
 
-        }
+            }
         }
     },
 
     async mostrar(req, res) {
-        const nombre= req.query.nombre
+        const nombre = req.query.nombre
         const medicos = await Medico.get();
-        console.log(nombre+" url")
+        console.log(nombre + " url")
         if (nombre) {
             res.render("medico/listaMedicos", { medicos: medicos, nombre: nombre });
         } else {
@@ -78,19 +78,18 @@ module.exports = {
     },
 
     async actualizar(req, res) {
-      
-        
+
+
         const dni = req.body.dni;
         const nombre_completo = req.body.nombre_completo;
         const mail = req.body.mail;
         const telefono = req.body.telefono;
 
-        if (Medico.update({ dni: dni, nombre_completo: nombre_completo, mail: mail, telefono: telefono })) {
+        if (await Medico.update({ dni: dni, nombre_completo: nombre_completo, mail: mail, telefono: telefono })) {
             const medicos = await Medico.get();
-            res.render("medico/listaMedicos", { medicos: medicos, nombre_completo:nombre_completo });
+            res.render("medico/listaMedicos", { medicos: medicos, nombre_completo: nombre_completo });
         } else {
             // res.render("listaMedicos", { medicos: medicos });
-
 
         }
 
@@ -123,8 +122,8 @@ module.exports = {
     async desactivar(req, res) {
         const dni = req.params.dni;
         console.log(dni)
-        
-        if (Medico.updateStatusIdle(dni)) {
+        const descativar = await Medico.updateStatusIdle(dni)
+        if (descativar) {
             const medicos = await Medico.get();
             res.render("medico/listaMedicos", { medicos: medicos })
         }
@@ -134,14 +133,12 @@ module.exports = {
     async activar(req, res) {
         const dni = req.params.dni;
         console.log(dni)
-        if (Medico.updateStatusActive(dni)) {
+        const activar = await Medico.updateStatusActive(dni)
+        if (activar) {
             const medicos = await Medico.get();
             res.render("medico/listaMedicos", { medicos: medicos })
         }
 
     },
-
-
-   
 
 }

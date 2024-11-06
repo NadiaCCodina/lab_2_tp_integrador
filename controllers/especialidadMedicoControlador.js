@@ -13,17 +13,23 @@ module.exports = {
         const medicos = await Medico.get();
         const matricula = req.body.matricula
         const clave_especialidad = req.body.clave_especialidad
-       
-        console.log(matricula)
-        console.log("especialidad" + clave_especialidad)
-        if (EspecialidadMedico.addSpecialtyToDoctor(clave_medico, clave_especialidad, matricula)) {
-            const especialidades = EspecialidadMedico.getEspecialidades()
-            res.render("medico/listaMedicos", {medico:medico, medicos: medicos });
-        } else {
-            const medicos = await Medico.get();
-            res.render("medico/listaMedicos", { medicos: medicos })
-        }
+        try {
+            console.log(matricula)
+            console.log("especialidad" + clave_especialidad)
+            if (await EspecialidadMedico.addSpecialtyToDoctor(clave_medico, clave_especialidad, matricula)) {
+                const especialidades = EspecialidadMedico.getEspecialidades()
+                console.log("entro al if de especialidaddesc ")
+                res.render("medico/listaMedicos", { medico: medico, medicos: medicos });
+            } else {
+                const medicos = await Medico.get();
+                console.log("entro al else de especialidades")
+                res.render("medico/listaMedicos", { medicos: medicos })
+            }
+        } catch (error) {
+            console.log(error)
+            res.status(500).send("Error en el servidor");
 
+        }
     },
 
     async verEspecialidades(req, res) {
@@ -47,19 +53,20 @@ module.exports = {
     async eliminarEspecialidadMedico(req, res) {
         const matricula = req.params.matricula
         const dni = req.params.dni
-        console.log("dni"+dni)
+        console.log("dni" + dni)
         console.log(matricula + " matricula")
         const medico_especialidad_baja = await Medico.getByDni(dni)
         const medico_especilidad_baja = await EspecialidadMedico.get(dni);
         const borrarEspecialidad = await EspecialidadMedico.delete(matricula)
-        console.log("medico especilaidad "+medico_especialidad_baja)
+        console.log("medico especilaidad " + medico_especialidad_baja)
         console.log(borrarEspecialidad)
         if (borrarEspecialidad) {
             const medicos = await Medico.get();
-            res.render("medico/listaMedicos", { medico_especilidad_baja:medico_especilidad_baja, medicos: medicos, medico_especialidad_baja:medico_especialidad_baja })
+            res.render("medico/listaMedicos", { medico_especilidad_baja: medico_especilidad_baja, medicos: medicos, medico_especialidad_baja: medico_especialidad_baja })
         }
 
-    }
+    },
+   
 
 
 }

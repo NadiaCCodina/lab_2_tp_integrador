@@ -65,7 +65,7 @@ const Medico = {
     async updateStatusIdle(dni) {
         try {
             const conn = await createConnection();
-            const [medicos] = await conn.query("UPDATE `medico` SET `estado`= 0 WHERE dni= ?",
+            const [results] = await conn.query("UPDATE `medico` SET `estado`= 0 WHERE dni= ?",
                 [dni]);
             return results.affectedRows == 1
         }
@@ -76,9 +76,10 @@ const Medico = {
 
 
     async updateStatusActive(dni) {
+        const conn = await createConnection();
         try {
-            const conn = await createConnection();
-            const [medicos] = await conn.query("UPDATE `medico` SET `estado`= 1 WHERE dni= ?",
+           
+            const [results] = await conn.query("UPDATE `medico` SET `estado`= 1 WHERE dni= ?",
                 [dni]);
             return results.affectedRows == 1
         }

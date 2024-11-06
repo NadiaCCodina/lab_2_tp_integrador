@@ -11,7 +11,7 @@ module.exports = {
       console.log("Entrando a vistaAgenda");
       const agendas = await Agenda.getAgendas()
 
-      res.render("agenda/agendas", {agendas:agendas});
+      res.render("agenda/agendas", { agendas: agendas });
     } catch (error) {
       console.error("Error al obtener la agenda: ", error);
       res.status(500).send("Error interno del servidor");
@@ -31,8 +31,6 @@ module.exports = {
   async index(req, res) {
     try {
       const agenda = await Agenda.get(); // Obtener la agenda
-
-
       res.render("agenda/mostrarAgenda", { agenda: agenda });
     } catch (error) {
       console.error('Error al obtener la agenda:', error);
@@ -46,7 +44,6 @@ module.exports = {
     try {
       const { fecha, hora_inicio, hora_fin, clave_agenda } = req.body;
 
-
       await Agenda.crearHorario({
         fecha,
         hora_inicio,
@@ -54,10 +51,7 @@ module.exports = {
         clave_agenda,
       });
 
-
       res.render("headerOp", {});
-
-
 
     } catch (error) {
       console.error("Error al crear un nuevo horario: ", error);
@@ -109,11 +103,16 @@ module.exports = {
     console.log(clave_especialidad + "clave especialidad")
     const medicos_especialidad = await EspecialidadMedico.getMedicosEspecialidad(clave_especialidad)
     const especialidades = await EspecialidadMedico.getEspecialidades();
-
+    const especialidad = await EspecialidadMedico.getEspecialidad(clave_especialidad)
+    console.log(especialidad)
+    //console.log(medicos_especialidad)
     if (medicos_especialidad) {
-      res.render("agenda/nuevaAgenda", { especialidades: especialidades, medicos_especialidad: medicos_especialidad })
+      res.render("agenda/nuevaAgenda", { especialidades: especialidades, medicos_especialidad: medicos_especialidad, especialidad:especialidad })
 
 
+    }else{
+      const error= "No se encontraron medicos para esa especialidad"
+      res.render("agenda/nuevaAgenda", { especialidades: especialidades, error:error })
     }
 
   },
@@ -127,30 +126,28 @@ module.exports = {
   },
 
   async guardarNuevaAgenda(req, res) {
-   
-    const matriculaAgenda= req.body.matricula
+    const matriculaAgenda = req.body.matricula
     const sobreturnos = req.body.sobreturnos
-    const intervalo_minutos= req.body.intervalo_minutos
+    const intervalo_minutos = req.body.intervalo_minutos
     const clasificacion = req.body.clasificacion
     const clasificaciones = await Agenda.clasificacionCustom()
-    console.log(matriculaAgenda+" matricula de guardar agenda "+ sobreturnos+ " "+ intervalo_minutos+" "+clasificacion) 
-    try{
-    if(await Agenda.creatAgenda(clasificacion, matriculaAgenda, sobreturnos, intervalo_minutos )){
-      console.log("entro al if de guardar agenda")
-      res.render("agenda/agendaConfiguracion", { matriculaAgenda: matriculaAgenda,clasificaciones:clasificaciones })
-    }
-     
-    }catch (error) {
+    console.log(matriculaAgenda + " matricula de guardar agenda " + sobreturnos + " " + intervalo_minutos + " " + clasificacion)
+    try {
+      if (await Agenda.creatAgenda(clasificacion, matriculaAgenda, sobreturnos, intervalo_minutos)) {
+        console.log("entro al if de guardar agenda")
+        res.render("agenda/agendaConfiguracion", { matriculaAgenda: matriculaAgenda, clasificaciones: clasificaciones })
+      }
 
+    } catch (error) {
+      console.error('Error al guardar la agenda:', error);
+      res.render("agenda/agendaConfiguracion", { matriculaAgenda: matriculaAgenda, clasificaciones: clasificaciones, error:error })
     }
   },
 
   async agendaPorMedico(req, res) {
     try {
-      const clave_medico =req.body.clave_medico
-      const agendaMedico = await Agenda.getAgendasPorMedico(clave_medico); 
-
-
+      const clave_medico = req.body.clave_medico
+      const agendaMedico = await Agenda.getAgendasPorMedico(clave_medico);
       res.render("agenda/mostrarAgendasPorMedico", { agendaMedico: agendaMedico });
     } catch (error) {
       console.error('Error al obtener la agenda:', error);
@@ -160,27 +157,27 @@ module.exports = {
 
   async horarioPorAgendaMedico(req, res) {
     try {
-      const clave_agenda =req.query.clave_agenda
-      console.log("clave agnda de horarios "+clave_agenda)
-      const agendaMedico = await Agenda.getHorariosPorMedico(clave_agenda); 
+      const clave_agenda = req.query.clave_agenda
+      console.log("clave agnda de horarios " + clave_agenda)
+      const agendaMedico = await Agenda.getHorariosPorMedico(clave_agenda);
       const fecha = agendaMedico.fecha
       console.log(fecha)
-      
+
       agendaMedico.forEach(horario => {
         const fecha = new Date(horario.fecha);
         horario.fecha = fecha.toLocaleDateString('es-AR', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
         });
-    });
+      });
       res.render("agenda/mostrarAgendaPorMedico", { agendaMedico: agendaMedico });
     } catch (error) {
       console.error('Error al obtener la agenda:', error);
       res.status(500).send('Error al obtener la agenda');
     }
   },
-  
+
 
 
 };

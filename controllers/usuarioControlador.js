@@ -4,6 +4,7 @@ const Medico = require("../models/Medico");
 const jwt = require("jsonwebtoken")
 const { promisify } = require('util');
 const Paciente = require("../models/Paciente")
+
 module.exports = {
     async vistaRegistroUsuario(req, res) {
 
@@ -31,9 +32,6 @@ module.exports = {
                 res.render("usuario/registro", { error: "Ocurrio un problema al crear el usuario. Intente nuevamente" })
             }
         }
-
-
-
     },
 
     async login(req, res) {
@@ -59,15 +57,13 @@ module.exports = {
                 res.cookie("jwt", token, cookiesOptions)
                 const medicos = await Medico.get();
                 const pacientes = await Paciente.get();
-                if (rol == "admi") {
+                if (rol == "admin") {
                     res.render("medico/listaMedicos", { medicos: medicos, admi: "Ingreso exitoso" });
                 }
                 else {
                     if (rol == "op") {
                         res.render("paciente/listaPacientes", { pacientes: pacientes, admi: "Ingreso exitoso" })
                     }
-
-
                 }
             }
 
@@ -87,7 +83,6 @@ module.exports = {
                 if (datosUsuario && datosUsuario[0].rol === "admin") {
                     return next()
 
-
                 } else {
                     res.render('usuario/login', { errorAutorizacion: "No autorizado" })
                 }
@@ -97,10 +92,7 @@ module.exports = {
             }
         } else {
             res.render('usuario/login', { errorAutorizacion: "No autorizado" })
-
-
         }
-
 
     },
 

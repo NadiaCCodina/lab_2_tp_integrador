@@ -2,36 +2,37 @@ extends ../layoutOp
 
 
 block contenido 
+        h1 Seleccione la especialidad a buscar
+        form(action="/seleccionar/medicoespecialidad" method="get")
+            select#especialidadInput.form-control(name='clave_especialidad')
+                each especialidad in especialidades
+                    option(value=`${especialidad.clave_especialidad}`)= especialidad.nombre_especialidad
 
-    form(action="/seleccionar/medicoespecialidad" method="get")
-        select#especialidadInput.form-control(name='clave_especialidad')
-            each especialidad in especialidades
-                option(value=`${especialidad.clave_especialidad}`)= especialidad.nombre_especialidad
+            input(type="submit" value="Seleccionar")
+        if error 
+        h1= error
+        if medicos_especialidad
+        
+            h1.text-center.mt-4 Lista de Medicos de la especialidad #{especialidad.nombre_especialidad}
+            .container.mt-4
 
-        input(type="submit" value="Seleccionar")
-
-    if medicos_especialidad
-     
-        h1.text-center.mt-4 Lista de Medicos
-        .container.mt-4
-
-            table.table.table-bordered.table-hover
-                thead.thead-light
-                    tr 
-                        th Nombre 
-                        th Matricula
-                        
-                 
-                
-                tbody 
-                    each medico in medicos_especialidad
-                        tr  
-                     
-                        td= medico.nombre_completo
-                        td= medico.matricula 
-                        td 
-                            form(action="/agenda/crear/" + medico.matricula, method="post")
-                                button.btn.btn-danger(type="submit") Seleccionar
-                      
+                table.table.table-bordered.table-hover
+                    thead.thead-light
+                        tr 
+                            th Nombre 
+                            th Matricula
+                            
                     
-                        td
+                    
+                    tbody 
+                        each medico in medicos_especialidad
+                            tr  
+                        
+                            td= medico.nombre_completo
+                            td= medico.matricula 
+                            td 
+                                form(action="/agenda/crear/" + medico.matricula, method="post")
+                                    button.btn.btn-danger(type="submit") Seleccionar
+                        
+                        
+                            td

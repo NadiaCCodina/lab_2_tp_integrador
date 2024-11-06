@@ -11,11 +11,11 @@ block contenido
         .card-body
             h5.card-title #{agenda.nombre_completo}
             p.card-text #{agenda.nombre_especialidad}
-            // Formulario para la acción POST en "Seleccionar"
+           
             form(method='get', action='/agendasturnomedico')
-                input(type='text', name='clave_agenda', value=agenda.clave_agenda) 
+                input(type='hidden', name='clave_agenda', value=agenda.clave_agenda) 
                 button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Seleccionar
-            // Formulario para la acción POST en "Gestionar"
+           
             form(method='get', action='/gestorHorarios')
                 input(type='hidden', name='clave_agenda', value=agenda.clave_agenda)
                 button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Gestionar

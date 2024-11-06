@@ -22,12 +22,19 @@ const EspecialidadMedico = {
     },
 
     async addSpecialtyToDoctor(clave_especialidad, clave_medico, matricula) {
+        try {
+           
         const conn = await createConnection();
         const [result] = await conn.query("INSERT INTO especialidad_medico( clave_especialidad, clave_medico, matricula) VALUES (?,?,?)",
             [clave_medico, clave_especialidad, matricula]
-
+           
         );
+        console.log(result.affectedRows)
         return result.affectedRows == 1
+    }catch(error){
+        return false
+         
+    }
     },
     
     async delete(matricula) {
@@ -44,7 +51,7 @@ const EspecialidadMedico = {
     },
     async getMedicosEspecialidad(clave_especialidad) {
         const conn = await createConnection();
-        const [medicos] = await conn.query("SELECT persona.nombre_completo, medico.clave_medico, `matricula` FROM `especialidad_medico`, medico, persona WHERE clave_especialidad = ? AND medico.clave_medico = especialidad_medico.clave_medico AND persona.dni = medico.dni;",
+        const [medicos] = await conn.query("SELECT persona.nombre_completo, medico.clave_medico, `matricula` FROM `especialidad_medico`, medico, persona WHERE clave_especialidad = ? AND medico.clave_medico = especialidad_medico.clave_medico AND persona.dni = medico.dni AND medico.estado=1;",
             [clave_especialidad]
         ); 
         if (medicos.length > 0) {
@@ -55,7 +62,20 @@ const EspecialidadMedico = {
         else {
             return false
         }
-    }
+    },
+
+    async getEspecialidad(clave_especialidad) {
+        const conn = await createConnection();
+        const [especialidad] = await conn.query("SELECT * FROM `especialidad` WHERE clave_especialidad = ?",
+            [clave_especialidad]
+        );
+        if (especialidad.length > 0) {
+            return especialidad[0]
+        }
+        else {
+            return false
+        }
+    },
 
 }
 module.exports = EspecialidadMedico;
