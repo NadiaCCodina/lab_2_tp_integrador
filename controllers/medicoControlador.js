@@ -68,13 +68,13 @@ module.exports = {
     },
 
     async mostrar(req, res) {
-        const nombre = req.query.nombre
+        //const nombre = req.query.nombre
         const medicos = await Medico.get();
         const especialidades = await EspecialidadMedico.getEspecialidades();
         console.log(especialidades+" en lista medicos")
-        console.log(nombre + " url")
-        if (nombre) {
-            res.render("medico/listaMedicos", { medicos: medicos, nombre: nombre, especialidades:especialidades });
+        //console.log(nombre + " url")
+        if (medicos) {
+            res.render("medico/listaMedicos", { medicos: medicos, especialidades:especialidades });
         } else {
             res.render("medico/listaMedicos", { medicos: medicos, especialidades:especialidades });
         }
@@ -103,10 +103,11 @@ module.exports = {
         const nombre = req.body.nombre;
         const medicos = await Medico.getByName(nombre);
         console.log(nombre)
+        const especialidades = await EspecialidadMedico.getEspecialidades();
         if (req.query.nombre_completo) {
-            res.render("medico/listaMedicos", { medicos: medicos, nombre: nombre });
+            res.render("medico/listaMedicos", { medicos: medicos, nombre: nombre,especialidades:especialidades });
         } else {
-            res.render("medico/listaMedicos", { medicos: medicos });
+            res.render("medico/listaMedicos", { medicos: medicos, especialidades:especialidades});
         }
     },
 
@@ -115,10 +116,11 @@ module.exports = {
         const dni = req.body.dni;
         const medicos = await Medico.getByDni(dni);
         console.log(dni)
+        const especialidades = await EspecialidadMedico.getEspecialidades();
         if (req.query.nombre_completo) {
-            res.render("medico/listaMedicos", { medicos: medicos, nombre: nombre });
+            res.render("medico/listaMedicos", { medicos: medicos, nombre: nombre, especialidades:especialidades });
         } else {
-            res.render("medico/listaMedicos", { medicos: medicos });
+            res.render("medico/listaMedicos", { medicos: medicos, especialidades: especialidades});
         }
     },
 
@@ -147,6 +149,21 @@ module.exports = {
     async mostrarPorEspecialidad(req, res) {
         const clave_especialidad = req.body.clave_especialidad
         const medicos = await Medico.getByEspecialidad(clave_especialidad);
+        console.log(medicos+"medico Pr especialidad mostrar")
+        const especialidades = await EspecialidadMedico.getEspecialidades();
+        console.log(especialidades+" en lista medicos")
+       
+        if (medicos) {
+            res.render("medico/listaMedicos", { medicos: medicos,  especialidades:especialidades });
+        } else {
+            res.render("medico/listaMedicos", { medicos: medicos, especialidades:especialidades });
+        }
+    },
+
+    
+    async mostrarAlfabeticamente(req, res) {
+        
+        const medicos = await Medico.orderByNameAsc();
         console.log(medicos+"medico Pr especialidad mostrar")
         const especialidades = await EspecialidadMedico.getEspecialidades();
         console.log(especialidades+" en lista medicos")
