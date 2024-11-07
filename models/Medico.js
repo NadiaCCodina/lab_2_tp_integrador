@@ -94,6 +94,13 @@ const Medico = {
             "SELECT medico.clave_medico, medico.dni, `estado`, nombre_completo, nombre_especialidad FROM `medico`, persona, especialidad_medico, especialidad WHERE persona.dni = medico.dni AND medico.clave_medico = especialidad_medico.clave_medico AND especialidad.clave_especialidad = especialidad_medico.clave_especialidad AND especialidad.clave_especialidad = ?",
             [especialidad])
         return medicos;
+    },
+
+    async orderByNameAsc(){
+        const conn = await createConnection();
+        const [medicos] = await conn.query(
+        "SELECT nombre_completo, medico.dni, telefono, mail, estado FROM `medico`, persona WHERE medico.dni = persona.dni ORDER BY  nombre_completo ASC")
+        return medicos
     }
 
 }

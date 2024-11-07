@@ -9,21 +9,23 @@ module.exports = {
         console.log(clave_medico)
 
         const dni = req.body.dni
-        const medico = await Medico.getByDni(dni)
+        const medico = await Medico.getByDni(dni);
         const medicos = await Medico.get();
+        const especialidades = await EspecialidadMedico.getEspecialidades();
         const matricula = req.body.matricula
+        console.log(especialidades)
         const clave_especialidad = req.body.clave_especialidad
         try {
             console.log(matricula)
             console.log("especialidad" + clave_especialidad)
             if (await EspecialidadMedico.addSpecialtyToDoctor(clave_medico, clave_especialidad, matricula)) {
-                const especialidades = EspecialidadMedico.getEspecialidades()
+                //const especialidades = EspecialidadMedico.getEspecialidades()
                 console.log("entro al if de especialidaddesc ")
-                res.render("medico/listaMedicos", { medico: medico, medicos: medicos });
+                res.render("medico/listaMedicos", { medico: medico, medicos: medicos, especialidades:especialidades });
             } else {
                 const medicos = await Medico.get();
                 console.log("entro al else de especialidades")
-                res.render("medico/listaMedicos", { medicos: medicos })
+                res.render("medico/listaMedicos", { medicos: medicos, especialidades:especialidades })
             }
         } catch (error) {
             console.log(error)
@@ -55,6 +57,7 @@ module.exports = {
         const dni = req.params.dni
         console.log("dni" + dni)
         console.log(matricula + " matricula")
+        const especialidades = await EspecialidadMedico.getEspecialidades();
         const medico_especialidad_baja = await Medico.getByDni(dni)
         const medico_especilidad_baja = await EspecialidadMedico.get(dni);
         const borrarEspecialidad = await EspecialidadMedico.delete(matricula)
@@ -62,7 +65,7 @@ module.exports = {
         console.log(borrarEspecialidad)
         if (borrarEspecialidad) {
             const medicos = await Medico.get();
-            res.render("medico/listaMedicos", { medico_especilidad_baja: medico_especilidad_baja, medicos: medicos, medico_especialidad_baja: medico_especialidad_baja })
+            res.render("medico/listaMedicos", { medico_especilidad_baja: medico_especilidad_baja, medicos: medicos, medico_especialidad_baja: medico_especialidad_baja, especialidades:especialidades })
         }
 
     },

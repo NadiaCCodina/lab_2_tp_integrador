@@ -7,7 +7,7 @@ block contenido
         h1= admi
     if nombre_completo 
         h1 Se actualizo correctamente: #{nombre_completo}
-    if nombre
+    if nombrec
         h1 Se creo correctamente el medico: #{nombre}    
     if medico 
         h1 Se modifico la especialdad del medico  #{medico[0].nombre_completo}   
@@ -17,24 +17,31 @@ block contenido
         h1 El medico ya existe
     if duplicada 
         h1 Especialidad ya existente.    
-
-    form(action="/medico/busqueda/especialidad" method="post")
-        select#especialidadInput.form-control(name='clave_especialidad')
-            each especialidad in especialidades
-                option(value=`${especialidad.clave_especialidad}`)= especialidad.nombre_especialidad
+    .d-grid.gap-2.col-6.mx-auto
+        form(action="/medico/busqueda/especialidad" method="post")
+            select#especialidadInput.form-control(name='clave_especialidad')
+                each especialidad in especialidades
+                    option(value=`${especialidad.clave_especialidad}`)= especialidad.nombre_especialidad
 
 
             input.btn.btn-primary(type="submit" value="Seleccionar")     
-   
-    form(action="/medico/busqueda/nombre" method="post")
-        input(name="nombre", type="text", placeholder="Ingrese Apellido" required)
-        input(type="submit" value="Buscar")   
     
-    form(action="/medico/busqueda/dni" method="post")
-        input(name="dni", type="Number", placeholder="Ingrese Dni" required)
-        input(type="submit" value="Buscar")   
+        form(action="/medico/busqueda/nombre" method="post")
+            input(name="nombre", type="text", placeholder="Ingrese Apellido" required)
+            input.btn.btn-primary(type="submit" value="Buscar")   
+        
+        form(action="/medico/busqueda/dni" method="post")
+            input(name="dni", type="Number", placeholder="Ingrese Dni" required)
+            input.btn.btn-primary(type="submit" value="Buscar")   
+        form(action="/medico/lista" method="get")
+            input.btn.btn-primary(type="submit" value="Todos")     
+        form(action="/medico/lista/ordenada" method="get")
+            input.btn.btn-primary(type="submit" value="Ordenar alfabeticamente")           
 
-    h1.text-center.mt-4 Lista de Medicos
+    h1.text-center.mt-4 Lista de Medicos 
+      
+    
+
     .container.mt-4
 
         table.table.table-bordered.table-hover

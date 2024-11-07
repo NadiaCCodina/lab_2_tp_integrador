@@ -32,7 +32,8 @@ const Agenda = {
   //////////////////////
   async crearHorario(datosHorario) {
     const { fecha, hora_inicio, hora_fin, clave_agenda } = datosHorario;
-    const conn = await createConnection()
+    const conn = await createConnection( { fecha, hora_inicio, hora_fin, clave_agenda })
+    console.log()
     try {
       const sql = `
         INSERT INTO horario ( fecha, hora_inicio, hora_fin, clave_agenda)
