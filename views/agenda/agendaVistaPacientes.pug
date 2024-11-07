@@ -3,14 +3,19 @@ extends ../layoutOp
 
 block contenido     
       h1 Seleccione la especialidad a buscar
-        form(action="/seleccionar/agendas/especialidad" method="get")
+        form(action="/seleccionar/agendas/especialidad/online" method="get")
             select#especialidadInput.form-control(name='clave_especialidad')
                 each especialidad in especialidades
                     option(value=`${especialidad.clave_especialidad}`)= especialidad.nombre_especialidad
-        form(action="/seleccionar/agendas/especialidad" method="get")
+
             input.btn.btn-primary(type="submit" value="Seleccionar")
-                
-        each agenda in agendas
+
+            
+        form(action="/medico/busqueda/nombre" method="post")
+            input(name="nombre", type="text", placeholder="Ingrese Apellido" required)
+            input.btn.btn-primary(type="submit" value="Buscar")    
+
+            each agenda in agendas
                 .card.text-center
                     .card-header
                         | Dr./Dra.
@@ -18,14 +23,8 @@ block contenido
                         h5.card-title #{agenda.nombre_completo}
                         p.card-text #{agenda.nombre_especialidad}
                     
-                        form(method='get', action='/agendasturnomedico')
+                        form(method='get', action='/agendasturnomedico/online')
                             input(type='hidden', name='clave_agenda', value=agenda.clave_agenda) 
                             button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Seleccionar
                     
-                        form(method='get', action='/gestorHorarios')
-                            input(type='hidden', name='clave_agenda', value=agenda.clave_agenda)
-                            button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Gestionar
-                        .card-footer.text-muted
-
-
-                
+                      
