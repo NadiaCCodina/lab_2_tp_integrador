@@ -75,9 +75,20 @@ const Paciente = {
         }
     },
 
-    async edit(dni) {
+    async update( obra_social, dni_imagen, dni) {
+        const conn = await createConnection();
+        console.log(dni_imagen) 
 
-
+        try {
+            const [patientResult] = await conn.query(
+                "UPDATE paciente SET obra_social = ?,  dni_imagen =? WHERE dni = ?",
+                [obra_social, dni_imagen, dni]
+            );
+            return patientResult.affectedRows === 1;
+        } catch {
+            console.log("ERROR PROVISORIO")
+        }
+  
 
     }
     

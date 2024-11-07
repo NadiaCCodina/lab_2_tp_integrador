@@ -1,0 +1,16 @@
+extends ../layoutOp
+
+block contenido
+    h1.text-center.mt-4 Editar Paciente
+    .container.mt-4
+        form(method="POST" action=`/paciente/editar?dni=${paciente.dni}` enctype="multipart/form-data" )
+            .form-group
+                label(for="dni") DNI
+                input.form-control(type="text" name="dni" value=paciente.dni readonly)
+            .form-group
+                label(for="obra_social") Obra Social
+                input.form-control(type="text" name="obra_social" value=paciente.obra_social)
+            .form-group
+                label(for="dni_imagen") Imagen del DNI
+                input.form-control-file(name="dni_imagen", type="file", accept="image/*" required)    
+            button.btn.btn-primary(type="submit") Guardar Cambios

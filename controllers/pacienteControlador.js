@@ -77,8 +77,46 @@ module.exports = {
     }
 
 
- }
+ },
 
+
+ async actualizarPaciente(req, res){
+              const { dni, obra_social } = req.body
+              const dni_imagen = req.file ? req.file.filename : null;
+
+    try{ 
+      await Paciente.update(obra_social, dni_imagen, dni)
+
+      const pacientes = await Paciente.get();
+      res.render('paciente/listaPacientes', { pacientes: pacientes }); 
+
+    } catch (error) {
+        console.error('Error al editar el paciente:', error);
+        res.status(500).send('Error al editar el paciente'); 
+    
+    }
+
+           
+ },
+
+ async encontrarParaEdicion(req, res){
+    const { dni } = req.query
+
+    try{ 
+      
+
+      const pacientes = await Paciente.findPatientByDni(dni);
+      res.render('paciente/editar', {  paciente: pacientes[0] }); 
+
+    } catch (error) {
+        console.error('Error al eliminar el paciente:', error);
+        res.status(500).send('Error al eliminar el paciente'); 
+    
+    }
+
+
+
+ }
  
 
 }
