@@ -66,23 +66,32 @@ module.exports = {
 
   async registrarHorario(req, res) {
 
-    try {
-      const { fecha, fecha_fin, hora_inicio, hora_fin, clave_agenda } = req.body;
-    
+    const { fecha, fecha_fin, hora_inicio, hora_fin, clave_agenda } = req.body;
 
-      await Agenda.calculateSchedule( fecha, fecha_fin, hora_inicio, hora_fin, clave_agenda)
-    
-       res.render("agenda/gestorHorarios", { clave_agenda });
+    const horaInicio = new Date(`1970-01-01T${hora_inicio}:00`);
+    const horaFin = new Date(`1970-01-01T${hora_fin}:00`);
+    const fechaInicio = new Date(fecha);
+    const fechaFin = new Date(fecha_fin);
+  
+    // Verificar si la hora de fin es menor que la hora de inicio
+    if (horaFin <= horaInicio  || fechaFin < fechaInicio ) {
+      return res.render("agenda/gestorHorarios", {
+        error: 'Rango de horario o fechas incorrecto.',
+        clave_agenda: clave_agenda
+      });
+    }try {
 
-    } catch (error) {
-      console.error("Error al crear un nuevo horario: ", error);
-      res.status(500).send("Error interno del servidor");
-    }
-  },
+    await Agenda.calculateSchedule( fecha, fecha_fin, hora_inicio, hora_fin, clave_agenda)
+  
+     res.render("agenda/gestorHorarios", { 
+      error: 'Horario ingresado.',
+        clave_agenda: clave_agenda });
 
-
-
-
+  } catch (error) {
+    console.error("Error al crear un nuevo horario: ", error);
+    res.status(500).send("Error interno del servidor");
+  }
+},
 
 
   async seleccionarHorario(req, res) {
@@ -236,6 +245,10 @@ module.exports = {
       res.status(500).send('Error al obtener la agenda');
     }
   },
+
+  
+ 
+  
 
 
 

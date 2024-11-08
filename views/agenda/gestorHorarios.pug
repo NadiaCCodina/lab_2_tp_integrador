@@ -1,18 +1,23 @@
 extends ../layoutOp
 
-block contenido 
+block contenido
   body
     .container
       h1 Ingresar Nuevo Horario
-      p Clave de agenda: #{clave_agenda} 
+      p Clave de agenda: #{clave_agenda}
+
+      
+      if error
+        .alert.alert-warning
+          p #{error}
 
       form(method="POST" action="/horario/nuevo")
-        input(type='hidden', name='clave_agenda', value=clave_agenda) 
+        input(type='hidden', name='clave_agenda', value=clave_agenda)
         .form-group
           label(for="fecha") Fecha
           input.form-control(type="date" id="fecha" name="fecha" required)
         .form-group
-          label(for="fecha_fin") Fecha
+          label(for="fecha_fin") Fecha de Fin
           input.form-control(type="date" id="fecha_fin" name="fecha_fin" required)
         .form-group
           label(for="hora_inicio") Hora de Inicio
