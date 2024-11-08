@@ -77,7 +77,27 @@ module.exports = {
     }
 
 
- }
+ },
+
+ async guardarPacienteOnline(req, res) {
+    const { dni, nombre_completo, mail, telefono, obra_social } = req.body;
+
+    const dni_imagen = req.file ? req.file.filename : null;
+   
+      
+
+    if (nombre_completo) {
+        await Paciente.insertPerson({  dni,nombre_completo, mail, telefono })
+        await Paciente.insertPatient( {dni, obra_social, dni_imagen })
+    }
+    else {
+        await Paciente.insertPatient(  {dni, obra_social, dni_imagen })
+    }
+       
+    const pacientes = await Paciente.get();
+    res.render("agenda/agendaVistaPacientes", { pacientes: pacientes });
+
+},
 
  
 

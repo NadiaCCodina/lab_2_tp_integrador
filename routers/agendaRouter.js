@@ -17,6 +17,6 @@ router.get("/agendas", controladorUsuario.isAuthenticatedOp, controlador.vistaAg
 router.get('/agendasturnomedico',controladorUsuario.isAuthenticatedOp, controlador.horarioPorAgendaMedico);
 router.get("/agendas/online", controlador.vistaAgendaOnline )
 router.get("/seleccionar/agendas/especialidad", controlador.agendaPorEspecialidad);
-router.get('/agendasturnomedico/online', controlador.horarioPorAgendaMedico);
+router.get('/agendasturnomedico/online', controlador.horarioPorAgendaMedicoOnline);
 
 module.exports = router;

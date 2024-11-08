@@ -24,7 +24,7 @@ block contenido
                         p.card-text #{agenda.nombre_especialidad}
                     
                         form(method='get', action='/agendasturnomedico/online')
-                            input(type='hidden', name='clave_agenda', value=agenda.clave_agenda) 
+                            input(type='text', name='clave_agenda', value=agenda.clave_agenda) 
                             button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Seleccionar
                     
                       
