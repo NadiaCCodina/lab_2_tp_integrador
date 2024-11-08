@@ -42,12 +42,20 @@ module.exports = {
   async index(req, res) {
     try {
       const agenda = await Agenda.get(); // Obtener la agenda
+
+      //cambia el formato
+      agenda.forEach(item => {
+        const fecha = new Date(item.fecha);
+        item.fecha = fecha.toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        
+    });
       res.render("agenda/mostrarAgenda", { agenda: agenda });
     } catch (error) {
       console.error('Error al obtener la agenda:', error);
       res.status(500).send('Error al obtener la agenda');
     }
   },
+
   async vistaGestorHorarios(req, res) {
 
     console.log("Entrando a gestor de horarios");
@@ -60,16 +68,10 @@ module.exports = {
 
     try {
       const { fecha, fecha_fin, hora_inicio, hora_fin, clave_agenda } = req.body;
-     // const clave_agenda = req.query.clave_agenda
+    
 
       await Agenda.calculateSchedule( fecha, fecha_fin, hora_inicio, hora_fin, clave_agenda)
-      // await Agenda.crearHorario({
-      //   fecha,
-      //   hora_inicio,
-      //   hora_fin,
-      //   clave_agenda,
-      // });
-      //console.log(fecha)
+    
        res.render("agenda/gestorHorarios", { clave_agenda });
 
     } catch (error) {
