@@ -111,7 +111,7 @@ const Agenda = {
 
     }
   },
-
+ 
   async calculateSchedule(fecha, fecha_fin, hora_inicio, hora_fin, clave_agenda) {
 
     try {
@@ -126,8 +126,12 @@ const Agenda = {
       const horaInicio = hora_inicio.split(':').map(Number);
       const horaFin = hora_fin.split(':').map(Number);
 
+     
+
+
       // Bucle para recorrer cada día entre fecha y fecha_fin
-      while (fechaActual <= fechaFin) {
+      while (fechaActual <= fechaFin ) {
+
         // Crear horarios para cada día
         let inicioTurno = new Date(fechaActual);
         inicioTurno.setHours(horaInicio[0], horaInicio[1], 0);
@@ -135,13 +139,24 @@ const Agenda = {
         let finTurno = new Date(fechaActual);
         finTurno.setHours(horaFin[0], horaFin[1], 0);
 
+        //consulta para controlar que no se repitan horarios
+        const [result] = await conn.query(
+          "SELECT * FROM `horario` WHERE horario.fecha = ? and horario.hora_inicio = ?",
+          [fechaActual.toISOString().split('T')[0], inicioTurno.toTimeString().split(' ')[0]]
+        );
+
+        if (result.length === 0) { 
+
+
         while (inicioTurno < finTurno) {
           // Generar el horario para el turno actual
           const proximoTurno = new Date(inicioTurno);
           proximoTurno.setMinutes(proximoTurno.getMinutes() + intervalo_minutos);
-
+         
+     
+         
           // Guardar en la base de datos si el turno no excede la hora de fin
-          if (proximoTurno <= finTurno) {
+          if (proximoTurno <= finTurno ) {
 
             await conn.query(
               'INSERT INTO horario ( fecha, hora_inicio, clave_agenda) VALUES ( ?, ?, ?)',
@@ -153,6 +168,10 @@ const Agenda = {
           inicioTurno = proximoTurno;
         }
 
+      }else{ 
+        fechaActual.setDate(fechaActual.getDate() + 1);
+      }
+
         // Avanzar al siguiente día
         fechaActual.setDate(fechaActual.getDate() + 1);
       }
@@ -163,13 +182,30 @@ const Agenda = {
     }
   },
 
+
+
   async getAgendaById(id) {
+    
     const conn = await createConnection();
     const [agenda] = await conn.query("SELECT * FROM agenda WHERE clave_agenda = ?", [id]);
     console.log("paso por el get agenda: ", agenda, id);
     return agenda.length > 0 ? agenda : null;
+  }, 
+
+
+  async getScheduleByDoctor(id){
+
+    const conn = await createConnection();
+    const [horario] = await conn.query("SELECT * FROM horario WHERE clave_agenda = ?", [id]);
+    console.log("paso por el get horario: ", horario, id);
+    return horario.length > 0 ? horario : null;
+     
+
   }
 
 
 }
+
+  
+
 module.exports = Agenda

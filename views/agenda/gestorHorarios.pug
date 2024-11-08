@@ -1,7 +1,7 @@
 extends ../layoutOp
 
 block contenido 
-    body
+  body
     .container
       h1 Ingresar Nuevo Horario
       p Clave de agenda: #{clave_agenda} 
@@ -12,12 +12,12 @@ block contenido
           label(for="fecha") Fecha
           input.form-control(type="date" id="fecha" name="fecha" required)
         .form-group
-          label(for="fecha") Fecha
+          label(for="fecha_fin") Fecha
           input.form-control(type="date" id="fecha_fin" name="fecha_fin" required)
         .form-group
           label(for="hora_inicio") Hora de Inicio
-          input.form-control(type="time" id="hora_inicio" name="hora_inicio" required)       
+          input.form-control(type="time" id="hora_inicio" name="hora_inicio" step="3600" required)
         .form-group
           label(for="hora_fin") Hora de Fin
-          input.form-control(type="time" id="hora_fin" name="hora_fin" required)
+          input.form-control(type="time" id="hora_fin" name="hora_fin" step="3600" required)
         button.btn.btn-primary(type="submit") Guardar Horario
