@@ -3,7 +3,7 @@ extends ../layoutOp
 block contenido
 
   div.container.mt-5
-    h1.text-center Horarios de la Agenda
+    h1.text-center#encabezado Horarios de la Agenda Medico
 
     table.table.table-bordered.table-hover
       thead.thead-light
@@ -20,13 +20,17 @@ block contenido
               form(action="/seleccionar" method="POST" )
                 input(type="hidden" name="fecha" value=horario.fecha)
                 input(type="hidden" name="hora_inicio" value=horario.hora_inicio)
-                input(type="hidden" name="clave" value=horario.clave_horarios)
+                input(type="hidden" name="clave_horario" value=horario.clave_horarios)
                 input(type="hidden" name="dni")
-                button.btn.btn-outline-primary(type='button', onclick="seleccionarHorario(this.form)") Seleccionar
+                button.btn.btn-outline-primary(type='submit') Seleccionar
 
   script.
     function seleccionarHorario(form) {
-
+      const imput_dni= document.createElement("imput")
+      const div_dni= document.createElement("div")
+      div_dni.appendChild(imput_dni)
+      encabezado.appendChild(div_dni)
+      console.log("Holaaaa")
       const dni = prompt("Para solicitar turno debe estar registrado en el sistema. Ingrese su DNI:");
 
       if (dni) {
@@ -36,9 +40,10 @@ block contenido
         form.submit();
         return true;
       } else {
+        console.log("Holaaaall")
         alert('Debe ingresar un DNI para continuar.');
         return false;
       }
     }
 
-    function 
+

@@ -32,7 +32,7 @@ const Agenda = {
   //////////////////////
   async crearHorario(datosHorario) {
     const { fecha, hora_inicio, hora_fin, clave_agenda } = datosHorario;
-    const conn = await createConnection( { fecha, hora_inicio, hora_fin, clave_agenda })
+    const conn = await createConnection({ fecha, hora_inicio, hora_fin, clave_agenda })
     console.log()
     try {
       const sql = `
@@ -105,7 +105,7 @@ const Agenda = {
   async getHorariosPorMedico(clave_agenda) {
     try {
       const conn = await createConnection()
-      const [horariosAgendaMedico] = await conn.query("SELECT `clave_horarios`, `fecha`, `hora_inicio`, clave_agenda, `hora_fin` FROM `horario` WHERE clave_agenda =  ?;",
+      const [horariosAgendaMedico] = await conn.query("SELECT `clave_horarios`, `fecha`, `hora_inicio`, clave_agenda, `hora_fin` FROM `horario` WHERE clave_agenda = ? AND estado=0;",
         [clave_agenda]
       )
       console.log(horariosAgendaMedico)
@@ -130,6 +130,29 @@ const Agenda = {
     }
   },
 
+  async createTurno(dni, clave_estado, clave_horario) {
+    try {
+      const conn = await createConnection()
+      const [result] = await conn.query("INSERT INTO `turno`(`dni`, `clave_estado`, `clave_horario`) VALUES (?,?,?)",
+        [dni, clave_estado, clave_horario]
 
+      )
+      return result.affectedRows == 1
+    } catch (error) {
+      return false
+
+    }
+  },
+  async updateEstadoHorario(estado, clave_horario){
+    try {
+      const conn = await createConnection()
+      const [result] = await conn.query("UPDATE `horario` SET estado= ? WHERE `clave_horarios` = ?", 
+        [estado, clave_horario]
+      )
+  }catch (error) {
+    return false
+
+  }
+}
 }
 module.exports = Agenda

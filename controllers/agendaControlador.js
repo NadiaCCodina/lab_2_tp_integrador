@@ -81,13 +81,12 @@ module.exports = {
 
 
   async seleccionarHorario(req, res) {
-    const { hora_inicio, clave, dni } = req.body;
+    const clave_horario= req.body.clave_horario;
     console.log('Datos recibidos:', req.body);
     try {
-      await Agenda.guardarSeleccion({ clave, dni })
 
-      console.log(`Horario seleccionado:  ${hora_inicio} `);
-      res.render("header", {})
+     
+      res.render("paciente/nuevoPaciente", {clave_horario})
 
     } catch (error) {
       console.error('Error al seleccionar horario:', error);

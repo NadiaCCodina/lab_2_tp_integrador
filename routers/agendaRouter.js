@@ -5,7 +5,7 @@ const controladorUsuario = require("../controllers/usuarioControlador")
 
 router.get("/agenda", controlador.vistaAgenda);
 
-router.get('/agendasturno',controladorUsuario.isAuthenticatedOp, controlador.index);
+//router.get('/agendasturno',controladorUsuario.isAuthenticatedOp, controlador.index);
 router.post('/seleccionar',controladorUsuario.isAuthenticatedOp, controlador.seleccionarHorario);
 router.post('/horario/nuevo',controladorUsuario.isAuthenticatedOp, controlador.registrarHorario);
 router.get('/gestorHorarios', controladorUsuario.isAuthenticatedOp, controlador.vistaGestorHorarios);
