@@ -35,12 +35,7 @@ module.exports = {
     }
   },
 
-  async vistaGestorHorarios(req, res) {
-
-    console.log("Entrando a gestor de horarios");
-    res.render("agenda/gestorHorarios", {});
-
-  },
+ 
 
   //////////////////////
 
@@ -53,21 +48,29 @@ module.exports = {
       res.status(500).send('Error al obtener la agenda');
     }
   },
+  async vistaGestorHorarios(req, res) {
 
+    console.log("Entrando a gestor de horarios");
+    const clave_agenda = req.query.clave_agenda
+    res.render("agenda/gestorHorarios", { clave_agenda });
+   
+  },
 
   async registrarHorario(req, res) {
 
     try {
-      const { fecha, hora_inicio, hora_fin, clave_agenda } = req.body;
+      const { fecha, fecha_fin, hora_inicio, hora_fin, clave_agenda } = req.body;
+     // const clave_agenda = req.query.clave_agenda
 
-      await Agenda.crearHorario({
-        fecha,
-        hora_inicio,
-        hora_fin,
-        clave_agenda,
-      });
+      await Agenda.calculateSchedule( fecha, fecha_fin, hora_inicio, hora_fin, clave_agenda)
+      // await Agenda.crearHorario({
+      //   fecha,
+      //   hora_inicio,
+      //   hora_fin,
+      //   clave_agenda,
+      // });
       //console.log(fecha)
-      res.render("agenda/gestorHorarios", { fecha, hora_inicio, hora_fin, clave_agenda });
+       res.render("agenda/gestorHorarios", { clave_agenda });
 
     } catch (error) {
       console.error("Error al crear un nuevo horario: ", error);

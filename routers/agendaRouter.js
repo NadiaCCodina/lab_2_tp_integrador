@@ -3,6 +3,7 @@ const router = express.Router();
 const controlador = require("../controllers/agendaControlador")
 const controladorUsuario = require("../controllers/usuarioControlador")
 
+
 router.get("/agenda", controlador.vistaAgenda);
 
 router.get('/agendasturno',controladorUsuario.isAuthenticatedOp, controlador.index);

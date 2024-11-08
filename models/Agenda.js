@@ -30,25 +30,7 @@ const Agenda = {
     return result;
   },
   //////////////////////
-  async crearHorario(datosHorario) {
-    const { fecha, hora_inicio, hora_fin, clave_agenda } = datosHorario;
-    const conn = await createConnection( { fecha, hora_inicio, hora_fin, clave_agenda })
-    console.log()
-    try {
-      const sql = `
-        INSERT INTO horario ( fecha, hora_inicio, hora_fin, clave_agenda)
-        VALUES (?, ?, ?, ?)
-      `;
-
-      // Ejecuta la consulta
-      const [result] = await conn.execute(sql, [fecha, hora_inicio, hora_fin, clave_agenda]);
-
-      return result;
-    } catch (error) {
-      console.error("Error al crear el horario:", error);
-      throw error;
-    }
-  },
+  
   async clasificacionCustom() {
 
     try {
@@ -129,6 +111,64 @@ const Agenda = {
 
     }
   },
+
+  async calculateSchedule(fecha, fecha_fin, hora_inicio, hora_fin, clave_agenda) {
+
+    try {
+
+      const conn = await createConnection()
+
+      const agenda = await this.getAgendaById(clave_agenda)
+      const intervalo_minutos = agenda[0].intervalo_minutos
+      // Convertir las fechas y horas a objetos Date
+      let fechaActual = new Date(fecha);
+      const fechaFin = new Date(fecha_fin);
+      const horaInicio = hora_inicio.split(':').map(Number);
+      const horaFin = hora_fin.split(':').map(Number);
+
+      // Bucle para recorrer cada día entre fecha y fecha_fin
+      while (fechaActual <= fechaFin) {
+        // Crear horarios para cada día
+        let inicioTurno = new Date(fechaActual);
+        inicioTurno.setHours(horaInicio[0], horaInicio[1], 0);
+
+        let finTurno = new Date(fechaActual);
+        finTurno.setHours(horaFin[0], horaFin[1], 0);
+
+        while (inicioTurno < finTurno) {
+          // Generar el horario para el turno actual
+          const proximoTurno = new Date(inicioTurno);
+          proximoTurno.setMinutes(proximoTurno.getMinutes() + intervalo_minutos);
+
+          // Guardar en la base de datos si el turno no excede la hora de fin
+          if (proximoTurno <= finTurno) {
+
+            await conn.query(
+              'INSERT INTO horario ( fecha, hora_inicio, clave_agenda) VALUES ( ?, ?, ?)',
+              [fechaActual.toISOString().split('T')[0], `${inicioTurno.toTimeString().split(' ')[0]} - ${proximoTurno.toTimeString().split(' ')[0]}`, clave_agenda]
+            );
+          }
+
+          // Avanzar al siguiente turno
+          inicioTurno = proximoTurno;
+        }
+
+        // Avanzar al siguiente día
+        fechaActual.setDate(fechaActual.getDate() + 1);
+      }
+
+      console.log('Horarios generados y guardados con éxito.');
+    } catch (error) {
+      console.error('Error al generar los horarios:', error);
+    }
+  },
+
+  async getAgendaById(id) {
+    const conn = await createConnection();
+    const [agenda] = await conn.query("SELECT * FROM agenda WHERE clave_agenda = ?", [id]);
+    console.log("paso por el get agenda: ", agenda, id);
+    return agenda.length > 0 ? agenda : null;
+  }
 
 
 }
