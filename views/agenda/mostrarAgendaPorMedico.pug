@@ -4,25 +4,30 @@ block contenido
 
   div.container.mt-5
     h1.text-center#encabezado Horarios de la Agenda Medico
-
+  
     table.table.table-bordered.table-hover
       thead.thead-light
         tr
           th Día
-          th Horario 
-          th Acción
+          th Horario
       tbody
-        each horario in agendaMedico
+        each horario in gruposPorFecha
           tr
-            td= horario.fecha
-            td= horario.hora_inicio
+          
+            td= horario[0].fecha  
             td
-              form(action="/seleccionar" method="POST" )
-                input(type="hidden" name="fecha" value=horario.fecha)
-                input(type="hidden" name="hora_inicio" value=horario.hora_inicio)
-                input(type="hidden" name="clave_horario" value=horario.clave_horarios)
-                input(type="hidden" name="dni")
-                button.btn.btn-outline-primary(type='submit') Seleccionar
+           
+              each hora in horario
+               
+                                     
+                  form.mx-5(action="/seleccionar" method="POST" )
+                        input(type="hidden" name="fecha" value=hora.fecha)
+                        input(type="hidden" name="hora_inicio" value=hora.hora_inicio)
+                        input(type="hidden" name="clave_horario" value=hora.clave_horarios)
+                        input(type="hidden" name="dni")
+                        button.btn.btn-outline-primary(type='submit') #{hora.hora_inicio} 
+        
+         
 
   script.
     function seleccionarHorario(form) {
