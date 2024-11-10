@@ -25,6 +25,7 @@ block contenido
                     
                         form(method='get', action='/agendasturnomedico/online')
                             input(type='text', name='clave_agenda', value=agenda.clave_agenda) 
+                            input(type='hidden', name='nombre_completo', value=agenda.nombre_completo) 
                             button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Seleccionar
                     
                       

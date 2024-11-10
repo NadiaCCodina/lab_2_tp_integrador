@@ -148,11 +148,31 @@ const Agenda = {
       const conn = await createConnection()
       const [result] = await conn.query("UPDATE `horario` SET estado= ? WHERE `clave_horarios` = ?", 
         [estado, clave_horario]
+       
       )
+      return result.affectedRows==1
   }catch (error) {
     return false
 
   }
-}
+},
+
+  async getTurnos(clave_agenda){
+    try {
+      connection = await createConnection(clave_agenda);
+      const [turnos] = await connection.query("SELECT turno.dni, turno.clave_estado, `clave_horario`, fecha, hora_inicio, nombre_completo, nombre_estado FROM `turno`, horario, persona, estado_turno WHERE persona.dni = turno.dni AND turno.clave_horario = horario.clave_horarios AND estado_turno.clave_estado = turno.clave_estado and horario.clave_agenda= ?",
+        [clave_agenda]
+      )
+      console.log(turnos+" modelo turno")
+      return turnos
+    }catch (error) {
+      return false
+  
+    }
+  },
+
+  async getTurnosPorDni(){
+    ("SELECT turno.dni, `clave_estado`, `clave_horario`, fecha, hora_inicio, nombre_completo FROM `turno`, horario, persona WHERE persona.dni = turno.dni AND turno.clave_horario = horario.clave_horarios and clave_horario =9 and turno.dni = 33103814" )
+  }
 }
 module.exports = Agenda
