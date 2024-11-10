@@ -7,9 +7,9 @@ block contenido
             select#especialidadInput.form-control(name='clave_especialidad')
                 each especialidad in especialidades
                     option(value=`${especialidad.clave_especialidad}`)= especialidad.nombre_especialidad
-        form(action="/seleccionar/agendas/especialidad" method="get")
+    
             input.btn.btn-primary(type="submit" value="Seleccionar")
-                
+            
         each agenda in agendas
                 .card.text-center
                     .card-header
