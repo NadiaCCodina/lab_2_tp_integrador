@@ -1,0 +1,38 @@
+extends ../layoutOp
+
+block contenido
+
+  div.container.mx-auto
+    h1.text-center#encabezado Turnos del Dr./Dra #{medico}
+    h1.text-center#encabezado Especialidad #{especialidad}
+    table.table.table-bordered.table-hover
+      thead.thead-light
+        tr
+          th Paciente
+          th Horario
+          th Fecha
+          th Estado
+          th Cofiguracion
+      tbody
+        each turno in turnosAgenda
+          tr
+                  td= turno.nombre_completo
+                  td= turno.hora_inicio  
+                  td= turno.fecha 
+                  td= turno.nombre_estado
+                  td               
+                    form.mx-5(action="/editar/turno" method="POST" )
+                    input(type="hidden" name="fecha" value=turno.fecha)
+                    input(type="hidden" name="hora_inicio" value=turno.hora_inicio)
+                    input(type="hidden" name="clave_horario" value=turno.clave_horarios)
+                    input(type="hidden" name="dni")
+                    select#estado_turnos.form-control.text-center(name='estado')
+                        option(value='1') No disponible
+                        option(value='2') Libre
+                        option(value='3') Reservada
+                        option(value='4') Confirmado
+                        option(value='5') Cancelado
+                        option(value='6') Ausente
+
+                  td
+                    button.btn.btn-primary.me-5.p-2(type="submit") Seleccionar  

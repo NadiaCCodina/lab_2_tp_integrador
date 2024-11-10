@@ -1,4 +1,3 @@
-extends ../layoutOp
 
 block content
     h1 Formulario de Paciente
@@ -31,10 +30,5 @@ block content
         .form-group
             label(for="dni_imagen") Imagen del DNI
             input.form-control-file(name="dni_imagen", type="file", accept="image/*" required)
-            br
-            input.form-control(name="clave_horario", type="hidden", value= `${clave_horario}` )
-        if clave_horario
-            button.btn.btn-primary(type="submit") Agendar turno
-  
-        else
-            button.btn.btn-primary(type="submit") Agregar
+        br
+        button.btn.btn-primary(type="submit") Agregar

@@ -31,6 +31,25 @@ const Agenda = {
   },
   //////////////////////
   
+  async crearHorario(datosHorario) {
+    const { fecha, hora_inicio, hora_fin, clave_agenda } = datosHorario;
+    const conn = await createConnection({ fecha, hora_inicio, hora_fin, clave_agenda })
+    console.log()
+    try {
+      const sql = `
+        INSERT INTO horario ( fecha, hora_inicio, hora_fin, clave_agenda)
+        VALUES (?, ?, ?, ?)
+      `;
+
+      // Ejecuta la consulta
+      const [result] = await conn.execute(sql, [fecha, hora_inicio, hora_fin, clave_agenda]);
+
+      return result;
+    } catch (error) {
+      console.error("Error al crear el horario:", error);
+      throw error;
+    }
+  },
   async clasificacionCustom() {
 
     try {
@@ -87,7 +106,7 @@ const Agenda = {
   async getHorariosPorMedico(clave_agenda) {
     try {
       const conn = await createConnection()
-      const [horariosAgendaMedico] = await conn.query("SELECT `clave_horarios`, `fecha`, `hora_inicio`, clave_agenda, `hora_fin` FROM `horario` WHERE clave_agenda =  ?;",
+      const [horariosAgendaMedico] = await conn.query("SELECT `clave_horarios`, `fecha`, `hora_inicio`, clave_agenda, `hora_fin` FROM `horario` WHERE clave_agenda = ? AND estado=0;",
         [clave_agenda]
       )
       console.log(horariosAgendaMedico)
@@ -201,9 +220,52 @@ const Agenda = {
     return horario.length > 0 ? horario : null;
      
 
+  },
+
+  async createTurno(dni, clave_estado, clave_horario) {
+    try {
+      const conn = await createConnection()
+      const [result] = await conn.query("INSERT INTO `turno`(`dni`, `clave_estado`, `clave_horario`) VALUES (?,?,?)",
+        [dni, clave_estado, clave_horario]
+
+      )
+      return result.affectedRows == 1
+    } catch (error) {
+      return false
+
+    }
+  },
+  async updateEstadoHorario(estado, clave_horario){
+    try {
+      const conn = await createConnection()
+      const [result] = await conn.query("UPDATE `horario` SET estado= ? WHERE `clave_horarios` = ?", 
+        [estado, clave_horario]
+       
+      )
+      return result.affectedRows==1
+  }catch (error) {
+    return false
+
   }
+},
 
+  async getTurnos(clave_agenda){
+    try {
+      connection = await createConnection(clave_agenda);
+      const [turnos] = await connection.query("SELECT turno.dni, turno.clave_estado, `clave_horario`, fecha, hora_inicio, nombre_completo, nombre_estado FROM `turno`, horario, persona, estado_turno WHERE persona.dni = turno.dni AND turno.clave_horario = horario.clave_horarios AND estado_turno.clave_estado = turno.clave_estado and horario.clave_agenda= ?",
+        [clave_agenda]
+      )
+      console.log(turnos+" modelo turno")
+      return turnos
+    }catch (error) {
+      return false
+  
+    }
+  },
 
+  async getTurnosPorDni(){
+    ("SELECT turno.dni, `clave_estado`, `clave_horario`, fecha, hora_inicio, nombre_completo FROM `turno`, horario, persona WHERE persona.dni = turno.dni AND turno.clave_horario = horario.clave_horarios and clave_horario =9 and turno.dni = 33103814" )
+  }
 }
 
   

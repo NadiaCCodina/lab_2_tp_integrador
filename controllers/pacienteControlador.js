@@ -1,3 +1,4 @@
+const Agenda = require("../models/Agenda");
 const Paciente = require("../models/Paciente");
 
 module.exports = {
@@ -13,10 +14,10 @@ module.exports = {
          res.render("paciente/actualizarPaciente", {})
      },
     async guardar(req, res) {
-        const { dni, nombre_completo, mail, telefono, obra_social } = req.body;
-    
+        const { dni, nombre_completo, mail, telefono, obra_social, clave_horario } = req.body;
+        
         const dni_imagen = req.file ? req.file.filename : null;
-       
+    
           
 
         if (nombre_completo) {
@@ -26,6 +27,11 @@ module.exports = {
         else {
             await Paciente.insertPatient(  {dni, obra_social, dni_imagen })
         }
+
+        if (clave_horario){
+            await Agenda.createTurno(dni, 4, clave_horario)
+            await Agenda.updateEstadoHorario(1,clave_horario)
+        }
            
         const pacientes = await Paciente.get();
         res.render("paciente/listaPacientes", { pacientes: pacientes });
@@ -34,13 +40,14 @@ module.exports = {
     
     async crearPaciente(req, res) {
     const dni = req.body.dni;
-
+    const turno= req.params.turno
+    const clave_horario = req.body.clave_horario
     try {
         const result = await Paciente.findPersonByDni(dni);
         const exist = result !== null;
 
         console.log("existe????: ", exist);
-        res.render("paciente/paciente", { exist, dni});
+        res.render("paciente/paciente", { exist, dni, turno, clave_horario});
 
     } catch (error) {
         console.error("Error al crear paciente:", error);
@@ -78,6 +85,26 @@ module.exports = {
 
 
  },
+
+ async guardarPacienteOnline(req, res) {
+    const { dni, nombre_completo, mail, telefono, obra_social } = req.body;
+
+    const dni_imagen = req.file ? req.file.filename : null;
+   
+      
+
+    if (nombre_completo) {
+        await Paciente.insertPerson({  dni,nombre_completo, mail, telefono })
+        await Paciente.insertPatient( {dni, obra_social, dni_imagen })
+    }
+    else {
+        await Paciente.insertPatient(  {dni, obra_social, dni_imagen })
+    }
+       
+    const pacientes = await Paciente.get();
+    res.render("agenda/agendaVistaPacientes", { pacientes: pacientes });
+
+},
 
 
  async actualizarPaciente(req, res){

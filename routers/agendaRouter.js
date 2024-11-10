@@ -6,7 +6,7 @@ const controladorUsuario = require("../controllers/usuarioControlador")
 
 router.get("/agenda", controlador.vistaAgenda);
 
-router.get('/agendasturno',controladorUsuario.isAuthenticatedOp, controlador.index);
+//router.get('/agendasturno',controladorUsuario.isAuthenticatedOp, controlador.index);
 router.post('/seleccionar',controladorUsuario.isAuthenticatedOp, controlador.seleccionarHorario);
 router.post('/horario/nuevo',controladorUsuario.isAuthenticatedOp, controlador.registrarHorario);
 router.get('/gestorHorarios', controladorUsuario.isAuthenticatedOp, controlador.vistaGestorHorarios);
@@ -15,9 +15,9 @@ router.get('/seleccionar/medicoespecialidad',controladorUsuario.isAuthenticatedO
 router.post("/agenda/crear/:matricula", controladorUsuario.isAuthenticatedOp, controlador.mostrarConfiguracionAgenda )
 router.post("/agendanueva", controladorUsuario.isAuthenticatedOp, controlador.guardarNuevaAgenda )
 router.get("/agendas", controladorUsuario.isAuthenticatedOp, controlador.vistaAgenda )
-router.get('/agendasturnomedico',controladorUsuario.isAuthenticatedOp, controlador.horarioPorAgendaMedico);
+router.get('/agendas/horario/medico',controladorUsuario.isAuthenticatedOp, controlador.horarioPorAgendaMedico);
 router.get("/agendas/online", controlador.vistaAgendaOnline )
 router.get("/seleccionar/agendas/especialidad", controlador.agendaPorEspecialidad);
-router.get('/agendasturnomedico/online', controlador.horarioPorAgendaMedico);
-
+router.get('/agendasturnomedico/online', controlador.horarioPorAgendaMedicoOnline);
+router.get("/turnos/agenda", controlador.verTurnos )
 module.exports = router;
