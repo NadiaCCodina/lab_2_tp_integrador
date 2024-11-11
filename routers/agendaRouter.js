@@ -19,5 +19,6 @@ router.get('/agendas/horario/medico',controladorUsuario.isAuthenticatedOp, contr
 router.get("/agendas/online", controlador.vistaAgendaOnline )
 router.get("/seleccionar/agendas/especialidad", controlador.agendaPorEspecialidad);
 router.get('/agendasturnomedico/online', controlador.horarioPorAgendaMedicoOnline);
-router.get("/turnos/agenda", controlador.verTurnos )
+router.get("/turnos/agenda", controlador.verTurnos );
+router.post("/editar/estado/turno", controladorUsuario.isAuthenticatedOp, controlador.updateEstadoTurno);
 module.exports = router;

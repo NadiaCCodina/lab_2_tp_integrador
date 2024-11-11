@@ -252,7 +252,7 @@ const Agenda = {
   async getTurnos(clave_agenda){
     try {
       connection = await createConnection(clave_agenda);
-      const [turnos] = await connection.query("SELECT turno.dni, turno.clave_estado, `clave_horario`, fecha, hora_inicio, nombre_completo, nombre_estado FROM `turno`, horario, persona, estado_turno WHERE persona.dni = turno.dni AND turno.clave_horario = horario.clave_horarios AND estado_turno.clave_estado = turno.clave_estado and horario.clave_agenda= ?",
+      const [turnos] = await connection.query("SELECT turno.dni, turno.clave_estado, `clave_horario`, fecha, hora_inicio, nombre_completo, nombre_estado FROM `turno`, horario, persona, estado_turno WHERE persona.dni = turno.dni AND turno.clave_horario = horario.clave_horarios AND estado_turno.clave_estado = turno.clave_estado and horario.clave_agenda= ? AND turno.clave_estado != 2",
         [clave_agenda]
       )
       console.log(turnos+" modelo turno")
@@ -263,8 +263,28 @@ const Agenda = {
     }
   },
 
-  async getTurnosPorDni(){
-    ("SELECT turno.dni, `clave_estado`, `clave_horario`, fecha, hora_inicio, nombre_completo FROM `turno`, horario, persona WHERE persona.dni = turno.dni AND turno.clave_horario = horario.clave_horarios and clave_horario =9 and turno.dni = 33103814" )
+  async getTurnosPorDni(dni){
+    try {
+      connection = await createConnection(clave_agenda);
+      const [turnos] = await connection.query("SELECT turno.dni, `clave_estado`, `clave_horario`, fecha, hora_inicio, nombre_completo FROM `turno`, horario, persona WHERE persona.dni = turno.dni AND turno.clave_horario = horario.clave_horarios and clave_horario =9 and turno.dni = ?", 
+        [dni]
+       )
+      return turnos 
+  }catch (error) {
+    return false
+}
+},
+
+  async updateEstadoTurnoAgenda(clave_estado, dni, clave_horario){
+    try {
+      const conn = await createConnection()
+      const [result] = await conn.query("UPDATE `turno` SET `clave_estado`= ? WHERE `dni` = ? AND `clave_horario` = ?",
+        [clave_estado, dni, clave_horario])
+        //console.log= (result+" resultado del update")
+    return result.affectedRows ==1
+  }catch (error) {
+    return false
+}
   }
 }
 

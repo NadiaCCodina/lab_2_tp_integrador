@@ -21,18 +21,15 @@ block contenido
                   td= turno.fecha 
                   td= turno.nombre_estado
                   td               
-                    form.mx-5(action="/editar/turno" method="POST" )
-                    input(type="hidden" name="fecha" value=turno.fecha)
-                    input(type="hidden" name="hora_inicio" value=turno.hora_inicio)
-                    input(type="hidden" name="clave_horario" value=turno.clave_horarios)
-                    input(type="hidden" name="dni")
-                    select#estado_turnos.form-control.text-center(name='estado')
-                        option(value='1') No disponible
-                        option(value='2') Libre
-                        option(value='3') Reservada
-                        option(value='4') Confirmado
-                        option(value='5') Cancelado
-                        option(value='6') Ausente
-
-                  td
-                    button.btn.btn-primary.me-5.p-2(type="submit") Seleccionar  
+                    form.mx-5(action="/editar/estado/turno" method="POST" )
+                        input(type="hidden" name="dni" value=turno.dni)
+                        input(type="hidden" name="clave_horario" value=turno.clave_horario)
+                        input(type="hidden" name="clave_agenda" value=clave_agenda)
+                        select#estado_turnos.form-control.text-center(name='clave_estado')
+                            option(value='1') No disponible
+                            option(value='2') Libre
+                            option(value='3') Reservada
+                            option(value='4') Confirmado
+                            option(value='5') Cancelado
+                            option(value='6') Ausente
+                        button.btn.btn-primary.me-5.p-2(type="submit") Seleccionar   

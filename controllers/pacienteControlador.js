@@ -31,6 +31,7 @@ module.exports = {
         if (clave_horario){
             await Agenda.createTurno(dni, 4, clave_horario)
             await Agenda.updateEstadoHorario(1,clave_horario)
+            
         }
            
         const pacientes = await Paciente.get();
