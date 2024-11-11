@@ -6,13 +6,13 @@ block contenido
       h1 Ingresar Nuevo Horario
       p Clave de agenda: #{clave_agenda}
 
-      
+
       if error
         .alert.alert-warning
           p #{error}
 
       form(method="POST" action="/horario/nuevo")
-        input(type='hidden', name='clave_agenda', value=clave_agenda)
+        input(type='hidden' name='clave_agenda', value=clave_agenda)
         .form-group
           label(for="fecha") Fecha
           input.form-control(type="date" id="fecha" name="fecha" required)

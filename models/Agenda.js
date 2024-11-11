@@ -103,6 +103,21 @@ const Agenda = {
     }
   },
 
+  
+  async getAgendasPorMedicoNombre(nombre) {
+    try {
+      const conn = await createConnection()
+      const [agendaMedico] = await conn.query("SELECT `clave_agenda`, `clave_sucursal`, `clave_clasificacion`, `matricula_medico`, persona.nombre_completo,especialidad.nombre_especialidad,`cantidad_sobreturno`, `intervalo_minutos` FROM `agenda`, medico, especialidad_medico, persona , especialidad WHERE especialidad_medico.matricula= agenda.matricula_medico AND especialidad_medico.clave_medico = medico.clave_medico AND persona.dni = medico.dni AND especialidad.clave_especialidad = especialidad_medico.clave_especialidad AND persona.nombre_completo LIKE ?;",
+        ['%' + nombre + '%']
+      )
+
+      return agendaMedico
+    } catch (error) {
+      return false
+
+    }
+  },
+
   async getHorariosPorMedico(clave_agenda) {
     try {
       const conn = await createConnection()

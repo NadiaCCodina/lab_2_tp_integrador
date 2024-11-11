@@ -2,35 +2,42 @@ extends ../layoutOp
 
 
 block contenido     
-      h1 Seleccione la especialidad a buscar
-        form(action="/seleccionar/agendas/especialidad" method="get")
-            select#especialidadInput.form-control(name='clave_especialidad')
+    h1  Agendas
+        h3.form-control-lg Seleccione la especialidad a buscar
+
+        form.form-control-lg(action="/seleccionar/agendas/especialidad" method="get")
+
+            select#especialidadInput.form-control-lg(name='clave_especialidad')
                 each especialidad in especialidades
                     option(value=`${especialidad.clave_especialidad}`)= especialidad.nombre_especialidad
-    
+
             input.btn.btn-primary(type="submit" value="Seleccionar")
-            
-        each agenda in agendas
-                .card.text-center
-                    .card-header
-                        | Dr./Dra.
-                    .card-body
-                        h5.card-title #{agenda.nombre_completo}
-                        p.card-text #{agenda.nombre_especialidad}
-                    
-                        form(method='get', action='/agendas/horario/medico')
-                            input(type='hidden', name='clave_agenda', value=agenda.clave_agenda) 
-                            input(type='hidden', name='nombre_completo', value=agenda.nombre_completo) 
-                            input(type='hidden', name='nombre_especialidad', value=agenda.nombre_especialidad) 
-                            button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Seleccionar
-                    
-                        form(method='get', action='/gestorHorarios')
-                            input(type='hidden', name='clave_agenda', value=agenda.clave_agenda)
-                            button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Gestionar
-                        form(method='get', action='/turnos/agenda')
-                            input(type='hidden', name='clave_agenda', value=agenda.clave_agenda)
-                            button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Turnos    
-                        .card-footer.text-muted
+        form(action="/seleccionar/agendas/medico" method="get")
+        label.form-control-lg Ingrese el nombre del Medico
+            input(type='text' name='nombre_completo', require  )
+            input.btn.btn-primary(type="submit" value="Buscar")
+
+        .row.row-cols-1.row-cols-md-2.g-4    
+            each agenda in agendas
 
 
-                
+                .col
+                    .card.text-center
+                        .card-header
+                            | Dr./Dra.
+                        .card-body
+                            h5.card-title #{agenda.nombre_completo}
+                            p.card-text #{agenda.nombre_especialidad}
+
+                            form(method='get' action='/agendas/horario/medico')
+                                input(type='hidden' name='clave_agenda', value=agenda.clave_agenda) 
+                                input(type='hidden' name='nombre_completo', value=agenda.nombre_completo) 
+                                input(type='hidden' name='nombre_especialidad', value=agenda.nombre_especialidad) 
+                                button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Seleccionar
+
+                            form(method='get' action='/gestorHorarios')
+                                input(type='hidden' name='clave_agenda', value=agenda.clave_agenda)
+                                button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Gestionar
+                            form(method='get' action='/turnos/agenda')
+                                input(type='hidden' name='clave_agenda', value=agenda.clave_agenda)
+                                button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Turnos    

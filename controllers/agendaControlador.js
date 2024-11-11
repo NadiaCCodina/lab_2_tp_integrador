@@ -185,6 +185,21 @@ module.exports = {
     }
   },
 
+  async agendaPorMedicoNombre(req, res) {
+    try {
+      const nombre_completo = req.query.nombre_completo
+      const agendaMedico = await Agenda.getAgendasPorMedicoNombre(nombre_completo)
+      console.log(agendaMedico+" agenda de busqueda por nombre")
+      console.log(nombre_completo+"nombre completo busqeuda agenda")
+      const especialidades = await EspecialidadMedico.getEspecialidades();
+
+      res.render("agenda/agendas", { agendas: agendaMedico, especialidades:especialidades});
+    } catch (error) {
+      console.error('Error al obtener la agenda:', error);
+      res.status(500).send('Error al obtener la agenda');
+    }
+  },
+
   async horarioPorAgendaMedico(req, res) {
     try {
       const especialidad = req.query.nombre_especialidad

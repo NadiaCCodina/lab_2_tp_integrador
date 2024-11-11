@@ -21,4 +21,5 @@ router.get("/seleccionar/agendas/especialidad", controlador.agendaPorEspecialida
 router.get('/agendasturnomedico/online', controlador.horarioPorAgendaMedicoOnline);
 router.get("/turnos/agenda", controlador.verTurnos );
 router.post("/editar/estado/turno", controladorUsuario.isAuthenticatedOp, controlador.updateEstadoTurno);
+router.get("/seleccionar/agendas/medico", controlador.agendaPorMedicoNombre );
 module.exports = router;
