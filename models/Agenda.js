@@ -106,7 +106,7 @@ const Agenda = {
   async getHorariosPorMedico(clave_agenda) {
     try {
       const conn = await createConnection()
-      const [horariosAgendaMedico] = await conn.query("SELECT `clave_horarios`, `fecha`, `hora_inicio`, clave_agenda, `hora_fin` FROM `horario` WHERE clave_agenda = ? AND estado=0;",
+      const [horariosAgendaMedico] = await conn.query("SELECT `clave_horarios`, `fecha`, `hora_inicio`, clave_agenda FROM `horario` WHERE clave_agenda = ? AND estado=0;",
         [clave_agenda]
       )
       console.log(horariosAgendaMedico)
@@ -265,7 +265,42 @@ const Agenda = {
 
   async getTurnosPorDni(){
     ("SELECT turno.dni, `clave_estado`, `clave_horario`, fecha, hora_inicio, nombre_completo FROM `turno`, horario, persona WHERE persona.dni = turno.dni AND turno.clave_horario = horario.clave_horarios and clave_horario =9 and turno.dni = 33103814" )
+  },
+
+  async addToList(clave_agenda, dni, fecha) {
+    try {
+      const conn = await createConnection();
+      const [result] = await conn.query(
+        "INSERT INTO `lista_espera` (`dni`, `clave_agenda`, `fecha`) VALUES (?, ?, ?)",
+        [dni, clave_agenda, fecha]
+      );
+  
+      // Cierra la conexión después de ejecutar la consulta
+      await conn.end();
+  
+      return result.affectedRows == 1;
+    } catch (error) {
+      console.error("Error al insertar en la lista de espera:", error);
+      return false;
+    }
+  },
+
+  async findByDate(date, clave_agenda) {
+    try {
+      const conn = await createConnection();
+      const [result] = await conn.query(
+        "SELECT * FROM `lista_espera` WHERE fecha = ? AND clave_agenda = ?",
+        [date, clave_agenda] 
+      );
+      return result;
+    } catch (error) {
+      console.error("Error al buscar lista:", error);
+      return false;
+    }
   }
+  
+
+  
 }
 
   

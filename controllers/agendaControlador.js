@@ -3,7 +3,8 @@ const EspecialidadMedico =
   require("../models/EspecialidadMedico");
 const Medico =
   require("../models/Medico");
-
+const Paciente =
+  require("../models/Paciente");    
 
 module.exports = {
   async vistaAgenda(req, res) {
@@ -297,7 +298,66 @@ module.exports = {
       console.error('Error al obtener turnos:', error);
       res.status(500).send('Error al obtener la agenda');
     }
+  },
+
+  async listaDeEspera(req, res){
+    try{
+
+    const clave_agenda = req.query.clave_agenda
+    console.log(clave_agenda+ " req de clave agenda")
+
+    
+    res.render("agenda/listaEspera",{ clave_agenda})
+    } catch (error) {
+      console.error('Error al obtener turnos:', error);
+      res.status(500).send('Error al obtener la agenda');
+    }
+  },
+
+  //crea registro en la tabla lista_espera
+
+    async agregarALista(req, res){
+        const dni = req.body.dni
+        const fecha = req.body.fecha
+        const clave_agenda = req.body.clave_agenda
+      
+      const paciente = await Paciente.findPatientByDni(dni);
+
+    if(paciente){
+      await Agenda.addToList(clave_agenda, dni, fecha);
+
+      return res.render("agenda/listaEspera",{ clave_agenda, 
+        error: 'Agregado a lista de espera.'});
+
+    }  else {
+      
+      return res.render("agenda/listaEspera", {
+        error: 'El paciente no existe en el sistema.',
+        clave_agenda: clave_agenda
+      });
+    }
+ },
+
+  async buscarPorFecha(req, res){
+    const fecha = req.query.fecha
+    const clave_agenda = req.query.clave_agenda
+
+  const listaEspera = await Agenda.findByDate(fecha, clave_agenda);
+
+if(listaEspera){ 
+  return res.render("agenda/listaEspera",{ listaEspera });
+
+  }  else {
+
+  return res.render("agenda/listaEspera", {
+    error: 'No se encontraron turnos en espera para la fecha seleccionada',
+    clave_agenda: clave_agenda
+  });
   }
+   
+ }
+ 
+
 
 
 

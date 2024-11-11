@@ -1,0 +1,53 @@
+extends ../layoutOp
+
+block contenido
+  .container.mt-5
+    h1.mb-4 Lista de espera
+
+  
+
+    if error
+      .alert.alert-warning
+        p #{error}     
+
+    form(action="/lista" method="post")
+      // Campo oculto para la clave_agenda
+      input(type="hidden" name="clave_agenda" value=clave_agenda)
+
+      .mb-3
+        label(for="dni" class="form-label") DNI:
+        input(type="text" name="dni" id="dni" class="form-control" required)
+
+      .mb-3
+        label(for="fecha" class="form-label") Fecha:
+        input(type="date" name="fecha" id="fecha" class="form-control" required)
+
+      button(type="submit" class="btn btn-primary") Guardar
+
+    .mb-4
+      form(action="/buscar-lista-por-fecha" method="get")
+        .row
+          input(type="hidden" name="clave_agenda" value=clave_agenda)
+          .col-md-6
+            label(for="fecha_busqueda" class="form-label") Buscar por fecha:
+            input(type="date" name="fecha" id="fecha_busqueda" class="form-control")
+            button(type="submit" class="btn btn-primary mt-3") Buscar
+
+
+    // Sección de resultados de la lista de espera
+    if listaEspera && listaEspera.length > 0
+      h2.mt-5 Resultados de la lista de espera para la fecha seleccionada
+      table.table.table-striped.mt-3
+        thead
+          tr
+            th DNI
+            th Fecha
+            th Clave Agenda
+        tbody
+          each item in listaEspera
+            tr
+              td= item.dni
+              td= new Date(item.fecha).toLocaleDateString('es-AR', { year: 'numeric', month: '2-digit', day: '2-digit' })
+              td= item.clave_agenda
+    else if listaEspera
+      .alert.alert-info.mt-3 No se encontraron resultados para la fecha seleccionada.

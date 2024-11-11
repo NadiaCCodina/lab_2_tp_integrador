@@ -29,7 +29,10 @@ block contenido
                             button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Gestionar
                         form(method='get', action='/turnos/agenda')
                             input(type='hidden', name='clave_agenda', value=agenda.clave_agenda)
-                            button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Turnos    
+                            button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Turnos  
+                        form(method='get', action='/listaDeEspera')
+                            input(type='hidden', name='clave_agenda', value=agenda.clave_agenda)
+                            button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Lista de espera         
                         .card-footer.text-muted
 
 
