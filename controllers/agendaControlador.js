@@ -28,7 +28,7 @@ module.exports = {
       const especialidades = await EspecialidadMedico.getEspecialidades();
 
 
-      res.render("agenda/agendaVistaPacientes", { agendas: agendas, especialidades: especialidades });
+      res.render("agenda/agendasOnline", { agendas: agendas, especialidades: especialidades });
     } catch (error) {
       console.error("Error al obtener la agenda: ", error);
       res.status(500).send("Error interno del servidor");
@@ -220,6 +220,21 @@ module.exports = {
     }
   },
 
+  async agendaPorMedicoNombreOnline(req, res) {
+    try {
+      const nombre_completo = req.query.nombre_completo
+      const agendaMedico = await Agenda.getAgendasPorMedicoNombre(nombre_completo)
+      console.log(agendaMedico+" agenda de busqueda por nombre")
+      console.log(nombre_completo+"nombre completo busqeuda agenda")
+      const especialidades = await EspecialidadMedico.getEspecialidades();
+
+      res.render("agenda/agendasOnline", { agendas: agendaMedico, especialidades:especialidades});
+    } catch (error) {
+      console.error('Error al obtener la agenda:', error);
+      res.status(500).send('Error al obtener la agenda');
+    }
+  },
+
   async horarioPorAgendaMedico(req, res) {
     try {
       const especialidad = req.query.nombre_especialidad
@@ -309,7 +324,19 @@ module.exports = {
     }
   },
 
+  async agendaPorEspecialidadOnline(req, res) {
+    try {
+      const clave_especialidad = req.query.clave_especialidad
+      const agendas = await Agenda.agendasPorEspecialidad(clave_especialidad);
 
+      const especialidades = await EspecialidadMedico.getEspecialidades();
+
+      res.render("agenda/agendasOnline", { agendas: agendas, especialidades: especialidades });
+    } catch (error) {
+      console.error('Error al obtener la agenda:', error);
+      res.status(500).send('Error al obtener la agenda');
+    }
+  },
 
 
   async agruparHorariosPorFecha(horarios) {

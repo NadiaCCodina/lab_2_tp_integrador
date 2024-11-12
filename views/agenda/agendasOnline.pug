@@ -11,8 +11,9 @@ block contenido
             input.text-center.btn.btn-outline-info.mx-2.p-2(type="submit" value="Seleccionar")
 
             
-        form.text-center(action="/medico/busqueda/nombre" method="post")
-            input(name="nombre", type="text", placeholder="Ingrese Apellido" required)
+        form.text-center(action="/medico/busqueda/nombre/online" method="get")
+            input(name="nombre_completo", type="text", placeholder="Ingrese Apellido" required)
+            
             input.btn.btn-outline-info.mx-2.p-2(type="submit" value="Buscar")    
     .row.row-cols-1.row-cols-md-2.g-4    
             each agenda in agendas

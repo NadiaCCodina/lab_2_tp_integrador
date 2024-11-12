@@ -2,9 +2,13 @@ const createConnection = require("../config/bd");
 
 const Medico = {
     async get() {
-        const conn = await createConnection();
-        const [medicos] = await conn.query("SELECT persona.dni, nombre_completo, mail, telefono, estado FROM `medico`, persona WHERE persona.dni = medico.dni ORDER BY  medico.clave_medico desc");
-        return medicos;
+        try {
+            const conn = await createConnection();
+            const [medicos] = await conn.query("SELECT persona.dni, nombre_completo, mail, telefono, estado FROM `medico`, persona WHERE persona.dni = medico.dni ORDER BY  medico.clave_medico desc");
+            return medicos;
+        } catch (error) {
+            throw error;
+        }
     },
 
     async create(medico) {
@@ -96,10 +100,10 @@ const Medico = {
         return medicos;
     },
 
-    async orderByNameAsc(){
+    async orderByNameAsc() {
         const conn = await createConnection();
         const [medicos] = await conn.query(
-        "SELECT nombre_completo, medico.dni, telefono, mail, estado FROM `medico`, persona WHERE medico.dni = persona.dni ORDER BY  nombre_completo ASC")
+            "SELECT nombre_completo, medico.dni, telefono, mail, estado FROM `medico`, persona WHERE medico.dni = persona.dni ORDER BY  nombre_completo ASC")
         return medicos
     }
 
