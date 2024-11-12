@@ -1,14 +1,33 @@
+doctype html
+html
+  head
+    title Mi Aplicación
+    link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
+  
+  body
+    block content
+      .container
+        h1.text-center.mb-4 Login
 
+        // Mensajes de error
+        if errorAutorizacion
+          .alert.alert-danger
+            p #{errorAutorizacion}
 
-block content
-    h1 Login
-    if errorAutorizacion 
-        h2= errorAutorizacion   
-    if error 
-        h2= error 
-    form(action="/login" method="post")
-        input(name="usuario", type="text", placeholder="Ingrese un nombre de usuario" required)
-        br
-        input(name="contraseña", type="text", placeholder="Ingrese una contraseña" required)
-        br
-        input(type="submit" value="Ingresar")
+        if error
+          .alert.alert-danger
+            p #{error}
+
+        form(action="/login" method="post")
+          .mb-3
+            label(for="usuario" class="form-label") Nombre de Usuario
+            input#usuario.form-control(name="usuario", type="text", placeholder="Ingrese un nombre de usuario" required)
+
+          .mb-3
+            label(for="contraseña" class="form-label") Contraseña
+            input#contrasena.form-control(name="contraseña", type="password", placeholder="Ingrese una contraseña" required)
+
+   
+
+          .d-flex.justify-content-center
+            button.btn.btn-primary(type="submit") Ingresar

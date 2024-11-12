@@ -1,0 +1,29 @@
+doctype html
+html
+  head
+    title Mi Aplicación
+    link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
+  
+  body
+    block content
+      .container
+        h1.text-center.mb-4 Wellcome
+
+        // Mensajes de error
+        if errorAutorizacion
+          .alert.alert-danger
+            p #{errorAutorizacion}
+
+        if error
+          .alert.alert-danger
+            p #{error}
+        form(action="/login-op" method="post")
+          .mb-3
+            label(for="sucursalInput" class="form-label") Seleccionar sucursal
+            select#sucursalInput.form-control(name="sucursal", required)
+              option(value="" disabled selected) Seleccione una sucursal
+              each sucursal in sucursales
+                option(value=`${sucursal.clave_sucursal}`) #{sucursal.nombre_sucursal}
+
+          .d-flex.justify-content-center
+            button.btn.btn-primary(type="submit") Ingresar

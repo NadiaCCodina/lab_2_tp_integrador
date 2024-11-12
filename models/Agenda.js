@@ -35,6 +35,7 @@ const Agenda = {
     const { fecha, hora_inicio, hora_fin, clave_agenda } = datosHorario;
     const conn = await createConnection({ fecha, hora_inicio, hora_fin, clave_agenda })
     console.log()
+
     try {
       const sql = `
         INSERT INTO horario ( fecha, hora_inicio, hora_fin, clave_agenda)
@@ -285,7 +286,12 @@ const Agenda = {
     }
   },
 
-  async findByDate(date, clave_agenda) {
+  ///Busca registro en lista de espera por fecha y clave
+ ////Parametros: 
+ ///date: fecha
+ ////clave_agenda: clave_agenda
+
+  async findListByDate(date, clave_agenda) {
     try {
       const conn = await createConnection();
       const [result] = await conn.query(
@@ -297,9 +303,87 @@ const Agenda = {
       console.error("Error al buscar lista:", error);
       return false;
     }
-  }
+  },
   
+  ////Busca registro en la tabla lista de espera 
+  ///Parametros:
+  ////dni: dni del paciente
+  ///date : fecha
+  ///clave_agenda: clave_agenda
 
+  async findList(dni, date,clave_agenda){
+    try {
+      const conn = await createConnection();
+      const [result] = await conn.query(
+        "SELECT * FROM `lista_espera` WHERE fecha = ? AND clave_agenda = ? AND dni= ?",
+        [date, clave_agenda, dni] 
+      );
+      return result;
+    } catch (error) {
+      console.error("Error al buscar lista:", error);
+      return false;
+    }
+  },
+
+/////Borra registro de la tabla lista de espera con la clave de la tabla
+////Parametros:
+////Clave: clave_lista_espera
+
+  async deleteList(clave){
+    try {
+      const conn = await createConnection();
+      const [result] = await conn.query(
+        "DELETE FROM `lista_espera` WHERE clave_lista_espera = ?",
+        [clave] 
+      );
+      return result;
+    } catch (error) {
+      console.error("Error al eliminar registro en lista:", error);
+      return false;
+    }
+  },
+
+  ///////Busca regitro de la tabla horario por clave_horario
+  ////// parametros:
+  //////clave: clave_horario
+
+  async findScheduleByKey(clave){
+
+    try {
+      const conn = await createConnection();
+      const [result] = await conn.query(
+        "SELECT * FROM `horario` WHERE clave_horarios = ? ",
+        [clave] 
+      );
+      return result;
+    } catch (error) {
+      console.error("Error al buscar lista:", error);
+      return false;
+    }
+
+  }, 
+
+   ////Elimina registro de la tabla de lista de espera si existe
+   //// Parametros:
+   ////dni: dni del paciente
+   ///clave_horario: clave_horario
+
+  async deleteRecordFromList(dni ,clave_horario){
+    
+    try{ 
+    const horario = await this.findScheduleByKey(clave_horario)
+    const lista   = await this.findList(dni, horario[0].fecha, horario[0].clave_agenda)
+    if (lista.length > 0){ 
+    this.deleteList(lista[0].clave_lista_espera)
+    return  true;
+     }
+    
+      } catch{
+        console.error("Error al buscar lista:", error);
+        return false;
+      }
+
+  }
   
 }
 

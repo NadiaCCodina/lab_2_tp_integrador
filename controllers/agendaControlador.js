@@ -342,7 +342,7 @@ module.exports = {
     const fecha = req.query.fecha
     const clave_agenda = req.query.clave_agenda
 
-  const listaEspera = await Agenda.findByDate(fecha, clave_agenda);
+  const listaEspera = await Agenda.findListByDate(fecha, clave_agenda);
 
 if(listaEspera){ 
   return res.render("agenda/listaEspera",{ listaEspera });

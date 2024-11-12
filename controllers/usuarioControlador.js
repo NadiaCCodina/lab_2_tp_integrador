@@ -10,9 +10,17 @@ module.exports = {
 
         res.render("usuario/registro")
     },
+
     async vistaLoginUsuario(req, res) {
 
+        try{ 
+       
+
         res.render("usuario/login")
+    } catch(error) {
+        console.log(error)
+
+    }
     },
 
     async registro(req, res) {
@@ -63,7 +71,9 @@ module.exports = {
                 }
                 else {
                     if (rol == "op") {
-                        res.render("paciente/listaPacientes", { pacientes: pacientes, admi: "Ingreso exitoso" })
+                        const sucursales =  await Usuario.getBranches();
+
+                        res.render("usuario/inicio", { sucursales: sucursales, admi: "Ingreso exitoso" })
                     }
                 }
             }
@@ -125,7 +135,37 @@ module.exports = {
 
     },
 
+ async vistaRegistroSucursal(req, res){
 
+    res.render("sucursal/registro")
+
+ },
+
+ async registrarSucursal(req, res){
+    const sucursal = req.body
+   try{ 
+    await Usuario.createBranch(sucursal.nombre, sucursal.direccion)
+
+    res.render( "sucursal/registro", {message: `Sucursal creada con exito` })
+}
+    catch (error) {
+        console.log(error)
+}
+ },
+
+ async logInOp(req, res){
+    const clave_sucursal = req.body.sucursal
+    const sucursal = await Usuario.getBranchByKey(clave_sucursal)
+    const nombreSucursal = sucursal[0].nombre_sucursal
+    try{ 
+ 
+     res.render( "headerOp", {nombreSucursal})
+ }
+     catch (error) {
+         console.log(error)
+ }
+
+ }
    
 
   

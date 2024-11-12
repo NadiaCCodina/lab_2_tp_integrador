@@ -2,6 +2,8 @@ extends ../layoutOp
 
 block contenido
     h1.text-center.mt-4 Lista de Pacientes
+    if errorMessage
+        .alert.alert-warning(role="alert") #{errorMessage}
     .container.mt-4
         table.table.table-striped.table-hover
             thead.thead-dark

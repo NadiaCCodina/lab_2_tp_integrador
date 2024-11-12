@@ -1,14 +1,16 @@
 extends ../layoutOp
 
-block content
-
-   
-    
+block contenido
+  .container
     h1 Verificación de DNI
-    form(action="/paciente/verificarDni" method="post" class="container mt-4")
-        .form-group
-            label(for="dni") DNI
-            input.form-control(name="dni", type="number", placeholder="Ingrese Dni" required)
-            if clave_horario
-            input.form-control(name="clave_horario", type="hidden", value= `${clave_horario}` )
-        button.btn.btn-primary(type="submit") Verificar DNI
+
+    form(action="/paciente/verificarDni" method="post")
+      .form-group
+        label(for="dni") DNI
+        input.form-control(name="dni", type="number", placeholder="Ingrese Dni" required)
+
+        // Si existe `clave_horario`, mostrar un campo oculto
+        if clave_horario
+          input.form-control(name="clave_horario", type="hidden", value=`${clave_horario}`)
+
+      button.btn.btn-primary(type="submit") Verificar DNI

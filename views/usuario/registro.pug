@@ -1,18 +1,26 @@
 extends ../layout
 
 block content
-    if error
-        h2= error
+  if error
+    h2.text-danger= error
 
-    h1 Registro    
-    form(action="/registro" method="post")
-        input(name="usuario", type="text", placeholder="Ingrese nombre de usuario" required)
-        br
-        input(name="contraseña", type="text", placeholder="Ingrese contraseña" required)
-        br
-        h2 
-        select#especialidadInput.form-control(name='rol')
-            
-               option(value=`admin`)= "Administrador" 
-               option(value=`op`)= "Operador"
-        input(type="submit" value="Registrar")
+  h1.text-center.mb-4 Registro
+  
+  form(action="/registro" method="post")
+    .mb-3
+      label(for="usuario" class="form-label") Nombre de Usuario
+      input#usuario.form-control(name="usuario", type="text", placeholder="Ingrese nombre de usuario" required)
+    
+    .mb-3
+      label(for="contraseña" class="form-label") Contraseña
+      input#contrasena.form-control(name="contraseña", type="text", placeholder="Ingrese contraseña" required)
+
+    
+    .mb-3
+      label(for="rol" class="form-label") Rol
+      select#especialidadInput.form-control(name="rol")
+        option(value="admin") Administrador
+        option(value="op") Operador
+
+    .d-flex.justify-content-center
+      input.btn.btn-primary(type="submit", value="Registrar")
