@@ -22,6 +22,9 @@ router.get("/paciente/borrar", controladorUsuario.isAuthenticatedOp, controlador
 router.get("/paciente/editar", controlador.vistaActualizarPaciente);
 
 
+router.post("/paciente/verificarDni/online", controlador.crearPacienteOnline)
+router.post('/paciente/online', upload.single('dni_imagen'),controlador.guardarOnline);
+
 //////////////////////////VERSION PREVIA AL AUTENTICADOR
 
 // router.post('/paciente', upload.single('dni_imagen'), controlador.guardar);

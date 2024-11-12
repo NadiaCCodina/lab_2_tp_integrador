@@ -110,6 +110,26 @@ module.exports = {
     }
   },
 
+  
+
+  async seleccionarHorarioOnline(req, res) {
+    const clave_horario = req.body.clave_horario;
+    const medico= req.body.medico
+    console.log("medico en seleccionar horario "+medico)
+    console.log('Datos recibidos:', req.body);
+    try {
+
+
+      res.render("paciente/nuevoPacienteOnline", { clave_horario, medico })
+
+    } catch (error) {
+      console.error('Error al seleccionar horario:', error);
+
+      res.status(500).json({ message: 'Error al seleccionar horario' });
+    }
+  },
+
+
   async verEspecialidades(req, res) {
     const especialidades = await EspecialidadMedico.getEspecialidades();
 
@@ -239,6 +259,10 @@ module.exports = {
 
   async horarioPorAgendaMedicoOnline(req, res) {
     try {
+      const especialidad = req.query.nombre_especialidad
+      console.log("especialidad ....." + especialidad)
+      const medico = req.query.nombre_completo
+      console.log(medico + " medico")
       const clave_agenda = req.query.clave_agenda
       console.log("clave agnda de horarios " + clave_agenda)
       const agendaMedico = await Agenda.getHorariosPorMedico(clave_agenda);
@@ -252,11 +276,18 @@ module.exports = {
           month: '2-digit',
           day: '2-digit'
         });
-
       });
-      const agenda = agruparHorariosPorFecha(agendaMedico)
-      console.log(agenda)
-      res.render("agenda/mostrarAgendaPorMedico", { agenda: agenda });
+
+      const gruposPorFecha = {};
+      const agenda = agendaMedico.forEach(horario => {
+        if (!gruposPorFecha[horario.fecha]) {
+          gruposPorFecha[horario.fecha] = [];
+        }
+        gruposPorFecha[horario.fecha].push(horario);
+      });
+      console.log(gruposPorFecha)
+
+      res.render("agenda/mostrarAgendaPorMedicoOnline", { especialidad: especialidad, medico: medico, gruposPorFecha: gruposPorFecha });
     } catch (error) {
       console.error('Error al obtener la agenda:', error);
       res.status(500).send('Error al obtener la agenda');
@@ -297,7 +328,7 @@ module.exports = {
       const clave_agenda = req.query.clave_agenda
       console.log(clave_agenda + " req de clave agenda")
       const turnosAgenda = await Agenda.getTurnos(clave_agenda);
-
+      const medico = await Agenda.getMedicoPorAgenda(clave_agenda);
       turnosAgenda.forEach(horario => {
         const fecha = new Date(horario.fecha);
         horario.fecha = fecha.toLocaleDateString('es-AR', {
@@ -307,8 +338,8 @@ module.exports = {
         });
 
       });
-      console.log(turnosAgenda + "turnos de agenda medico 9")
-      res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda:clave_agenda })
+      console.log(medico[0].nombre_completo + "turnos de agenda medico 9")
+      res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda:clave_agenda, medico:medico })
     } catch (error) {
       console.error('Error al obtener turnos:', error);
       res.status(500).send('Error al obtener la agenda');
@@ -321,6 +352,7 @@ module.exports = {
       const clave_horario = req.body.clave_horario
       const clave_agenda = req.body.clave_agenda
       console.log(dni+"dni update turnos")
+
       if (await Agenda.updateEstadoTurnoAgenda(clave_estado, dni, clave_horario)) {
 
         const turnosAgenda = await Agenda.getTurnos(clave_agenda);
@@ -344,7 +376,65 @@ module.exports = {
 
     }
 
-
-
 },
+
+
+async verTurnosPorEstado(req, res) {
+  try {
+    const clave_agenda = req.query.clave_agenda
+    const clave_estado = req.query.clave_estado
+    console.log(clave_agenda + " req de clave agenda")
+    const turnosAgenda = await Agenda.getTurnosPorEstado(clave_agenda, clave_estado);
+    const medico = await Agenda.getMedicoPorAgenda(clave_agenda);
+    
+    turnosAgenda.forEach(horario => {
+      const fecha = new Date(horario.fecha);
+      horario.fecha = fecha.toLocaleDateString('es-AR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+
+    });
+    console.log(medico[0].nombre_completo + "turnos de agenda medico 9")
+    res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda:clave_agenda, medico:medico })
+  } catch (error) {
+    console.error('Error al obtener turnos:', error);
+    res.status(500).send('Error al obtener la agenda');
+  }
+},
+
+
+async verTurnosPorPaciente(req, res) {
+  try {
+    const clave_agenda = req.query.clave_agenda
+    const dni = req.query.dni
+    console.log(clave_agenda + " req de clave agenda")
+    const turnosAgenda = await Agenda.getTurnosPorDni(clave_agenda, dni);
+    const medico = await Agenda.getMedicoPorAgenda(clave_agenda);
+    
+    turnosAgenda.forEach(horario => {
+      const fecha = new Date(horario.fecha);
+      horario.fecha = fecha.toLocaleDateString('es-AR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+
+    });
+    console.log(turnosAgenda.length+" turnos")
+    console.log(medico[0].nombre_completo + "turnos de agenda medico 9")
+    if(turnosAgenda.length ==0){
+      const noHayTurnos= "No se encuentra turnos"
+      res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda:clave_agenda, medico:medico, noHayTurnos:noHayTurnos })
+    }else{
+   
+    res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda:clave_agenda, medico:medico })}
+  } catch (error) {
+    console.error('Error al obtener turnos:', error);
+    res.status(500).send('Error al obtener Turnos');
+  }
+},
+
+
 };

@@ -1,0 +1,15 @@
+extends ../layoutOnline
+block content
+    .card.text-center
+        .card-header.text-dark.bg-info 
+            h1.text-center #{paciente[0].nombre_completo}
+            h1.text-center Registramos tu solicitud 
+            br
+        .card-body
+            h3 Para confirmar tu turno te enviaremos un mail a 
+            h3.text-primary #{paciente[0].mail} 
+            h3.card-title Datos del turno
+
+            h2 Dr./Dra. #{medico}
+            h2 Fecha #{horario[0].fecha}
+            h2 Hora #{horario[0].hora_inicio}

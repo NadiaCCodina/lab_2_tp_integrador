@@ -28,11 +28,7 @@ block content
                 input(type="hidden" name="telefono" value="")
                 input(type="hidden" name="mail" value="")
         br
-        .form-group
-            label(for="dni_imagen") Imagen del DNI
-            input.form-control-file(name="dni_imagen", type="file", accept="image/*" required)
-            br
-            input.form-control(name="clave_horario", type="hidden", value= `${clave_horario}` )
+     
         if clave_horario
             button.btn.btn-primary(type="submit") Agendar turno
   

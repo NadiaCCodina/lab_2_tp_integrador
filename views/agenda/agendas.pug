@@ -23,21 +23,23 @@ block contenido
 
                 .col
                     .card.text-center
-                        .card-header
+                        .card-header.text-dark.bg-info 
                             | Dr./Dra.
                         .card-body
-                            h5.card-title #{agenda.nombre_completo}
-                            p.card-text #{agenda.nombre_especialidad}
+                            h4.card-title #{agenda.nombre_completo}
+                            h5.card-text #{agenda.nombre_especialidad}
+                            br
 
                             form(method='get' action='/agendas/horario/medico')
                                 input(type='hidden' name='clave_agenda', value=agenda.clave_agenda) 
                                 input(type='hidden' name='nombre_completo', value=agenda.nombre_completo) 
                                 input(type='hidden' name='nombre_especialidad', value=agenda.nombre_especialidad) 
-                                button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Seleccionar
+                                button.btn.btn-outline-success.mx-2.p-2(style='width: 200px;' type='submit') Agendar Turno
 
-                            form(method='get' action='/gestorHorarios')
-                                input(type='hidden' name='clave_agenda', value=agenda.clave_agenda)
-                                button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Gestionar
                             form(method='get' action='/turnos/agenda')
                                 input(type='hidden' name='clave_agenda', value=agenda.clave_agenda)
-                                button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Turnos    
+                                button.btn.btn-outline-primary.mx-2.p-2(style='width: 200px;' type='submit') Gestionar Turnos    
+                            
+                            form(method='get' action='/gestorHorarios')
+                                input(type='hidden' name='clave_agenda', value=agenda.clave_agenda)
+                                button.btn.btn-outline-info.mx-2.p-2(style='width: 200px;' type='submit') Gestionar Agenda    

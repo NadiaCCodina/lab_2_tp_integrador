@@ -1,0 +1,14 @@
+extends ../layoutOnline
+block content
+
+   
+    
+    h1.text-center Verificación de DNI
+    form(action="/paciente/verificarDni/online" method="post" class="container mt-4")
+        .form-group
+            label(for="dni") DNI
+            input.form-control(name="dni", type="number", placeholder="Ingrese Dni" required)
+            input.form-control(name="medico", type="hidden", value= medico )
+            if clave_horario
+            input.form-control(name="clave_horario", type="hidden", value= `${clave_horario}` )
+        button.btn.btn-primary(type="submit") Verificar DNI

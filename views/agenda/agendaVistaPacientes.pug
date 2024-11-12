@@ -1,31 +1,34 @@
-extends ../layoutOp
-
+extends ../layoutOnline
 
 block contenido     
-      h1 Seleccione la especialidad a buscar
-        form(action="/seleccionar/agendas/especialidad/online" method="get")
-            select#especialidadInput.form-control(name='clave_especialidad')
+    h1.text-center Agendas
+        h3.text-center Seleccione la especialidad a buscar
+        form.text-center(action="/seleccionar/agendas/especialidad/online" method="get")
+            select.text-center#especialidadInput.form-control(name='clave_especialidad')
                 each especialidad in especialidades
                     option(value=`${especialidad.clave_especialidad}`)= especialidad.nombre_especialidad
 
-            input.btn.btn-primary(type="submit" value="Seleccionar")
+            input.text-center.btn.btn-outline-info.mx-2.p-2(type="submit" value="Seleccionar")
 
             
-        form(action="/medico/busqueda/nombre" method="post")
+        form.text-center(action="/medico/busqueda/nombre" method="post")
             input(name="nombre", type="text", placeholder="Ingrese Apellido" required)
-            input.btn.btn-primary(type="submit" value="Buscar")    
+            input.btn.btn-outline-info.mx-2.p-2(type="submit" value="Buscar")    
+    .row.row-cols-1.row-cols-md-2.g-4    
+            each agenda in agendas
 
-        each agenda in agendas
-                .card.text-center
-                    .card-header
-                        | Dr./Dra.
-                    .card-body
+
+                .col
+                    .card.text-center
+                        .card-header.text-dark.bg-info 
+                            | Dr./Dra.
+                        .card-body
                         h5.card-title #{agenda.nombre_completo}
                         p.card-text #{agenda.nombre_especialidad}
                     
-                        form(method='get', action='/agendasturnomedico/online')
-                            input(type='text', name='clave_agenda', value=agenda.clave_agenda) 
+                        form(method='get', action='/agendas/turno/medico/online')
+                            input(type='hidden', name='clave_agenda', value=agenda.clave_agenda) 
                             input(type='hidden', name='nombre_completo', value=agenda.nombre_completo) 
-                            button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Seleccionar
+                            button.btn.btn.btn-outline-info.mx-2.p-2(style='width: 200px;' type='submit') Seleccionar
                     
                       

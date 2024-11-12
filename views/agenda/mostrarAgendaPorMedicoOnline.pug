@@ -1,0 +1,28 @@
+extends ../layoutOnline
+block contenido
+
+  div.container.mt-5
+    h1.text-center#encabezado Horarios del Dr./Dra #{medico}
+    h1.text-center#encabezado Especialidad #{especialidad}
+    table.table.table-bordered.table-hover
+      thead.thead-light
+        tr
+          th Día
+          th Horario
+      tbody
+        each horario in gruposPorFecha
+          tr
+          
+            td= horario[0].fecha  
+            td
+           
+              each hora in horario
+               
+                                     
+                  form.mx-5(action="/seleccionar/online" method="POST" )
+                        input(type="hidden" name="fecha" value=hora.fecha)
+                        input(type="hidden" name="hora_inicio" value=hora.hora_inicio)
+                        input(type="hidden" name="clave_horario" value=hora.clave_horarios)
+                        input(type="hidden" name="dni")
+                        input(type="hidden" name="medico" value= medico)
+                        button.btn.btn-outline-primary(type='submit') #{hora.hora_inicio} 

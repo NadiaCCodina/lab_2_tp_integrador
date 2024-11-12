@@ -38,6 +38,46 @@ module.exports = {
         res.render("paciente/listaPacientes", { pacientes: pacientes });
 
 },
+
+async guardarOnline(req, res) {
+    const { dni, nombre_completo, mail, telefono, obra_social, clave_horario} = req.body;
+   
+    const dni_imagen = req.file ? req.file.filename : null;
+
+      
+
+    if (nombre_completo) {
+        await Paciente.insertPerson({  dni,nombre_completo, mail, telefono })
+        await Paciente.insertPatient( {dni, obra_social, dni_imagen })
+    }
+    else {
+        await Paciente.insertPatient(  {dni, obra_social, dni_imagen })
+    }
+
+    if (clave_horario){
+        const medico = req.body.medico
+        await Agenda.createTurno(dni, 3, clave_horario)
+        await Agenda.updateEstadoHorario(1,clave_horario)
+        const horario = await Agenda.getTurnoHorario(clave_horario)
+
+        horario.forEach(hora => {
+            const fecha = new Date(hora.fecha);
+            hora.fecha = fecha.toLocaleDateString('es-AR', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit'
+            });
+          });
+
+        const paciente= await Paciente.findPersonByDni(dni)
+        console.log("nombre completo online "+paciente)
+        console.log(medico +"MEdico online")
+        console.log("holaaaa como estas")
+        res.render("agenda/turnoOnline", { paciente, medico, horario  });   
+    }
+   
+
+},
     
     async crearPaciente(req, res) {
     const dni = req.body.dni;
@@ -56,7 +96,27 @@ module.exports = {
     }
 }
     ,
-
+   
+    async crearPacienteOnline(req, res) {
+        const dni = req.body.dni;
+        const turno= req.params.turno
+        const medico= req.body.medico
+        const clave_horario = req.body.clave_horario
+        console.log(medico+" medico en crear")
+        try {
+            const result = await Paciente.findPersonByDni(dni);
+            const exist = result !== null;
+    
+            console.log("existe????: ", exist);
+            res.render("paciente/pacienteOnline", { exist, dni, turno, clave_horario, medico});
+    
+        } catch (error) {
+            console.error("Error al crear paciente:", error);
+            res.status(500).send("Error en el servidor");
+        }
+    }
+        ,
+    
 
     async mostrar(req, res) {
 
@@ -101,9 +161,9 @@ module.exports = {
     else {
         await Paciente.insertPatient(  {dni, obra_social, dni_imagen })
     }
-       
+    console.log(nombre_completo)   
     const pacientes = await Paciente.get();
-    res.render("agenda/agendaVistaPacientes", { pacientes: pacientes });
+    res.render("agenda/turnoOnline", { nombre_completo: nombre_completo });
 
 },
 

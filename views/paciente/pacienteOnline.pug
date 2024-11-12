@@ -1,0 +1,41 @@
+extends ../layoutOnline
+
+block content
+    h1 Formulario de Paciente
+    form(action="/paciente/online" method="post" enctype="multipart/form-data" class="container mt-4")
+        input(type="hidden" name="dni" value=dni)
+
+        if !exist 
+            .form-group
+                label(for="nombre_completo") Nombre Completo
+                input.form-control(name="nombre_completo", type="text", placeholder="Ingrese un nombre" required)
+            br
+            .form-group
+                label(for="telefono") Teléfono
+                input.form-control(name="telefono", type="number", placeholder="Ingrese un teléfono" required)
+            br
+            .form-group
+                label(for="mail") Correo Electrónico
+                input.form-control(type="email", name="mail", placeholder="juan@mail.com" required)
+            br
+
+        // Campos que siempre se muestran
+        .form-group
+            label(for="obra_social") Obra Social
+            input.form-control(name="obra_social", type="text", placeholder="Ingrese su obra social" required)
+            if exist
+                input(type="hidden" name="nombre_completo" value="")
+                input(type="hidden" name="telefono" value="")
+                input(type="hidden" name="mail" value="")
+        br
+        .form-group
+            label(for="dni_imagen") Imagen del DNI
+            input.form-control-file(name="dni_imagen", type="file", accept="image/*" required)
+            br
+            input.form-control(name="clave_horario", type="hidden", value= `${clave_horario}` )
+        if clave_horario
+            input.form-control(name="medico", type="hidden", value= medico )
+            button.btn.btn-primary(type="submit") Agendar turno
+      
+        else
+            button.btn.btn-primary(type="submit") Agregar
