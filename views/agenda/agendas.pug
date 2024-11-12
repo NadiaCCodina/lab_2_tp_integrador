@@ -19,8 +19,7 @@ block contenido
 
         .row.row-cols-1.row-cols-md-2.g-4    
             each agenda in agendas
-
-
+            
                 .col
                     .card.text-center
                         .card-header.text-dark.bg-info 
@@ -43,3 +42,9 @@ block contenido
                             form(method='get' action='/gestorHorarios')
                                 input(type='hidden' name='clave_agenda', value=agenda.clave_agenda)
                                 button.btn.btn-outline-info.mx-2.p-2(style='width: 200px;' type='submit') Gestionar Agenda    
+
+                            form(method='get', action='/listaDeEspera')
+                                input(type='hidden', name='clave_agenda', value=agenda.clave_agenda)
+                                button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Lista de espera         
+                 
+    

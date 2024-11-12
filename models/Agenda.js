@@ -321,6 +321,7 @@ const Agenda = {
       const conn = await createConnection()
       const [medico] = await conn.query("SELECT `clave_agenda`, `clave_sucursal`, `clave_clasificacion`, agenda.matricula_medico, `cantidad_sobreturno`, persona.nombre_completo, nombre_especialidad FROM agenda, medico, persona, especialidad_medico, especialidad WHERE agenda.matricula_medico = especialidad_medico.matricula AND especialidad_medico.clave_medico = medico.clave_medico AND medico.dni = persona.dni AND especialidad.clave_especialidad = especialidad_medico.clave_especialidad AND clave_agenda = ?",
         [clave_agenda])
+        console.log(medico+"medico en buscar por clave agenda modelo")
       return medico
     } catch (error) {
       return false
@@ -450,7 +451,7 @@ const Agenda = {
     return  true;
      }
     
-      } catch{
+      } catch(error){
         console.error("Error al buscar lista:", error);
         return false;
       }
