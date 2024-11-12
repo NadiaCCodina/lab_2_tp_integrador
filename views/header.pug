@@ -1,15 +1,31 @@
+
 html
-    head
-        title Mi Aplicación
-        link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")  
-    body
-        header
-            nav   
-                ul 
-                    li 
-                        a(href="/medico/vista") Nuevo Médico
-                    li 
-                        a(href="/medico/lista") Lista Médicos
-                    li 
-                        a(href="/usuario/registro") Registrar operador              
-        block content //
+  head
+    title= nombreSucursal ? nombreSucursal : 'Mi Aplicación'
+    link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
+  
+  body
+    header
+      nav(class="navbar navbar-expand-lg navbar-light bg-light")
+        a(class="navbar-brand", href="#") Mi Aplicación
+        button(class="navbar-toggler", type="button", data-toggle="collapse", data-target="#navbarNav", aria-controls="navbarNav", aria-expanded="false", aria-label="Toggle navigation")
+          span(class="navbar-toggler-icon")
+        div(class="collapse navbar-collapse", id="navbarNav")
+          ul(class="navbar-nav ml-auto")
+            li(class="nav-item")
+              a(class="nav-link", href="/medico/vista") Nuevo Médico
+            li(class="nav-item")
+              a(class="nav-link", href="/medico/lista") Lista Médicos
+            li(class="nav-item")
+              a(class="nav-link", href="/usuario/registro") Registrar operador
+            li(class="nav-item")
+              a(class="nav-link", href="/sucursal/registro") Nueva sucursal
+
+    .container.mt-5
+      h1.text-center.mb-4
+        | Bienvenido a la Sucursal: 
+        span(class="text-primary")= nombreSucursal
+      .alert.alert-info
+        p Aquí podrás gestionar médicos, registrar operadores y administrar sucursales.
+
+    block contenido

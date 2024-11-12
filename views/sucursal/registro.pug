@@ -1,0 +1,22 @@
+extends ../layout
+
+block contenido
+  if message
+    .alert.alert-warning
+      p #{message} 
+
+  h1.text-center.mb-4 Nueva sucursal
+
+
+  
+  form(action="/registro-sucursal" method="post")
+    .mb-3
+      label(for="nombre" class="form-label") Nombre de Sucursal
+      input#usuario.form-control(name="nombre", type="text", placeholder="Ingrese nombre de sucursal" required)
+    
+    .mb-3
+      label(for="direccion" class="form-label") Dirección
+      input#direccion.form-control(name="direccion", type="text", placeholder="Ingrese dirección de la sucursal" required)
+    
+    .d-flex.justify-content-center
+      input.btn.btn-primary(type="submit", value="Registrar")

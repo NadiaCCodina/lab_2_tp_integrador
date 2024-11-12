@@ -31,5 +31,9 @@ router.get("/medico/busqueda/nombre/online", controlador.agendaPorMedicoNombreOn
 router.get('/agendas/turno/medico/online', controlador.horarioPorAgendaMedicoOnline);
 router.post('/seleccionar/online', controlador.seleccionarHorarioOnline);
 
+router.get("/listaDeEspera", controlador.listaDeEspera )
+router.post("/lista", controlador.agregarALista )
+
+router.get("/buscar-lista-por-fecha", controlador.buscarPorFecha)
 
 module.exports = router;

@@ -1,76 +1,91 @@
-
 extends ../layout
 
-
 block contenido
-    if admi 
-        h1= admi
-    if nombre_completo 
-        h1 Se actualizo correctamente: #{nombre_completo}
+  .container
+    // Mensajes de éxito o error
+    if admi
+      .alert.alert-info
+        h3= admi
+    if nombre_completo
+      .alert.alert-success
+        h3 Se actualizó correctamente: #{nombre_completo}
     if nombrec
-        h1 Se creo correctamente el medico: #{nombre}    
-    if medico 
-        h1 Se modifico la especialdad del medico  #{medico[0].nombre_completo}   
-    if medico_especialidad_baja 
-        h1 Se dio de baja la especialidad del medico  
-    if resultMedico 
-        h1 El medico ya existe
-    if duplicada 
-        h1 Especialidad ya existente.    
-    .d-grid.gap-2.col-6.mx-auto
+      .alert.alert-success
+        h3 Se creó correctamente el médico: #{nombre}    
+    if medico
+      .alert.alert-success
+        h3 Se modificó la especialidad del médico #{medico[0].nombre_completo}   
+    if medico_especialidad_baja
+      .alert.alert-danger
+        h3 Se dio de baja la especialidad del médico  
+    if resultMedico
+      .alert.alert-warning
+        h3 El médico ya existe
+    if duplicada
+      .alert.alert-warning
+        h3 Especialidad ya existente.
+
+    // Formulario de búsqueda
+    .row.mt-4
+      .col-md-4
         form(action="/medico/busqueda/especialidad" method="post")
+          .mb-3
+            label(for="especialidadInput" class="form-label") Seleccionar Especialidad
             select#especialidadInput.form-control(name='clave_especialidad')
-                each especialidad in especialidades
-                    option(value=`${especialidad.clave_especialidad}`)= especialidad.nombre_especialidad
-
-
-            input.btn.btn-primary(type="submit" value="Seleccionar")     
-    
+              each especialidad in especialidades
+                option(value=`${especialidad.clave_especialidad}`)= especialidad.nombre_especialidad
+          input.btn.btn-primary(type="submit", value="Seleccionar") 
+          
+      .col-md-4
         form(action="/medico/busqueda/nombre" method="post")
-            input(name="nombre", type="text", placeholder="Ingrese Apellido" required)
-            input.btn.btn-primary(type="submit" value="Buscar")   
-        
+          .mb-3
+            label(for="nombre" class="form-label") Buscar por Apellido
+            input#nombre.form-control(name="nombre", type="text", placeholder="Ingrese Apellido" required)
+          input.btn.btn-primary(type="submit", value="Buscar")
+
+      .col-md-4
         form(action="/medico/busqueda/dni" method="post")
-            input(name="dni", type="Number", placeholder="Ingrese Dni" required)
-            input.btn.btn-primary(type="submit" value="Buscar")   
+          .mb-3
+            label(for="dni" class="form-label") Buscar por DNI
+            input#dni.form-control(name="dni", type="number", placeholder="Ingrese DNI" required)
+          input.btn.btn-primary(type="submit", value="Buscar")
+
+    // Botones adicionales
+    .row.mt-4
+      .col-md-6
         form(action="/medico/lista" method="get")
-            input.btn.btn-primary(type="submit" value="Todos")     
+          input.btn.btn-secondary(type="submit", value="Todos")
+      .col-md-6
         form(action="/medico/lista/ordenada" method="get")
-            input.btn.btn-primary(type="submit" value="Ordenar alfabeticamente")           
+          input.btn.btn-secondary(type="submit", value="Ordenar Alfabéticamente")
 
-    h1.text-center.mt-4 Lista de Medicos 
-      
-    
-
-    .container.mt-4
-
-        table.table.table-bordered.table-hover
-            thead.thead-light
-                tr 
-                    th Dni
-                    th Nombre 
-                    th Teléfono
-                    th Mail 
-                    th Estado
-                    th Acciones
-            tbody 
-                each medico in medicos
-                    tr  
-                        td= medico.dni
-                        td= medico.nombre_completo
-                        td= medico.telefono 
-                        td= medico.mail
-                        td= medico.estado == 1 ? 'Activo' : 'Inactivo'
-                        td
-                     
-                            form(action="/medico/edit/"+medico.dni  method= "post"  )
-                               button.btn.btn-info  Editar
-                                br
-                            form(action="/medico/especialidades/"+medico.dni  method= "post")
-                               button.btn.btn-secondary Ver Especialidades
-                                br
-                            form(action="/medico/desactivar/"+medico.dni method= "post")
-                                button.btn.btn-danger Desactivar
-                                br
-                            form(action="/medico/activar/"+medico.dni method= "post")
-                                button.btn.btn-success Activar                    
+    // Tabla de médicos
+    h1.text-center.mt-4 Lista de Médicos
+    .table-responsive
+      table.table.table-bordered.table-hover
+        thead.thead-light
+          tr
+            th Dni
+            th Nombre
+            th Teléfono
+            th Mail
+            th Estado
+            th Acciones
+        tbody
+          each medico in medicos
+            tr
+              td= medico.dni
+              td= medico.nombre_completo
+              td= medico.telefono
+              td= medico.mail
+              td= medico.estado == 1 ? 'Activo' : 'Inactivo'
+              td
+                .d-flex.justify-content-start
+                  form(action="/medico/edit/"+medico.dni method="post")
+                    button.btn.btn-info(type="submit") Editar
+                  form(action="/medico/especialidades/"+medico.dni method="post")
+                    button.btn.btn-secondary(type="submit") Ver Especialidades
+                  form(action="/medico/desactivar/"+medico.dni method="post")
+                    button.btn.btn-danger(type="submit") Desactivar
+                  form(action="/medico/activar/"+medico.dni method="post")
+                    button.btn.btn-success(type="submit") Activar

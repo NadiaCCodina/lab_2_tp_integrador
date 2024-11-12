@@ -15,7 +15,7 @@ router.get("/paciente/vista", controladorUsuario.isAuthenticatedOp, controlador.
 
 router.get("/paciente/lista",controladorUsuario.isAuthenticatedOp, controlador.mostrar)
 
-        //router.get('/paciente/editar', controlador.mostrarFormularioEdicion);
+        
 
  router.post('/paciente/editar', controlador.actualizarPaciente)
 router.get("/paciente/borrar", controladorUsuario.isAuthenticatedOp, controlador.borrarPaciente);

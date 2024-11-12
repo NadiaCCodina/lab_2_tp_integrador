@@ -1,22 +1,38 @@
+
 html
-    head
-        title Mi Aplicación
-        link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")  
-    body
-        header
-            nav   
-                ul 
-                   
-                    li 
-                        a(href="/paciente/lista") Lista Pacientes    
-                    li 
-                        a(href="/paciente/vista") Nuevo Paciente
-                    li 
-                        a(href="/nuevaagenda") Nueva Agenda    
-                    li 
-                        a(href="/turnos/agenda") Turnos agenda       
-                    li    
-                        a(href="/gestorHorarios") Gestionar horarios     
-                    li    
-                        a(href="/agendas") Agendas         
-        block content //
+  head
+    title= nombreSucursal ? nombreSucursal : 'Mi Aplicación'
+    link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
+
+  body
+    header
+      nav(class="navbar navbar-expand-lg navbar-light bg-light")
+        a(class="navbar-brand", href="#") Mi Aplicación
+        button(class="navbar-toggler", type="button", data-toggle="collapse", data-target="#navbarNav", aria-controls="navbarNav", aria-expanded="false", aria-label="Toggle navigation")
+          span(class="navbar-toggler-icon")
+        div(class="collapse navbar-collapse", id="navbarNav")
+          ul(class="navbar-nav ml-auto")
+            li(class="nav-item")
+              a(class="nav-link", href="/paciente/lista") Lista Pacientes
+            li(class="nav-item")
+              a(class="nav-link", href="/paciente/vista") Nuevo Paciente
+            li(class="nav-item")
+              a(class="nav-link", href="/nuevaagenda") Agenda
+            li(class="nav-item")
+              a(class="nav-link", href="/turnos/agenda") Turnos agenda
+            li(class="nav-item")
+              a(class="nav-link", href="/gestorHorarios") Gestionar horarios
+            li(class="nav-item")
+              a(class="nav-link", href="/agendas") Agendas
+
+    .container.mt-5
+      h1.text-center.mb-4
+        | Bienvenido a la Sucursal:
+        span(class="text-primary")= nombreSucursal
+
+
+      .alert.alert-info
+        p Aquí podrás gestionar pacientes y administrar agendas.
+    block contenido
+     
+

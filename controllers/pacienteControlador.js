@@ -18,7 +18,7 @@ module.exports = {
         
         const dni_imagen = req.file ? req.file.filename : null;
     
-          
+        let PacienteEnLista = false;   
 
         if (nombre_completo) {
             await Paciente.insertPerson({  dni,nombre_completo, mail, telefono })
@@ -27,15 +27,35 @@ module.exports = {
         else {
             await Paciente.insertPatient(  {dni, obra_social, dni_imagen })
         }
+        
+     
 
-        if (clave_horario){
+        if (clave_horario !== 'undefined') {
+           
+            PacienteEnLista = await Agenda.deleteRecordFromList(dni, clave_horario)
             await Agenda.createTurno(dni, 4, clave_horario)
             await Agenda.updateEstadoHorario(1,clave_horario)
             
         }
-           
+
+
         const pacientes = await Paciente.get();
-        res.render("paciente/listaPacientes", { pacientes: pacientes });
+
+        if(PacienteEnLista){
+            res.render("paciente/listaPacientes", { pacientes: pacientes ,
+                errorMessage:`Paciente dni: ${dni} eliminado de lista de espera, turno agendado` }
+           );
+           
+        }   else {
+            res.render("paciente/listaPacientes", { pacientes: pacientes }
+           );
+           
+        }
+
+      
+
+
+        
 
 },
 
