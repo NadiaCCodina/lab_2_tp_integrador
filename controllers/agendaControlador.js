@@ -9,6 +9,9 @@ const Paciente =
 module.exports = {
   async vistaAgenda(req, res) {
     try {
+      const dni=req.query.dni
+      const fecha=req.params.fecha
+      console.log(fecha+" fecha y dni de trasnferir"+dni)
       console.log("Entrando a vistaAgenda");
       const agendas = await Agenda.getAgendas()
       const especialidades = await EspecialidadMedico.getEspecialidades();

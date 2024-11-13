@@ -22,6 +22,7 @@ router.post("/editar/estado/turno", controladorUsuario.isAuthenticatedOp, contro
 router.get("/seleccionar/agendas/medico", controlador.agendaPorMedicoNombre );
 router.get("/agenda/turnos/estado", controladorUsuario.isAuthenticatedOp,  controladorUsuario.isAuthenticatedOp,  controlador.verTurnosPorEstado );
 router.get("/agenda/turnos/paciente",  controladorUsuario.isAuthenticatedOp, controlador.verTurnosPorPaciente );
+router.get("/transferir/turno",  controladorUsuario.isAuthenticatedOp, controlador.vistaAgenda );     
 
 
 router.get("/agendas/online", controlador.vistaAgendaOnline )
