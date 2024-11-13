@@ -157,9 +157,10 @@ module.exports = {
     const clave_sucursal = req.body.sucursal
     const sucursal = await Usuario.getBranchByKey(clave_sucursal)
     const nombreSucursal = sucursal[0].nombre_sucursal
+
     try{ 
  
-     res.render( "headerOp", {nombreSucursal})
+     res.render( "headerOp", {nombreSucursal, clave_sucursal})
  }
      catch (error) {
          console.log(error)

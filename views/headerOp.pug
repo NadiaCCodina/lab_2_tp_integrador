@@ -21,9 +21,7 @@ html
             li(class="nav-item")
               a(class="nav-link", href="/turnos/agenda") Turnos agenda
             li(class="nav-item")
-              a(class="nav-link", href="/gestorHorarios") Gestionar horarios
-            li(class="nav-item")
-              a(class="nav-link", href="/agendas") Agendas
+              a(class="nav-link" href=`/agendas?clave_sucursal=${clave_sucursal}`) Agendas  
 
     .container.mt-5
       h1.text-center.mb-4
@@ -33,6 +31,6 @@ html
 
       .alert.alert-info
         p Aquí podrás gestionar pacientes y administrar agendas.
-    block contenido
+   
      
 

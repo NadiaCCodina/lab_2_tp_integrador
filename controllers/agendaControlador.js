@@ -4,13 +4,16 @@ const EspecialidadMedico =
 const Medico =
   require("../models/Medico");
 const Paciente =
-  require("../models/Paciente");    
+  require("../models/Paciente");  
+const Usuario =     
+  require("../models/Usuario");   
 
 module.exports = {
   async vistaAgenda(req, res) {
     try {
       console.log("Entrando a vistaAgenda");
-      const agendas = await Agenda.getAgendas()
+      const clave_sucursal = req.query.clave_sucursal
+      const agendas        = await Agenda.getAgendasByBranch(clave_sucursal)
       const especialidades = await EspecialidadMedico.getEspecialidades();
 
 
@@ -25,11 +28,12 @@ module.exports = {
   async vistaAgendaOnline(req, res) {
     try {
       console.log("Entrando a vistaAgenda");
-      const agendas = await Agenda.getAgendas()
+      const agendas        = await Agenda.getAgendas()
       const especialidades = await EspecialidadMedico.getEspecialidades();
+      const sucursales     = await Usuario.getBranches(); 
 
 
-      res.render("agenda/agendasOnline", { agendas: agendas, especialidades: especialidades });
+      res.render("agenda/agendasOnline", { agendas: agendas, especialidades: especialidades, sucursales: sucursales });
     } catch (error) {
       console.error("Error al obtener la agenda: ", error);
       res.status(500).send("Error interno del servidor");
@@ -328,11 +332,14 @@ module.exports = {
   async agendaPorEspecialidadOnline(req, res) {
     try {
       const clave_especialidad = req.query.clave_especialidad
-      const agendas = await Agenda.agendasPorEspecialidad(clave_especialidad);
+      const clave_sucursal     = req.query.clave_sucursal
+      const agendas = await Agenda.agendasPorEspecialidadYSucursar(clave_especialidad, clave_sucursal);
 
       const especialidades = await EspecialidadMedico.getEspecialidades();
+      const sucursales     = await Usuario.getBranches(); 
 
-      res.render("agenda/agendasOnline", { agendas: agendas, especialidades: especialidades });
+
+      res.render("agenda/agendasOnline", { agendas: agendas, especialidades: especialidades, sucursales : sucursales});
     } catch (error) {
       console.error('Error al obtener la agenda:', error);
       res.status(500).send('Error al obtener la agenda');

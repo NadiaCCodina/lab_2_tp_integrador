@@ -90,6 +90,23 @@ const Agenda = {
     }
   },
 
+  ////Busca las agendas segun la sucursal
+  ////param: clave_sucursal : clave_sucursal
+  async getAgendasByBranch(clave_sucursal) {
+    try {
+      const conn = await createConnection()
+      const [agendas] = await conn.query("SELECT `clave_agenda`, `clave_sucursal`, `clave_clasificacion`, `matricula_medico`, persona.nombre_completo,especialidad.nombre_especialidad,`cantidad_sobreturno`, `intervalo_minutos` FROM `agenda`, medico, especialidad_medico, persona , especialidad WHERE especialidad_medico.matricula= agenda.matricula_medico AND especialidad_medico.clave_medico = medico.clave_medico AND persona.dni = medico.dni AND especialidad.clave_especialidad = especialidad_medico.clave_especialidad AND agenda.clave_sucursal = ?;", 
+        [clave_sucursal]
+      )
+      return agendas
+    } catch (error) {
+      return false
+
+    }
+  },
+
+
+
   async getAgendasPorMedico(clave_medico) {
     try {
       const conn = await createConnection()
@@ -138,6 +155,20 @@ const Agenda = {
       const conn = await createConnection()
       const [agendasEspecialidad] = await conn.query("SELECT `clave_agenda`, `clave_sucursal`, `clave_clasificacion`, `matricula_medico`, `cantidad_sobreturno`, `intervalo_minutos`, nombre_especialidad, persona.nombre_completo FROM `agenda`, especialidad, especialidad_medico, medico, persona WHERE agenda.matricula_medico = especialidad_medico.matricula AND especialidad_medico.clave_especialidad = especialidad.clave_especialidad AND medico.dni= persona.dni  AND medico.clave_medico = especialidad_medico.clave_medico AND especialidad.clave_especialidad= ?",
         [clave_especialidad]
+      )
+      console.log(agendasEspecialidad)
+      return agendasEspecialidad
+    } catch (error) {
+      return false
+
+    }
+  },
+
+  async agendasPorEspecialidadYSucursar(clave_especialidad, clave_sucursal){
+    try {
+      const conn = await createConnection()
+      const [agendasEspecialidad] = await conn.query("SELECT `clave_agenda`, `clave_sucursal`, `clave_clasificacion`, `matricula_medico`, `cantidad_sobreturno`, `intervalo_minutos`, nombre_especialidad, persona.nombre_completo FROM `agenda`, especialidad, especialidad_medico, medico, persona WHERE agenda.matricula_medico = especialidad_medico.matricula AND especialidad_medico.clave_especialidad = especialidad.clave_especialidad AND medico.dni= persona.dni  AND medico.clave_medico = especialidad_medico.clave_medico AND especialidad.clave_especialidad= ? AND agenda.clave_sucursal = ?",
+        [clave_especialidad, clave_sucursal]
       )
       console.log(agendasEspecialidad)
       return agendasEspecialidad
