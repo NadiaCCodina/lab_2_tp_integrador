@@ -31,7 +31,7 @@ module.exports = {
      
 
         if (clave_horario !== 'undefined') {
-           
+            console.log(dni+" "+nombre_completo+" clave horario"+clave_horario)
             PacienteEnLista = await Agenda.deleteRecordFromList(dni, clave_horario)
             await Agenda.createTurno(dni, 4, clave_horario)
             await Agenda.updateEstadoHorario(1,clave_horario)

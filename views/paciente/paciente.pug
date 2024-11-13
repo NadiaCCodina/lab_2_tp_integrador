@@ -4,7 +4,7 @@ block contenido
     h1 Formulario de Paciente
     form(action="/paciente" method="post" enctype="multipart/form-data" class="container mt-4")
         input(type="hidden" name="dni" value=dni)
-
+        input(type="hidden" name="clave_horario" value=clave_horario)
         if !exist 
             .form-group
                 label(for="nombre_completo") Nombre Completo

@@ -25,4 +25,8 @@ block contenido
         .form-group
           label(for="hora_fin") Hora de Fin
           input.form-control(type="time" id="hora_fin" name="hora_fin" step="3600" required)
+        .form-check.form-switch
+          input#flexSwitchCheckDefault.form-check-input(type='checkbox' name='vacaciones' value="vacaciones")
+          label.form-check-label(for='flexSwitchCheckDefault') Vacaciones
+
         button.btn.btn-primary(type="submit") Guardar Horario
