@@ -139,7 +139,7 @@ const Agenda = {
   async getHorariosPorMedico(clave_agenda) {
     try {
       const conn = await createConnection()
-      const [horariosAgendaMedico] = await conn.query("SELECT `clave_horarios`, `fecha`, `hora_inicio`, clave_agenda FROM `horario` WHERE clave_agenda = ? AND estado=0;",
+      const [horariosAgendaMedico] = await conn.query("SELECT `clave_horarios`, `fecha`, `hora_inicio`, `descripcion`,clave_agenda FROM `horario` WHERE clave_agenda = ? AND estado=0;",
         [clave_agenda]
       )
       console.log(horariosAgendaMedico)
@@ -207,8 +207,8 @@ const Agenda = {
 
         //consulta para controlar que no se repitan horarios
         const [result] = await conn.query(
-          "SELECT * FROM `horario` WHERE horario.fecha = ? and horario.hora_inicio = ?",
-          [fechaActual.toISOString().split('T')[0], inicioTurno.toTimeString().split(' ')[0]]
+          "SELECT * FROM `horario` WHERE horario.fecha = ? and horario.hora_inicio = ? AND clave_agenda = ?",
+          [fechaActual.toISOString().split('T')[0], inicioTurno.toTimeString().split(' ')[0], clave_agenda ]
         );
 
         if (result.length === 0) {
@@ -487,8 +487,97 @@ const Agenda = {
         return false;
       }
 
-  }
+  },
+
   
+async vacationSchedule(fecha, fecha_fin, hora_inicio, clave_agenda) {
+
+  try {
+
+    const conn = await createConnection()
+
+
+    let fechaActual = new Date(fecha);
+    const fechaFin = new Date(fecha_fin);
+
+
+
+
+    // Bucle para recorrer cada día entre fecha y fecha_fin
+    while (fechaActual <= fechaFin) {
+
+  
+      const [result] = await conn.query(
+        "SELECT * FROM `horario` WHERE horario.fecha = ? AND clave_agenda = ? ",
+        [fechaActual.toISOString().split('T')[0], clave_agenda]
+      );
+
+      if (result.length === 0) {
+
+
+            await conn.query(
+              'INSERT INTO horario ( fecha,clave_agenda, descripcion) VALUES ( ?, ?, "vacaciones")',
+              [fechaActual.toISOString().split('T')[0], clave_agenda]
+            );
+       
+
+      } else {
+        fechaActual.setDate(fechaActual.getDate() + 1);
+      }
+
+      // Avanzar al siguiente día
+      fechaActual.setDate(fechaActual.getDate() + 1);
+    }
+
+    console.log('Horarios generados y guardados con éxito.');
+  } catch (error) {
+    console.error('Error al generar los horarios:', error);
+  }
+},
+
+ 
+async holidaySchedule(fecha, fecha_fin, hora_inicio, clave_agenda) {
+
+  try {
+
+    const conn = await createConnection()
+
+
+    let fechaActual = new Date(fecha);
+    const fechaFin = new Date(fecha_fin);
+
+
+
+
+    // Bucle para recorrer cada día entre fecha y fecha_fin
+    while (fechaActual <= fechaFin) {
+
+      let inicioTurno = new Date(fechaActual);
+  
+      const [result] = await conn.query(
+        "SELECT * FROM `horario` WHERE horario.fecha = ? AND clave_agenda = ? ",
+        [fechaActual.toISOString().split('T')[0], clave_agenda]
+      );
+
+      if (result.length === 0) {
+
+            await conn.query(
+              'INSERT INTO horario ( fecha,clave_agenda, descripcion) VALUES ( ?, ?, "feriado")',
+              [fechaActual.toISOString().split('T')[0], clave_agenda]
+            );
+
+      } else {
+        fechaActual.setDate(fechaActual.getDate() + 1);
+      }
+      // Avanzar al siguiente día
+      fechaActual.setDate(fechaActual.getDate() + 1);
+    }
+
+    console.log('Horarios generados y guardados con éxito.');
+  } catch (error) {
+    console.error('Error al generar los horarios:', error);
+  }
 }
+  }
 
 module.exports = Agenda

@@ -37,14 +37,20 @@ block contenido
 
                             form(method='get' action='/turnos/agenda')
                                 input(type='hidden' name='clave_agenda', value=agenda.clave_agenda)
-                                button.btn.btn-outline-primary.mx-2.p-2(style='width: 200px;' type='submit') Gestionar Turnos    
+                                button.btn.btn-outline-info.mx-2.p-2(style='width: 200px;' type='submit') Gestionar Turnos    
                             
                             form(method='get' action='/gestorHorarios')
                                 input(type='hidden' name='clave_agenda', value=agenda.clave_agenda)
                                 button.btn.btn-outline-info.mx-2.p-2(style='width: 200px;' type='submit') Gestionar Horarios Agenda    
+                                     
+                              
+                            form(method='get' action='/nuevaagenda')
+                                input(type='hidden' name='clave_agenda', value=agenda.clave_agenda)
+                                button.btn.btn-outline-info.mx-2.p-2(style='width: 200px;' type='submit') Configuracion de turnos y sobreturnos     
+                                            
 
                             form(method='get', action='/listaDeEspera')
                                 input(type='hidden', name='clave_agenda', value=agenda.clave_agenda)
-                                button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Lista de espera         
+                                button.btn.btn-outline-info.mx-2.p-2(style='width: 200px;' type='submit') Lista de espera         
                  
     

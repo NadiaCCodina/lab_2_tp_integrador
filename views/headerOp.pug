@@ -1,13 +1,15 @@
-
 html
   head
-    title= nombreSucursal ? nombreSucursal : 'Mi Aplicación'
+    title= nombreSucursal ? nombreSucursal : 'Agenda de consultorio'
     link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
 
   body
+    .alert.alert-info.text-center(style="font-size: 14px; margin-bottom: 0;")
+      p.mb-0 Aquí podrás gestionar pacientes y administrar agendas.
+
     header
       nav(class="navbar navbar-expand-lg navbar-light bg-light")
-        a(class="navbar-brand", href="#") Mi Aplicación
+        a(class="navbar-brand" href="/") Salir
         button(class="navbar-toggler", type="button", data-toggle="collapse", data-target="#navbarNav", aria-controls="navbarNav", aria-expanded="false", aria-label="Toggle navigation")
           span(class="navbar-toggler-icon")
         div(class="collapse navbar-collapse", id="navbarNav")
@@ -17,20 +19,9 @@ html
             li(class="nav-item")
               a(class="nav-link", href="/paciente/vista") Nuevo Paciente
             li(class="nav-item")
-              a(class="nav-link", href="/nuevaagenda") Agenda
-            li(class="nav-item")
-              a(class="nav-link", href="/turnos/agenda") Turnos agenda
-            li(class="nav-item")
-              a(class="nav-link" href=`/agendas?clave_sucursal=${clave_sucursal}`) Agendas  
+              a(class="nav-link" href=`/agendas?clave_sucursal=${clave_sucursal}`) Agendas
 
     .container.mt-5
       h1.text-center.mb-4
-        | Bienvenido a la Sucursal:
         span(class="text-primary")= nombreSucursal
-
-
-      .alert.alert-info
-        p Aquí podrás gestionar pacientes y administrar agendas.
-   
-     
 
