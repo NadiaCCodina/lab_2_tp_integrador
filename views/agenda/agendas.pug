@@ -4,7 +4,7 @@ extends ../layoutOp
 block contenido     
     h1  Agendas
         h3.form-control-lg Seleccione la especialidad a buscar
-
+        
         form.form-control-lg(action="/seleccionar/agendas/especialidad" method="get")
 
             select#especialidadInput.form-control-lg(name='clave_especialidad')
@@ -28,23 +28,35 @@ block contenido
                             h4.card-title #{agenda.nombre_completo}
                             h5.card-text #{agenda.nombre_especialidad}
                             br
-
-                            form(method='get' action='/agendas/horario/medico')
-                                input(type='hidden' name='clave_agenda', value=agenda.clave_agenda) 
-                                input(type='hidden' name='nombre_completo', value=agenda.nombre_completo) 
-                                input(type='hidden' name='nombre_especialidad', value=agenda.nombre_especialidad) 
-                                button.btn.btn-outline-success.mx-2.p-2(style='width: 200px;' type='submit') Agendar Turno
-
-                            form(method='get' action='/turnos/agenda')
-                                input(type='hidden' name='clave_agenda', value=agenda.clave_agenda)
-                                button.btn.btn-outline-primary.mx-2.p-2(style='width: 200px;' type='submit') Gestionar Turnos    
+                            if !dni 
+                          
                             
-                            form(method='get' action='/gestorHorarios')
-                                input(type='hidden' name='clave_agenda', value=agenda.clave_agenda)
-                                button.btn.btn-outline-info.mx-2.p-2(style='width: 200px;' type='submit') Gestionar Horarios Agenda    
+                                form(method='get' action='/agendas/horario/medico')
+                                    input(type='hidden' name='clave_agenda', value=agenda.clave_agenda) 
+                                    input(type='hidden' name='nombre_completo', value=agenda.nombre_completo) 
+                                    input(type='hidden' name='nombre_especialidad', value=agenda.nombre_especialidad) 
+                            
+                                    button.btn.btn-outline-success.mx-2.p-2(style='width: 200px;' type='submit') Agendar Turno
+                                
+                                form(method='get' action='/turnos/agenda')
+                                    input(type='hidden' name='clave_agenda', value=agenda.clave_agenda)
+                                    button.btn.btn-outline-primary.mx-2.p-2(style='width: 200px;' type='submit') Gestionar Turnos    
+                                
+                                form(method='get' action='/gestorHorarios')
+                                    input(type='hidden' name='clave_agenda', value=agenda.clave_agenda)
+                                    button.btn.btn-outline-info.mx-2.p-2(style='width: 200px;' type='submit') Gestionar Horarios Agenda    
 
-                            form(method='get', action='/listaDeEspera')
-                                input(type='hidden', name='clave_agenda', value=agenda.clave_agenda)
-                                button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Lista de espera         
+                                form(method='get', action='/listaDeEspera')
+                                    input(type='hidden', name='clave_agenda', value=agenda.clave_agenda)
+                                    button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Lista de espera   
+                            else 
+                                form(method='get' action='/reprogramar/turno')
+                                    input(type='hidden' name='clave_agenda', value=agenda.clave_agenda) 
+                                    input(type='hidden' name='nombre_completo', value=agenda.nombre_completo) 
+                                    input(type='hidden' name='nombre_especialidad', value=agenda.nombre_especialidad) 
+                                    input(type='hidden' name='clave_horario', value=clave_horario  )    
+                                    input(type='hidden' name='dni', value=dni  )    
+                                    input(type='hidden' name='fecha', value=fecha  )  
+                                    button.btn.btn-outline-success.mx-2.p-2(style='width: 200px;' type='submit') Reprogramar Turno            
                  
     

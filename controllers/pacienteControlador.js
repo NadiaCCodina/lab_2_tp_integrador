@@ -19,7 +19,7 @@ module.exports = {
         const dni_imagen = req.file ? req.file.filename : null;
     
         let PacienteEnLista = false;   
-
+        
         if (nombre_completo) {
             await Paciente.insertPerson({  dni,nombre_completo, mail, telefono })
             await Paciente.insertPatient( {dni, obra_social, dni_imagen })
