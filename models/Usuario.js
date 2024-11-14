@@ -1,6 +1,8 @@
 const createConnection = require("../config/bd");
 const bcryptjs = require("bcryptjs")
 const Usuario = {
+    //CREA USUARIO
+    //PARAMETROS: USUARIO, CONTRASEÑA,ROL
     async create(usuario, contraseña, rol) {
         const conn = await createConnection();
         try {
@@ -15,7 +17,8 @@ const Usuario = {
         }
         
     },
-
+//TRAE USUARIO 
+//PARAMETRO: USUARIO(NOMBRE)
     async getUsuario(usuario){
         const conn = await createConnection();
         try {
@@ -30,7 +33,8 @@ const Usuario = {
     
             }
     },
-
+//TRAE USUARIO 
+//PARAMETRO: ID
     async getId(id){
         const conn = await createConnection();
         try {
@@ -45,7 +49,8 @@ const Usuario = {
     
             }
     },
-
+//CREA SUCURSALES
+//PARAMETROS:NOMBRE DIRECCION
     async createBranch(nombre, direccion){
 
         const conn = await createConnection();
@@ -62,6 +67,8 @@ const Usuario = {
         
 
     },
+
+    //GET SUCURSALES
     async getBranches(){ 
         const conn = await createConnection();
         try {

@@ -13,16 +13,17 @@ module.exports = {
 
     async vistaLoginUsuario(req, res) {
 
-        try{ 
-       
+        try {
 
-        res.render("usuario/login")
-    } catch(error) {
-        console.log(error)
 
-    }
+            res.render("usuario/login")
+        } catch (error) {
+            console.log(error)
+
+        }
     },
-
+    //REGISTRO USA BCRYPTJS PARA HASHEAR LA CONTRASEÑA
+    //GUARDAMOS USUARIO, CONTRASEÑA, ROL
     async registro(req, res) {
 
         const usuario = req.body.usuario
@@ -41,7 +42,9 @@ module.exports = {
             }
         }
     },
-
+// LOGIN CON BCRYPT COMPARA CONTRASEÑA GUARDADA CON LA INGRESADA
+//USA JWT (JSON WEB TOKEN) PARA GUARDAR LOS DATOS DEL USUARIO EN COOKIES
+//RENDERISA SEGUN ROL
     async login(req, res) {
         const usuario = req.body.usuario
         const contraseña = req.body.contraseña
@@ -67,11 +70,11 @@ module.exports = {
                 const pacientes = await Paciente.get();
                 const especialidades = await Especialidades.getEspecialidades();
                 if (rol == "admin") {
-                    res.render("medico/listaMedicos", { medicos: medicos, especialidades:especialidades, admi: "Ingreso exitoso" });
+                    res.render("medico/listaMedicos", { medicos: medicos, especialidades: especialidades, admi: "Ingreso exitoso" });
                 }
                 else {
                     if (rol == "op") {
-                        const sucursales =  await Usuario.getBranches();
+                        const sucursales = await Usuario.getBranches();
 
                         res.render("usuario/inicio", { sucursales: sucursales, admi: "Ingreso exitoso" })
                     }
@@ -81,7 +84,8 @@ module.exports = {
         }
 
     },
-
+//DECODIFICAMOS EL JWT DE LAS COOKIES
+//COMPROBAMOS QUE EL USUARIO ES ADMIN 
     async isAuthenticatedAdmi(req, res, next) {
         console.log("req " + req.cookies.jwt)
         if (req.cookies.jwt) {
@@ -106,7 +110,8 @@ module.exports = {
         }
 
     },
-
+//DECODIFICAMOS EL JWT DE LAS COOKIES
+//COMPROBAMOS QUE EL USUARIO ES OPERADOR 
     async isAuthenticatedOp(req, res, next) {
         console.log("req " + req.cookies.jwt)
         if (req.cookies.jwt) {
@@ -135,40 +140,40 @@ module.exports = {
 
     },
 
- async vistaRegistroSucursal(req, res){
+    async vistaRegistroSucursal(req, res) {
 
-    res.render("sucursal/registro")
+        res.render("sucursal/registro")
 
- },
+    },
 
- async registrarSucursal(req, res){
-    const sucursal = req.body
-   try{ 
-    await Usuario.createBranch(sucursal.nombre, sucursal.direccion)
+    async registrarSucursal(req, res) {
+        const sucursal = req.body
+        try {
+            await Usuario.createBranch(sucursal.nombre, sucursal.direccion)
 
-    res.render( "sucursal/registro", {message: `Sucursal creada con exito` })
-}
-    catch (error) {
-        console.log(error)
-}
- },
+            res.render("sucursal/registro", { message: `Sucursal creada con exito` })
+        }
+        catch (error) {
+            console.log(error)
+        }
+    },
 
- async logInOp(req, res){
-    const clave_sucursal = req.body.sucursal
-    const sucursal = await Usuario.getBranchByKey(clave_sucursal)
-    const nombreSucursal = sucursal[0].nombre_sucursal
-    try{ 
- 
-     res.render( "headerOp", {nombreSucursal})
- }
-     catch (error) {
-         console.log(error)
- }
+    async logInOp(req, res) {
+        const clave_sucursal = req.body.sucursal
+        const sucursal = await Usuario.getBranchByKey(clave_sucursal)
+        const nombreSucursal = sucursal[0].nombre_sucursal
+        try {
 
- }
-   
+            res.render("headerOp", { nombreSucursal })
+        }
+        catch (error) {
+            console.log(error)
+        }
 
-  
+    }
+
+
+
 
 }
 

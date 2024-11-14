@@ -47,7 +47,14 @@ block contenido
       tbody
         each turno in turnosAgenda
           tr
-            td= turno.nombre_completo
+            td
+              form.mx-5(action="/ver/paciente" method="post" )
+             
+  
+                input(type="hidden" name="dni" value=turno.dni)
+                input(type="hidden" name="clave_especialidad" value=`${medico[0].clave_especialidad}`)
+                button.btn.btn-primary.me-5.p-2(type="submit")    #{turno.nombre_completo}   
+          
             td= turno.hora_inicio  
             td= turno.fecha 
             td= turno.nombre_estado

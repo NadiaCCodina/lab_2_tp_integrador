@@ -4,7 +4,22 @@ block contenido
     h1.text-center.mt-4 Lista de Pacientes
     if errorMessage
         .alert.alert-warning(role="alert") #{errorMessage}
+    form.mx-5.text-center(action="/paciente/busqueda/dni" method="post")
+        .mb-3
+            label(for="dni" class="form-label") Buscar por DNI
+            input#dni.form-control(name="dni", type="text", placeholder="Ingrese DNI" required)
+            input.btn.btn-info(type="submit", value="Buscar")
+
+    form.mx-5.text-center(action="/paciente/busqueda/nombre" method="post")
+        .mb-3
+            label(for="nombre" class="form-label") Buscar por Nombre
+            input#dni.form-control(name="nombre", type="text", placeholder="Ingrese Nombre" required)
+            input.btn.btn-info(type="submit", value="Buscar")
+            
+    
     .container.mt-4
+    
+
         table.table.table-striped.table-hover
             thead.thead-dark
                 tr 

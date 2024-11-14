@@ -8,9 +8,27 @@ const Paciente = {
         const [pacientes] = await conn.query("SELECT persona.dni, nombre_completo, mail, obra_social,  dni_imagen, telefono FROM `paciente`, persona WHERE persona.dni = paciente.dni");
         return pacientes;
     },
+    //BUSCAR PACIENTE POR DNI
+    async getDni(dni) {
+        const conn = await createConnection();
+        const [paciente] = await conn.query("SELECT persona.dni, nombre_completo, mail, obra_social,  dni_imagen, telefono FROM `paciente`, persona WHERE persona.dni = ? and persona.dni= paciente.dni;",
+            [dni]
+        );
+        return paciente;
+    },
 
+    async getByNombre(nombre) {
 
-
+        try {
+            const conn = await createConnection();
+            const [paciente] = await conn.query("SELECT persona.dni, nombre_completo, mail, obra_social,  dni_imagen, telefono FROM `paciente`, persona WHERE persona.nombre_completo LIKE ? and persona.dni= paciente.dni",
+                ['%' + nombre + '%']
+            )
+            return paciente
+        } catch (error) {
+            console.log("ERROR paciente por nombre", error)
+        }
+    },
 
     async insertPerson(person) {
 
@@ -75,9 +93,9 @@ const Paciente = {
         }
     },
 
-    async update( obra_social, dni_imagen, dni) {
+    async update(obra_social, dni_imagen, dni) {
         const conn = await createConnection();
-        console.log(dni_imagen) 
+        console.log(dni_imagen)
 
         try {
             const [patientResult] = await conn.query(
@@ -88,10 +106,10 @@ const Paciente = {
         } catch {
             console.log("ERROR PROVISORIO")
         }
-  
+
 
     }
-    
+
 
 
 };

@@ -13,17 +13,20 @@ router.post("/paciente", controladorUsuario.isAuthenticatedOp, controlador.guard
 router.post("/paciente/verificarDni", controladorUsuario.isAuthenticatedOp, controlador.crearPaciente)
 router.get("/paciente/vista", controladorUsuario.isAuthenticatedOp, controlador.vistaCrearPaciente);
 
-router.get("/paciente/lista",controladorUsuario.isAuthenticatedOp, controlador.mostrar)
+router.get("/paciente/lista", controladorUsuario.isAuthenticatedOp, controlador.mostrar);
 
-        
 
- router.post('/paciente/editar', controlador.actualizarPaciente)
+
+router.post("/paciente/busqueda/nombre", controlador.mostrarPorNombre)
+router.post('/paciente/editar', controlador.actualizarPaciente)
 router.get("/paciente/borrar", controladorUsuario.isAuthenticatedOp, controlador.borrarPaciente);
 router.get("/paciente/editar", controlador.vistaActualizarPaciente);
+router.post("/paciente/busqueda/dni", controlador.mostrarPorDni);
+router.post("/ver/paciente", controladorUsuario.isAuthenticatedOp, controlador.mostrarPorDni);
 
 
 router.post("/paciente/verificarDni/online", controlador.crearPacienteOnline)
-router.post('/paciente/online', upload.single('dni_imagen'),controlador.guardarOnline);
+router.post('/paciente/online', upload.single('dni_imagen'), controlador.guardarOnline);
 
 //////////////////////////VERSION PREVIA AL AUTENTICADOR
 
@@ -45,4 +48,4 @@ router.post('/paciente/online', upload.single('dni_imagen'),controlador.guardarO
 
 
 
-module.exports= router;
+module.exports = router;
