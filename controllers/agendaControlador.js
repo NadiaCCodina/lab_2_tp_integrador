@@ -12,13 +12,14 @@ module.exports = {
 
   async vistaAgendaReprogramar(req, res) {
     const dni = req.query.dni
+    const clave_sucursal = req.body.clave_sucursal
     const clave_horario = req.query.clave_horario
     const clave_horario_reprogamacion = req.query.clave_horario_reprogamacion
     const fecha = req.query.fecha
     const clave_especialidad = req.query.clave_especialidad
     console.log(fecha + " fecha y dni de trasnferir" + dni + " " + clave_especialidad + " " + clave_horario)
     try {
-      const agendas = await Agenda.agendasPorEspecialidad(clave_especialidad)
+      const agendas = await Agenda.agendasPorEspecialidad(clave_especialidad, clave_sucursal)
 
       const especialidades = await EspecialidadMedico.getEspecialidades();
 
@@ -44,7 +45,7 @@ module.exports = {
       const especialidades = await EspecialidadMedico.getEspecialidades();
 
 
-      res.render("agenda/agendas", { agendas: agendas, especialidades: especialidades });
+      res.render("agenda/agendas", { agendas: agendas, especialidades: especialidades, clave_sucursal });
     } catch (error) {
       console.error("Error al obtener la agenda: ", error);
       res.status(500).send("Error interno del servidor");
@@ -300,7 +301,7 @@ module.exports = {
   async mostrarConfiguracionAgenda(req, res) {
     const matricula       = req.params.matricula
     const clave_sucursal  = req.body.clave_sucursal
-    const agenda          = await Agenda.getAgendaByMatricula(matricula)
+    const agenda          = await Agenda.getAgendaByBranch(matricula, clave_sucursal)
     console.log("matricula agenda" + matricula)
     const error           = 'Ya existe agenda para el profesional seleccionado'
     const clasificaciones = await Agenda.clasificacionCustom()
@@ -530,11 +531,13 @@ module.exports = {
     try {
       const clave_sucursal = req.query.clave_sucursal;
       const clave_especialidad = req.query.clave_especialidad
-      const agendas = await Agenda.agendasPorEspecialidad(clave_especialidad);
+      const agendas = await Agenda.agendasPorEspecialidad(clave_especialidad, clave_sucursal);
 
       const especialidades = await EspecialidadMedico.getEspecialidades();
+      
+   
 
-      res.render("agenda/agendas", { agendas: agendas, especialidades: especialidades });
+      res.render("agenda/agendas", { agendas: agendas, especialidades: especialidades, clave_sucursal });
     } catch (error) {
       console.error('Error al obtener la agenda:', error);
       res.status(500).send('Error al obtener la agenda');

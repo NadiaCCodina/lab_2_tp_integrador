@@ -148,12 +148,12 @@ const Agenda = {
     }
   },
 
-  async agendasPorEspecialidad(clave_especialidad) {
+  async agendasPorEspecialidad(clave_especialidad, clave_sucursal) {
     
     try {
       const conn = await createConnection()
-      const [agendasEspecialidad] = await conn.query("SELECT `clave_agenda`, `clave_sucursal`, `clave_clasificacion`, `matricula_medico`, `cantidad_sobreturno`, `intervalo_minutos`, nombre_especialidad, persona.nombre_completo FROM `agenda`, especialidad, especialidad_medico, medico, persona WHERE agenda.matricula_medico = especialidad_medico.matricula AND especialidad_medico.clave_especialidad = especialidad.clave_especialidad AND medico.dni= persona.dni  AND medico.clave_medico = especialidad_medico.clave_medico AND especialidad.clave_especialidad= ?",
-        [clave_especialidad]
+      const [agendasEspecialidad] = await conn.query("SELECT `clave_agenda`, `clave_sucursal`, `clave_clasificacion`, `matricula_medico`, `cantidad_sobreturno`, `intervalo_minutos`, nombre_especialidad, persona.nombre_completo FROM `agenda`, especialidad, especialidad_medico, medico, persona WHERE agenda.matricula_medico = especialidad_medico.matricula AND especialidad_medico.clave_especialidad = especialidad.clave_especialidad AND medico.dni= persona.dni  AND medico.clave_medico = especialidad_medico.clave_medico AND especialidad.clave_especialidad= ? AND agenda.clave_sucursal = ?",
+        [clave_especialidad, clave_sucursal]
       )
       console.log(agendasEspecialidad)
       return agendasEspecialidad
@@ -671,12 +671,12 @@ async holidaySchedule(fecha, fecha_fin,  clave_agenda) {
   ////parm 
 ///matricula : matricula_medico
 
-  async getAgendaByMatricula(matricula){
+  async getAgendaByBranch(matricula, clave_sucursal){
 
     try {
       const conn = await createConnection()
-      const [agendaMedico] = await conn.query("SELECT * FROM `agenda` WHERE matricula_medico= ?;",
-        [matricula]
+      const [agendaMedico] = await conn.query("SELECT * FROM `agenda` WHERE matricula_medico= ? AND clave_sucursal = ?;",
+        [matricula, clave_sucursal]
       )
 
       return agendaMedico

@@ -11,8 +11,9 @@ block contenido
                         select#especialidadInput.form-select(name='clave_especialidad')
                             each especialidad in especialidades
                                 option(value=`${especialidad.clave_especialidad}`)= especialidad.nombre_especialidad
+                        input(type='hidden' name='clave_sucursal', value=clave_sucursal)
                         button.btn.btn-primary(type="submit") Seleccionar
-
+                        
         .row.justify-content-center.mb-4
             .col-md-8
                 h3.text-center.text-secondary.mb-3 Ingrese el nombre del Médico
@@ -20,7 +21,7 @@ block contenido
                     .input-group
                         input.form-control(type='text' name='nombre_completo' placeholder='Nombre del Médico' required)
                         button.btn.btn-primary(type="submit") Buscar
-
+                        input(type='hidden' name='clave_sucursal', value=clave_sucursal)
 
                 if error
                     .alert.alert-warning.mt-3
@@ -63,4 +64,5 @@ block contenido
                                 input(type='text' name='clave_horario_reprogamacion', value=clave_horario_reprogamacion  )    
                                 input(type='hidden' name='dni', value=dni  )    
                                 input(type='hidden' name='fecha', value=fecha  )  
+                                input(type='hidden' name='clave_sucursal', value=clave_sucursal)
                                 button.btn.btn-outline-success.mx-2.p-2(style='width: 200px;' type='submit') Reprogramar Turno            
