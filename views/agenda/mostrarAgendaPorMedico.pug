@@ -34,10 +34,10 @@ block contenido
                   input(type="hidden" name="clave_horario" value=hora.clave_horarios)
                   input(type="hidden" name="dni")
 
-                 
-                if hora.descripcion === "vacaciones"
-                    p VACACIONES 
-                else if hora.descripcion === "feriado"  
-                    p FERIADO
-                else
-                    button.btn.btn-outline-primary(type='submit') #{hora.hora_inicio}
+                  
+                  if hora.descripcion === "vacaciones"
+                      p VACACIONES 
+                  else if hora.descripcion === "feriado"  
+                      p FERIADO
+                  else
+                  button.btn.btn-outline-primary(type='submit') #{hora.hora_inicio}
