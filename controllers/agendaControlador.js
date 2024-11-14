@@ -750,6 +750,8 @@ module.exports = {
       res.status(500).send('Error al obtener Turnos');
     }
   },
+  
+  
 
   async borrarAgenda(req, res){
     const clave_agenda = req.query.clave_agenda
@@ -761,9 +763,9 @@ module.exports = {
       try{
          await Agenda.deleteAgenda(clave_agenda)
          res.render("agenda/agendas", { agendas:agendas, especialidades: especialidades, error: 'La agenda se borro con exito' });
-      }catch{
-
+      }  catch (error){
+        console.error('Error al borrar turnos:', error);
       }
   }
+  }
 
-};

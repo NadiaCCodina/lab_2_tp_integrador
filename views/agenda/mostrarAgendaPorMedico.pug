@@ -35,9 +35,9 @@ block contenido
                   input(type="hidden" name="dni")
 
                  
-                  if hora.descripcion === "vacaciones"
+                if hora.descripcion === "vacaciones"
                     p VACACIONES 
-                  else if hora.descripcion === "feriado"  
+                else if hora.descripcion === "feriado"  
                     p FERIADO
-                  else
+                else
                     button.btn.btn-outline-primary(type='submit') #{hora.hora_inicio}

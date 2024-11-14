@@ -28,7 +28,7 @@ router.post('/seleccionar/reprogramacion',controladorUsuario.isAuthenticatedOp, 
 router.get("/agendas/online", controlador.vistaAgendaOnline )
 router.get("/seleccionar/agendas/especialidad/online", controlador.agendaPorEspecialidadOnline )
 router.get("/medico/busqueda/nombre/online", controlador.agendaPorMedicoNombreOnline )
-router.post('/agregar/sobreturno', controlador.agregarSobreturnos);
+//router.post('/agregar/sobreturno', controlador.agregarSobreturnos);
 
 
 router.get('/agendas/turno/medico/online', controlador.horarioPorAgendaMedicoOnline);
