@@ -209,7 +209,6 @@ module.exports = {
     const especialidades = await EspecialidadMedico.getEspecialidades();
     const clave_sucursal = req.query.clave_sucursal
 
-
     console.log(especialidades)
 
     console.log("Especialidad " + especialidades)
@@ -246,31 +245,42 @@ module.exports = {
 
 
   async mostrarConfiguracionAgenda(req, res) {
-    const matricula      = req.params.matricula
-    const clave_sucursal = req.body.clave_sucursal
+    const matricula       = req.params.matricula
+    const clave_sucursal  = req.body.clave_sucursal
+    const agenda          = await Agenda.getAgendaByMatricula(matricula)
     console.log("matricula agenda" + matricula)
+    const error           = 'Ya existe agenda para el profesional seleccionado'
     const clasificaciones = await Agenda.clasificacionCustom()
-    res.render("agenda/agendaConfiguracion", { matricula: matricula, clasificaciones: clasificaciones, clave_sucursal })
+    const especialidades  = await EspecialidadMedico.getEspecialidades();
+
+    if(agenda.length === 0){
+      res.render("agenda/agendaConfiguracion", { matricula: matricula, clasificaciones: clasificaciones, clave_sucursal })
+    }else{ 
+    res.render("agenda/nuevaAgenda", { especialidades: especialidades,  clave_sucursal, error })
+  }
   },
 
   async guardarNuevaAgenda(req, res) {
-    const matricula = req.body.matricula
-    const message = true
-    const sobreturnos = req.body.sobreturnos
+    const matricula         = req.body.matricula
+    const sobreturnos       = req.body.sobreturnos
     const intervalo_minutos = req.body.intervalo_minutos
-    const clasificacion = req.body.clasificacion
-    const clave_sucursal = req.body.clave_sucursal
-    const clasificaciones = await Agenda.clasificacionCustom()
+    const clasificacion     = req.body.clasificacion
+    const clave_sucursal    = req.body.clave_sucursal
+    const especialidades    = await EspecialidadMedico.getEspecialidades();
+
+
+
     console.log(matricula + " matricula de guardar agenda " + sobreturnos + " " + intervalo_minutos + " " + clasificacion)
+   
     try {
       if (await Agenda.creatAgenda(clave_sucursal, clasificacion, matricula, sobreturnos, intervalo_minutos)) {
         console.log("entro al if de guardar agenda")
-        res.render("agenda/agendaConfiguracion", { message, matricula: matricula, clasificaciones: clasificaciones, clave_sucursal })
+        res.render("agenda/nuevaAgenda", { especialidades: especialidades,  clave_sucursal, error : 'Agenda creada con exito' })
       }
 
     } catch (error) {
       console.error('Error al guardar la agenda:', error);
-      res.render("agenda/agendaConfiguracion", { matricula: matricula, clasificaciones: clasificaciones, clave_sucursal, error: error })
+      res.render("agenda/nuevaAgenda", { especialidades: especialidades,  clave_sucursal, error: 'error al ingresar agenda' })    
     }
   },
 
@@ -613,5 +623,19 @@ module.exports = {
     }
   },
 
+  async borrarAgenda(req, res){
+    const clave_agenda = req.query.clave_agenda
+    const especialidades = await EspecialidadMedico.getEspecialidades();
+    const clave_sucursal = req.query.clave_sucursal
+    const agendas = await Agenda.getAgendasByBranch(clave_sucursal)
+    
+
+      try{
+         await Agenda.deleteAgenda(clave_agenda)
+         res.render("agenda/agendas", { agendas:agendas, especialidades: especialidades, error: 'La agenda se borro con exito' });
+      }catch{
+
+      }
+  }
 
 };

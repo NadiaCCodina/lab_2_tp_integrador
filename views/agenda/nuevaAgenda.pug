@@ -8,8 +8,9 @@ block contenido
                 option(value=`${especialidad.clave_especialidad}`)= especialidad.nombre_especialidad
         input(type="hidden" name="clave_sucursal" value=clave_sucursal)
         input(type="submit" value="Seleccionar")
-    if error 
-        h1= error
+    if error
+        .alert.alert-warning
+          p #{error}
     if medicos_especialidad
         h1.text-center.mt-4 Lista de Medicos de la especialidad #{especialidad.nombre_especialidad}
         .container.mt-4

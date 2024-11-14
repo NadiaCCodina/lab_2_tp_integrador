@@ -105,8 +105,6 @@ const Agenda = {
     }
   },
 
-
-
   async getAgendasPorMedico(clave_medico) {
     try {
       const conn = await createConnection()
@@ -599,7 +597,37 @@ async holidaySchedule(fecha, fecha_fin,  clave_agenda) {
   }
 
   return contadorError;
-}
+},
+
+//Busca en la tabla agenda por matricula de medico
+  ////parm 
+///matricula : matricula_medico
+
+  async getAgendaByMatricula(matricula){
+
+    try {
+      const conn = await createConnection()
+      const [agendaMedico] = await conn.query("SELECT * FROM `agenda` WHERE matricula_medico= ?;",
+        [matricula]
+      )
+
+      return agendaMedico
+    } catch (error) {
+      return false
+    }
+  }, 
+  async deleteAgenda(clave_agenda){
+    try {
+      const conn = await createConnection()
+      const [agendaMedico] = await conn.query("DELETE FROM `agenda` WHERE clave_agenda= ?;",
+        [clave_agenda]
+      )
+
+      return agendaMedico
+    } catch (error) {
+      return false
+    }
+  }
   }
 
 module.exports = Agenda
