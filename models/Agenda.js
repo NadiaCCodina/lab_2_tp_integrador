@@ -282,7 +282,7 @@ const Agenda = {
   async getTurnoHorario(clave_horario) {
     try {
       connection = await createConnection();
-      const [turnos] = await connection.query("SELECT `fecha`, `hora_inicio`, `clave_agenda`, `hora_fin`, `estado` FROM `horario` WHERE `clave_horarios`=?",
+      const [turnos] = await connection.query("SELECT * FROM `horario` WHERE `clave_horarios` = ?",
         [clave_horario]
       )
       console.log(turnos + " modelo turno")

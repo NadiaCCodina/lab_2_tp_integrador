@@ -87,8 +87,9 @@ module.exports = {
             const medico = req.body.medico
             await Agenda.createTurno(dni, 3, clave_horario)
             await Agenda.updateEstadoHorario(1, clave_horario)
+            console.log(clave_horario)
             const horario = await Agenda.getTurnoHorario(clave_horario)
-
+            console.log(horario)
             horario.forEach(hora => {
                 const fecha = new Date(hora.fecha);
                 hora.fecha = fecha.toLocaleDateString('es-AR', {
