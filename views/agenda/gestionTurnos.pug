@@ -5,7 +5,7 @@ block contenido
   div.container.mx-auto
     h1.text-center#encabezado Turnos del Dr./Dra: #{medico[0].nombre_completo}
     h1.text-center#encabezado Especialidad: #{medico[0].nombre_especialidad}
-     h1.text-center#encabezado Especialidad: #{medico[0].clave_especialidad}
+    
     br
     if noHayTurnos
       h2.text-center No hay turnos
@@ -18,7 +18,7 @@ block contenido
       input(type="hidden" name="clave_agenda" value=clave_agenda)
       button.btn.btn-primary.me-5.p-2(type="submit") Seleccionar   
 
-    h2.text-center Buscar por estado de turno 
+ 
     br 
     form.mx-5.text-center(action="/agenda/turnos/estado" method="get" )
       input(type="hidden" name="clave_agenda" value=clave_agenda)
@@ -70,7 +70,7 @@ block contenido
             td
               form.mx-5(action="/transferir/turno" method="get" )
                 input(type="hidden" name="fecha" value=turno.fecha )
-                input(type="hidden" name="clave_horario" value=turno.clave_horario )
+                input(type="hidden" name="clave_horario_reprogamacion" value=turno.clave_horario )
                 input(type="hidden" name="dni" value=turno.dni)
                 input(type="hidden" name="clave_especialidad" value=`${medico[0].clave_especialidad}`)
                 button.btn.btn-primary.me-5.p-2(type="submit") transferir turno     

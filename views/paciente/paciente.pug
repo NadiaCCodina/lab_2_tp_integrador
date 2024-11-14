@@ -31,6 +31,11 @@ block contenido
      
         if clave_horario
             button.btn.btn-primary(type="submit") Agendar turno
-  
+        else if sobreturno 
+            input(type="hidden" name="fecha_sobreturno" value=fecha_sobreturno)
+            input(type="hidden" name="clave_agenda" value=clave_agenda)
+            input(type="hidden" name="motivo_consulta" value="sobreturno")
+            input(type="hidden" name="sobreturno" value="sobreturno") 
+            button.btn.btn-primary(type="submit") Agendar sobreturno
         else
             button.btn.btn-primary(type="submit") Agregar

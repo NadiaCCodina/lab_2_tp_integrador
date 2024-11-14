@@ -14,5 +14,9 @@ block contenido
         // Si existe `clave_horario`, mostrar un campo oculto
         if clave_horario
           input.form-control(name="clave_horario", type="hidden", value=`${clave_horario}`)
-
+        if sobreturno   
+          input(type="hidden" name="fecha_sobreturno" value=fecha_sobreturno_formateada)
+          input(type="hidden" name="clave_agenda" value=clave_agenda)
+          input(type="hidden" name="motivo_consulta" value="sobreturno")
+          input(type="hidden" name="sobreturno" value="sobreturno") 
       button.btn.btn-primary(type="submit") Verificar DNI

@@ -14,7 +14,7 @@ module.exports = {
          res.render("paciente/actualizarPaciente", {})
      },
     async guardar(req, res) {
-        const { dni, nombre_completo, mail, telefono, obra_social, clave_horario } = req.body;
+        const { dni, nombre_completo, mail, telefono, obra_social, clave_horario, fecha_sobreturno, clave_agenda, motivo_consulta, sobreturno} = req.body;
         
         const dni_imagen = req.file ? req.file.filename : null;
     
@@ -30,12 +30,18 @@ module.exports = {
         
      
 
-        if (clave_horario !== 'undefined') {
+        if (clave_horario !==  undefined && sobreturno !==undefined ) {
+            console.log(motivo_consulta+" "+clave_agenda+" horario sobreturnos"+fecha_sobreturno)
+            PacienteEnLista = await Agenda.deleteRecordFromList(dni, clave_horario)
+            await Agenda.createSobreturnos(fecha_sobreturno, clave_agenda, dni, motivo_consulta)
+           
+            }else{ if(clave_horario!==undefined){
+
             console.log(dni+" "+nombre_completo+" clave horario"+clave_horario)
             PacienteEnLista = await Agenda.deleteRecordFromList(dni, clave_horario)
             await Agenda.createTurno(dni, 4, clave_horario)
             await Agenda.updateEstadoHorario(1,clave_horario)
-            
+            }
         }
 
 
@@ -103,12 +109,15 @@ async guardarOnline(req, res) {
     const dni = req.body.dni;
     const turno= req.params.turno
     const clave_horario = req.body.clave_horario
+    const {fecha_sobreturno, clave_agenda,motivo_consulta, sobreturno} = req.body;
+
     try {
         const result = await Paciente.findPersonByDni(dni);
         const exist = result !== null;
 
         console.log("existe????: ", exist);
-        res.render("paciente/paciente", { exist, dni, turno, clave_horario});
+        console.log(motivo_consulta)
+        res.render("paciente/paciente", { exist, dni, turno, clave_horario,fecha_sobreturno, clave_agenda , motivo_consulta, sobreturno});
 
     } catch (error) {
         console.error("Error al crear paciente:", error);

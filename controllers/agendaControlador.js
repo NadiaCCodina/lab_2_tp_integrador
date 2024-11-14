@@ -7,25 +7,29 @@ const Paciente =
   require("../models/Paciente");
 
 module.exports = {
+
   async vistaAgendaReprogramar(req, res) {
     const dni = req.query.dni
     const clave_horario = req.query.clave_horario
+    const clave_horario_reprogamacion = req.query.clave_horario_reprogamacion
     const fecha = req.query.fecha
     const clave_especialidad = req.query.clave_especialidad
-    console.log(fecha + " fecha y dni de trasnferir" + dni + " " + clave_especialidad+" "+clave_horario)
+    console.log(fecha + " fecha y dni de trasnferir" + dni + " " + clave_especialidad + " " + clave_horario)
     try {
       const agendas = await Agenda.agendasPorEspecialidad(clave_especialidad)
 
       const especialidades = await EspecialidadMedico.getEspecialidades();
-      
 
-      res.render("agenda/agendas", { agendas: agendas, especialidades: especialidades, dni, fecha, clave_horario});
+
+      res.render("agenda/agendas", { agendas: agendas, especialidades: especialidades, dni, fecha, clave_horario, clave_horario_reprogamacion });
 
     } catch (error) {
       console.error("Error al obtener la agenda: ", error);
       res.status(500).send("Error interno del servidor");
     }
   },
+
+
   async vistaAgenda(req, res) {
     try {
       const dni = req.query.dni
@@ -120,11 +124,22 @@ module.exports = {
 
   async seleccionarHorario(req, res) {
     const clave_horario = req.body.clave_horario;
-    console.log('Datos recibidos:', req.body);
+    const { clave_agenda, motivo_consulta, sobreturno } = req.body;
+    const fecha_sobreturno = new Date;
+    let year = fecha_sobreturno.getFullYear();
+    let month = String(fecha_sobreturno.getMonth() + 1).padStart(2, '0');
+    let day = String(fecha_sobreturno.getDate()).padStart(2, '0');
+
+
+    let fecha_sobreturno_formateada = `${year}-${month}-${day}`;
+
+    console.log(fecha_sobreturno_formateada);
+
+    console.log('Datos recibidos:', req.body + " sobreturno" + fecha_sobreturno_formateada);
     try {
 
 
-      res.render("paciente/nuevoPaciente", { clave_horario })
+      res.render("paciente/nuevoPaciente", { clave_horario, fecha_sobreturno_formateada, clave_agenda, motivo_consulta, sobreturno })
 
     } catch (error) {
       console.error('Error al seleccionar horario:', error);
@@ -133,25 +148,27 @@ module.exports = {
     }
   },
 
-  async reprogramarTurno(req, res){
-    try{
-    const dni = req.body.dni
-    const clave_horarios = req.body.clave_horarios
-    console.log(clave_horarios+" clave horarios de reprogramacion en guardar turno" +dni)
-    const reprogramacion = await Agenda.createTurno(dni, 4, clave_horarios)
-    console.log(reprogramacion)
-    const clave_resprogramacion= req.body.clave_horario
-    await Agenda.updateEstadoTurnoAgenda(1,dni, clave_resprogramacion)
-    if(reprogramacion){
-      res.render("agenda/confirmacionTurno", { reprogramacion:reprogramacion })
-    }else{
-      res.render("agenda/agendas")
-    }
-    }
-   catch (error) {
-    console.error('Error al reprogramar turno horario:', error);
+  async reprogramarTurno(req, res) {
+    try {
+      const clave_nueva = req.body.clave_horarios
+      const dni = req.body.dni
+      const clave_horario_reprogamacion = req.body.clave_horario_reprogamacion
+      console.log(clave_horario_reprogamacion + " clave horarios de reprogramacion en guardar turno" + dni + " clave nueva " + clave_nueva)
+      const reprogramacion = await Agenda.createTurno(dni, 4, clave_nueva)
+      console.log(reprogramacion)
 
-  }},
+      await Agenda.updateEstadoTurnoAgenda(1, dni, clave_horario_reprogamacion)
+      if (reprogramacion) {
+        res.render("agenda/confirmacionTurno", { reprogramacion: reprogramacion })
+      } else {
+        res.render("agenda/confirmacionTurno")
+      }
+    }
+    catch (error) {
+      console.error('Error al reprogramar turno horario:', error);
+
+    }
+  },
 
   async seleccionarHorarioOnline(req, res) {
     const clave_horario = req.body.clave_horario;
@@ -281,9 +298,10 @@ module.exports = {
       const dni = req.query.dni
       const fecha_turno = req.query.fecha
       const clave_horario = req.query.clave_horario
-      console.log("fecha y dni reprogramacion en pagina de horarios de agenda "+dni+" "+fecha_turno+"clave horario de horarios agenda"+clave_horario)
+      const clave_horario_reprogamacion = req.query.clave_horario_reprogamacion
+      console.log("fecha y dni reprogramacion en pagina de horarios de agenda " + dni + " " + fecha_turno + "clave horario de horarios agenda" + clave_horario_reprogamacion)
       const especialidad = req.query.nombre_especialidad
-      console.log("especialidad ....." + especialidad)
+      console.log("especialidad .Reprogramacion agenda medica" + especialidad)
       const medico = req.query.nombre_completo
       console.log(medico + " medico")
       const clave_agenda = req.query.clave_agenda
@@ -310,7 +328,7 @@ module.exports = {
       });
       //console.log(gruposPorFecha)
 
-      res.render("agenda/mostrarAgendaPorMedicoReprogramar", { especialidad: especialidad, medico: medico, gruposPorFecha: gruposPorFecha, dni, clave_horario});
+      res.render("agenda/mostrarAgendaPorMedicoReprogramar", { especialidad: especialidad, medico: medico, gruposPorFecha: gruposPorFecha, dni, clave_horario, clave_horario_reprogamacion });
     } catch (error) {
       console.error('Error al obtener la agenda:', error);
       res.status(500).send('Error al obtener la agenda');
@@ -318,18 +336,47 @@ module.exports = {
   },
   async horarioPorAgendaMedico(req, res) {
     try {
+      
       const dni = req.query.dni
       const fecha_turno = req.query.fecha
-      console.log("fecha y dni reprogramacion en pagina de horarios de agenda "+dni+" "+fecha_turno)
-      const especialidad = req.query.nombre_especialidad
+      console.log("fecha y dni reprogramacion en pagina de horarios de agenda " + dni + " " + fecha_turno)
+      var especialidad = req.query.nombre_especialidad
+
+      if (especialidad == undefined) {
+        especialidad = req.body.nombre_especialidad
+      }
+
+
       console.log("especialidad ....." + especialidad)
       const medico = req.query.nombre_completo
-      console.log(medico + " medico")
       const clave_agenda = req.query.clave_agenda
-      //console.log("clave agnda de horarios " + clave_agenda)
+      var sobreturno = null
+      var cantidadSobreturnosDisp =0
+
+      const cantidadHorarios = await Agenda.countHorariosAgendaHoy(clave_agenda)
+
+      //  COMPARA LOS HORARIOS DE UNA FECHA Y AGENDA CON LOS TURNOS DE LA MISMA
+      
+      if (cantidadHorarios[0].cantidad_horarios > 0) {
+        const cantidadTurnos = await Agenda.countTurnosHoy(clave_agenda)
+        
+        if (cantidadTurnos[0].cantidad_turnos == cantidadHorarios[0].cantidad_horarios) {
+          const sobreturnosAgenda = await Agenda.cantidadSobreturnoPorAgenda(clave_agenda)
+          const sobreturnosPorDia = await Agenda.cantidadSobreturnoPorDia(clave_agenda)
+          console.log("turnos: " + cantidadTurnos[0].cantidad_turnos + " horarios: " + cantidadHorarios[0].cantidad_horarios)
+          if (sobreturnosAgenda[0].cantidad_sobreturnos_agenda > sobreturnosPorDia[0].cantidad_sobreturnos) {
+            sobreturno = "sobreturno"
+            cantidadSobreturnosDisp = (sobreturnosAgenda[0].cantidad_sobreturnos_agenda-sobreturnosPorDia[0].cantidad_sobreturnos)
+            console.log("cantidad sobreturnos "+cantidadSobreturnosDisp)
+          }
+        }
+      }
+
+      console.log(sobreturno + " existe sobreturnos")
+
       const agendaMedico = await Agenda.getHorariosPorMedico(clave_agenda);
       const fecha = agendaMedico.fecha
-      //console.log(fecha)
+
 
       agendaMedico.forEach(horario => {
         const fecha = new Date(horario.fecha);
@@ -349,7 +396,7 @@ module.exports = {
       });
       //console.log(gruposPorFecha)
 
-      res.render("agenda/mostrarAgendaPorMedico", { especialidad: especialidad, medico: medico, gruposPorFecha: gruposPorFecha, dni});
+      res.render("agenda/mostrarAgendaPorMedico", { especialidad: especialidad, medico: medico, gruposPorFecha: gruposPorFecha, dni, sobreturno, clave_agenda, cantidadSobreturnosDisp });
     } catch (error) {
       console.error('Error al obtener la agenda:', error);
       res.status(500).send('Error al obtener la agenda');
@@ -435,6 +482,8 @@ module.exports = {
   },
   //VER TURNOS POR AGENDA
   async verTurnos(req, res) {
+
+
     try {
       const clave_agenda = req.query.clave_agenda
       console.log(clave_agenda + " req de clave agenda")
@@ -611,6 +660,13 @@ module.exports = {
       res.status(500).send('Error al obtener Turnos');
     }
   },
+  //CONTROLADOR PARA INSERTAR SOBRETURNOS
+  //PARAMETROS: fecha_sobreturno,clave_agenda, dni, clave_estado, motivo_consulta
+  async agregarSobreturnos(req, res) {
 
 
-};
+
+
+
+  }
+}

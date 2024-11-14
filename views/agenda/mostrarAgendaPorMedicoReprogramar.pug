@@ -24,9 +24,9 @@ block contenido
                   form.mx-5(action="/seleccionar/reprogramacion" method="POST" )
                         input(type="hidden" name="fecha" value=hora.fecha)
                         input(type="hidden" name="hora_inicio" value=hora.hora_inicio)
-                        input(type="hidden" name="clave_horarios" value=hora.clave_horarios)
+                        input(type="text" name="clave_horarios" value=hora.clave_horarios)
                         input(type="hidden" name="dni" value=dni)
-                        input(type="hidden" name="clave_horario" value= clave_horario)
+                        input(type="text" name="clave_horario_reprogamacion" value= clave_horario_reprogamacion)
                         button.btn.btn-outline-primary(type='submit') #{hora.hora_inicio} 
         
          

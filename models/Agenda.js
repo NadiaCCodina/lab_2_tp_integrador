@@ -243,7 +243,7 @@ const Agenda = {
       const conn = await createConnection()
       const [result] = await conn.query("INSERT INTO `turno`(`dni`, `clave_estado`, `clave_horario`) VALUES (?,?,?)",
         [dni, clave_estado, clave_horario]
-
+       
       )
       return result.affectedRows == 1
     } catch (error) {
@@ -278,7 +278,7 @@ const Agenda = {
 
     }
   },
-  
+
   async getTurnoHorario(clave_horario) {
     try {
       connection = await createConnection();
@@ -321,14 +321,14 @@ const Agenda = {
       const conn = await createConnection()
       const [medico] = await conn.query("SELECT `clave_agenda`, `clave_sucursal`, `clave_clasificacion`, agenda.matricula_medico, `cantidad_sobreturno`, persona.nombre_completo, nombre_especialidad, especialidad.clave_especialidad FROM agenda, medico, persona, especialidad_medico, especialidad WHERE agenda.matricula_medico = especialidad_medico.matricula AND especialidad_medico.clave_medico = medico.clave_medico AND medico.dni = persona.dni AND especialidad.clave_especialidad = especialidad_medico.clave_especialidad AND clave_agenda = ?",
         [clave_agenda])
-        console.log(medico+"medico en buscar por clave agenda modelo")
+      console.log(medico + "medico en buscar por clave agenda modelo")
       return medico
     } catch (error) {
       return false
     }
   },
 
-  async getTurnosPorEstado(clave_agenda,clave_estado) {
+  async getTurnosPorEstado(clave_agenda, clave_estado) {
     try {
       connection = await createConnection();
       const [turnos] = await connection.query("SELECT turno.dni, turno.clave_estado, `clave_horario`, fecha, hora_inicio, nombre_completo, nombre_estado FROM `turno`, horario, persona, estado_turno WHERE persona.dni = turno.dni AND turno.clave_horario = horario.clave_horarios AND estado_turno.clave_estado = turno.clave_estado and horario.clave_agenda= ? AND (? = 0 OR turno.clave_estado = ?);",
@@ -348,10 +348,10 @@ const Agenda = {
         "INSERT INTO `lista_espera` (`dni`, `clave_agenda`, `fecha`) VALUES (?, ?, ?)",
         [dni, clave_agenda, fecha]
       );
-  
+
       // Cierra la conexión después de ejecutar la consulta
       await conn.end();
-  
+
       return result.affectedRows == 1;
     } catch (error) {
       console.error("Error al insertar en la lista de espera:", error);
@@ -360,16 +360,16 @@ const Agenda = {
   },
 
   ///Busca registro en lista de espera por fecha y clave
- ////Parametros: 
- ///date: fecha
- ////clave_agenda: clave_agenda
+  ////Parametros: 
+  ///date: fecha
+  ////clave_agenda: clave_agenda
 
   async findListByDate(date, clave_agenda) {
     try {
       const conn = await createConnection();
       const [result] = await conn.query(
         "SELECT * FROM `lista_espera` WHERE fecha = ? AND clave_agenda = ?",
-        [date, clave_agenda] 
+        [date, clave_agenda]
       );
       return result;
     } catch (error) {
@@ -377,19 +377,19 @@ const Agenda = {
       return false;
     }
   },
-  
+
   ////Busca registro en la tabla lista de espera 
   ///Parametros:
   ////dni: dni del paciente
   ///date : fecha
   ///clave_agenda: clave_agenda
 
-  async findList(dni, date,clave_agenda){
+  async findList(dni, date, clave_agenda) {
     try {
       const conn = await createConnection();
       const [result] = await conn.query(
         "SELECT * FROM `lista_espera` WHERE fecha = ? AND clave_agenda = ? AND dni= ?",
-        [date, clave_agenda, dni] 
+        [date, clave_agenda, dni]
       );
       return result;
     } catch (error) {
@@ -398,16 +398,16 @@ const Agenda = {
     }
   },
 
-/////Borra registro de la tabla lista de espera con la clave de la tabla
-////Parametros:
-////Clave: clave_lista_espera
+  /////Borra registro de la tabla lista de espera con la clave de la tabla
+  ////Parametros:
+  ////Clave: clave_lista_espera
 
-  async deleteList(clave){
+  async deleteList(clave) {
     try {
       const conn = await createConnection();
       const [result] = await conn.query(
         "DELETE FROM `lista_espera` WHERE clave_lista_espera = ?",
-        [clave] 
+        [clave]
       );
       return result;
     } catch (error) {
@@ -420,13 +420,13 @@ const Agenda = {
   ////// parametros:
   //////clave: clave_horario
 
-  async findScheduleByKey(clave){
+  async findScheduleByKey(clave) {
 
     try {
       const conn = await createConnection();
       const [result] = await conn.query(
         "SELECT * FROM `horario` WHERE clave_horarios = ? ",
-        [clave] 
+        [clave]
       );
       return result;
     } catch (error) {
@@ -434,30 +434,98 @@ const Agenda = {
       return false;
     }
 
-  }, 
+  },
 
-   ////Elimina registro de la tabla de lista de espera si existe
-   //// Parametros:
-   ////dni: dni del paciente
-   ///clave_horario: clave_horario
+  ////Elimina registro de la tabla de lista de espera si existe
+  //// Parametros:
+  ////dni: dni del paciente
+  ///clave_horario: clave_horario
 
-  async deleteRecordFromList(dni ,clave_horario){
-    
-    try{ 
-    const horario = await this.findScheduleByKey(clave_horario)
-    const lista   = await this.findList(dni, horario[0].fecha, horario[0].clave_agenda)
-    if (lista.length > 0){ 
-    this.deleteList(lista[0].clave_lista_espera)
-    return  true;
-     }
-    
-      } catch(error){
-        console.error("Error al buscar lista:", error);
-        return false;
+  async deleteRecordFromList(dni, clave_horario) {
+
+    try {
+      const horario = await this.findScheduleByKey(clave_horario)
+      const lista = await this.findList(dni, horario[0].fecha, horario[0].clave_agenda)
+      if (lista.length > 0) {
+        this.deleteList(lista[0].clave_lista_espera)
+        return true;
       }
 
+    } catch (error) {
+      console.error("Error al buscar lista:", error);
+      return false;
+    }
+
+  },
+
+  async createSobreturnos(fecha_sobreturno, clave_agenda, dni, motivo_consulta) {
+    try {
+      const conn = await createConnection();
+      const [result] = await conn.query("INSERT INTO `sobre_turnos`( `fecha_sobreturno`, `clave_agenda`, `dni`, `clave_estado`, `motivo_consulta`, `fecha_creacion`) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP())",
+        [fecha_sobreturno, clave_agenda, dni, 4, motivo_consulta]
+
+
+      )
+      return result.affectedRows == 1
+    } catch (error) {
+      console.error("Error al insertar sobreturno:", error);
+      return false;
+    }
+
+  },
+  async countTurnosHoy(clave_agenda) {
+    try {
+      const conn = await createConnection();
+      const [cantidad_turnos] = await conn.query("SELECT COUNT(*) AS cantidad_turnos FROM turno t JOIN horario h ON t.clave_horario = h.clave_horarios WHERE h.fecha = CURDATE() AND h.clave_agenda = ?",
+      [clave_agenda])
+      return cantidad_turnos
+
+    }catch (error) {
+      console.error("Error al contar turnos", error);
+      return false;
+    }
+  },
+
+  async countHorariosAgendaHoy(clave_agenda) {
+    try {
+      const conn = await createConnection();
+      const [cantidad_horarios] = await conn.query("SELECT COUNT(*) AS cantidad_horarios  FROM horario WHERE fecha = CURDATE() and clave_agenda = ?",
+      [clave_agenda])
+      return cantidad_horarios
+
+    }catch (error) {
+      console.error("Error al contar turnos", error);
+      return false;
+    }
+  },
+
+  async cantidadSobreturnoPorDia(clave_agenda){
+    try {
+      const conn = await createConnection();
+      const [cantidad_sobreturnos] = await conn.query("SELECT COUNT(*) AS cantidad_sobreturnos FROM sobre_turnos WHERE DATE(`fecha_sobreturno`) = CURDATE() and `clave_agenda` =?", 
+        [clave_agenda])
+        return cantidad_sobreturnos
+  }catch (error) {
+    console.error("Error al contar sobreturnos", error);
+    return false;
   }
-  
+},
+
+async cantidadSobreturnoPorAgenda(clave_agenda){
+  try {
+    const conn = await createConnection();
+    const [cantidad_sobreturnos_agenda] = await conn.query("SELECT  `cantidad_sobreturno` AS cantidad_sobreturnos_agenda FROM `agenda` WHERE `clave_agenda` = ?", 
+      [clave_agenda])
+      return cantidad_sobreturnos_agenda
+}catch (error) {
+  console.error("Error al contar sobreturnos", error);
+  return false;
 }
+}
+}
+
+
+
+
 
 module.exports = Agenda
