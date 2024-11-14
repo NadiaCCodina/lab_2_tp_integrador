@@ -20,7 +20,7 @@ router.get("/paciente/lista", controladorUsuario.isAuthenticatedOp, controlador.
 router.post("/paciente/busqueda/nombre", controlador.mostrarPorNombre)
 router.post('/paciente/editar', controlador.actualizarPaciente)
 router.get("/paciente/borrar", controladorUsuario.isAuthenticatedOp, controlador.borrarPaciente);
-router.get("/paciente/editar", controlador.vistaActualizarPaciente);
+router.get("/paciente/editarP", controlador.vistaActualizarPaciente);
 router.post("/paciente/busqueda/dni", controlador.mostrarPorDni);
 router.post("/ver/paciente", controladorUsuario.isAuthenticatedOp, controlador.mostrarPorDni);
 

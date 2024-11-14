@@ -49,16 +49,16 @@ const Paciente = {
     async insertPatient(patient) {
 
         const conn = await createConnection();
-        const { dni, obra_social, dni_imagen } = patient;
+        const { dni, obra_social } = patient;
 
         try {
             const [patientResult] = await conn.query(
-                "INSERT INTO paciente (obra_social, dni, dni_imagen) VALUES (?, ?, ?)",
-                [obra_social, dni, dni_imagen]
+                "INSERT INTO paciente (obra_social, dni) VALUES (?, ?)",
+                [obra_social, dni]
             );
             return patientResult.affectedRows === 1;
-        } catch {
-            console.log("ERROR PROVISORIO")
+        } catch (error) {
+            console.log(error)
         }
     },
 
@@ -99,8 +99,8 @@ const Paciente = {
 
         try {
             const [patientResult] = await conn.query(
-                "UPDATE paciente SET obra_social = ?,  dni_imagen =? WHERE dni = ?",
-                [obra_social, dni_imagen, dni]
+                "UPDATE paciente SET obra_social = ? WHERE dni = ?",
+                [obra_social, dni]
             );
             return patientResult.affectedRows === 1;
         } catch {
