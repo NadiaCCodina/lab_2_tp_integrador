@@ -81,3 +81,18 @@ block contenido
                 input(type="hidden" name="dni" value=turno.dni)
                 input(type="hidden" name="clave_especialidad" value=`${medico[0].clave_especialidad}`)
                 button.btn.btn-primary.me-5.p-2(type="submit") transferir turno     
+
+
+                table.text-center.table.table-bordered.table-hover
+                      thead.thead-light
+                        tr
+                          th Paciente
+
+                          th Fecha
+                      
+                      tbody
+                        each sobreturno in sobreTurnosAgenda
+                          tr
+                            td= sobreturno.nombre_completo  
+                            td= sobreturno.fecha_sobreturno
+    
