@@ -65,11 +65,11 @@ const Agenda = {
   },
 
 
-  async creatAgenda(clave_clasificacion, matricula, sobreturnos, intervalo) {
+  async creatAgenda(clave_sucursal, clave_clasificacion, matricula, sobreturnos, intervalo) {
     try {
       const conn = await createConnection()
-      const [result] = await conn.query("INSERT INTO `agenda`(`clave_sucursal`, `clave_clasificacion`, `matricula_medico`, `cantidad_sobreturno`, `intervalo_minutos`) VALUES (1,?,?,?,?)",
-        [clave_clasificacion, matricula, sobreturnos, intervalo]
+      const [result] = await conn.query("INSERT INTO `agenda`(`clave_sucursal`, `clave_clasificacion`, `matricula_medico`, `cantidad_sobreturno`, `intervalo_minutos`) VALUES (?,?,?,?,?)",
+        [clave_sucursal, clave_clasificacion, matricula, sobreturnos, intervalo]
 
       )
       return result.affectedRows == 1
@@ -83,6 +83,21 @@ const Agenda = {
     try {
       const conn = await createConnection()
       const [agendas] = await conn.query("SELECT `clave_agenda`, `clave_sucursal`, `clave_clasificacion`, `matricula_medico`, persona.nombre_completo,especialidad.nombre_especialidad,`cantidad_sobreturno`, `intervalo_minutos` FROM `agenda`, medico, especialidad_medico, persona , especialidad WHERE especialidad_medico.matricula= agenda.matricula_medico AND especialidad_medico.clave_medico = medico.clave_medico AND persona.dni = medico.dni AND especialidad.clave_especialidad = especialidad_medico.clave_especialidad;")
+      return agendas
+    } catch (error) {
+      return false
+
+    }
+  },
+
+  ////Busca las agendas segun la sucursal
+  ////param: clave_sucursal : clave_sucursal
+  async getAgendasByBranch(clave_sucursal) {
+    try {
+      const conn = await createConnection()
+      const [agendas] = await conn.query("SELECT `clave_agenda`, `clave_sucursal`, `clave_clasificacion`, `matricula_medico`, persona.nombre_completo,especialidad.nombre_especialidad,`cantidad_sobreturno`, `intervalo_minutos` FROM `agenda`, medico, especialidad_medico, persona , especialidad WHERE especialidad_medico.matricula= agenda.matricula_medico AND especialidad_medico.clave_medico = medico.clave_medico AND persona.dni = medico.dni AND especialidad.clave_especialidad = especialidad_medico.clave_especialidad AND agenda.clave_sucursal = ?;", 
+        [clave_sucursal]
+      )
       return agendas
     } catch (error) {
       return false
@@ -147,23 +162,40 @@ const Agenda = {
     }
   },
 
+  async agendasPorEspecialidadYSucursar(clave_especialidad, clave_sucursal){
+    try {
+      const conn = await createConnection()
+      const [agendasEspecialidad] = await conn.query("SELECT `clave_agenda`, `clave_sucursal`, `clave_clasificacion`, `matricula_medico`, `cantidad_sobreturno`, `intervalo_minutos`, nombre_especialidad, persona.nombre_completo FROM `agenda`, especialidad, especialidad_medico, medico, persona WHERE agenda.matricula_medico = especialidad_medico.matricula AND especialidad_medico.clave_especialidad = especialidad.clave_especialidad AND medico.dni= persona.dni  AND medico.clave_medico = especialidad_medico.clave_medico AND especialidad.clave_especialidad= ? AND agenda.clave_sucursal = ?",
+        [clave_especialidad, clave_sucursal]
+      )
+      console.log(agendasEspecialidad)
+      return agendasEspecialidad
+    } catch (error) {
+      return false
+
+    }
+  },
+
   async calculateSchedule(fecha, fecha_fin, hora_inicio, hora_fin, clave_agenda) {
 
     try {
 
-      const conn = await createConnection()
+      const conn              = await createConnection()
 
-      const agenda = await this.getAgendaById(clave_agenda)
+      const agenda            = await this.getAgendaById(clave_agenda)
       const intervalo_minutos = agenda[0].intervalo_minutos
       // Convertir las fechas y horas a objetos Date
-      let fechaActual = new Date(fecha);
-      const fechaFin = new Date(fecha_fin);
-      const horaInicio = hora_inicio.split(':').map(Number);
-      const horaFin = hora_fin.split(':').map(Number);
+      let   fechaActual       = new Date(fecha);
+      const fechaFin          = new Date(fecha_fin);
+      const horaInicio        = hora_inicio.split(':').map(Number);
+      const horaFin           = hora_fin.split(':').map(Number);
+      let   resultDescription = []
+      let   result            = []
+      var   contadorError     = 0
+    
 
 
-
-
+      
       // Bucle para recorrer cada día entre fecha y fecha_fin
       while (fechaActual <= fechaFin) {
 
@@ -173,14 +205,24 @@ const Agenda = {
 
         let finTurno = new Date(fechaActual);
         finTurno.setHours(horaFin[0], horaFin[1], 0);
-
-        //consulta para controlar que no se repitan horarios
-        const [result] = await conn.query(
-          "SELECT * FROM `horario` WHERE horario.fecha = ? and horario.hora_inicio = ?",
-          [fechaActual.toISOString().split('T')[0], inicioTurno.toTimeString().split(' ')[0]]
+       
+        try {
+          [resultDescription] = await conn.query(
+          "SELECT * FROM `horario` WHERE horario.fecha = ? and horario.descripcion != ? AND clave_agenda = ?",
+          [fechaActual.toISOString().split('T')[0], "",  clave_agenda ]
         );
+        
+        //consulta para controlar que no se repitan horarios
+          [result] = await conn.query(
+          "SELECT * FROM `horario` WHERE horario.fecha = ? and horario.hora_inicio = ? AND clave_agenda = ?",
+          [fechaActual.toISOString().split('T')[0], inicioTurno.toTimeString().split(' ')[0], clave_agenda ]
+        );
+        } catch(error){
+          console.log(error)
+        };
 
-        if (result.length === 0) {
+
+        if (result.length === 0 & resultDescription.length === 0) {
 
 
           while (inicioTurno < finTurno) {
@@ -205,16 +247,22 @@ const Agenda = {
 
         } else {
           fechaActual.setDate(fechaActual.getDate() + 1);
+          contadorError =+ 1
+
         }
 
         // Avanzar al siguiente día
         fechaActual.setDate(fechaActual.getDate() + 1);
+        
+
       }
 
       console.log('Horarios generados y guardados con éxito.');
     } catch (error) {
       console.error('Error al generar los horarios:', error);
     }
+    return contadorError; 
+           
   },
 
 
@@ -521,8 +569,133 @@ async cantidadSobreturnoPorAgenda(clave_agenda){
   console.error("Error al contar sobreturnos", error);
   return false;
 }
-}
-}
+},
+
+
+
+  
+async vacationSchedule(fecha, fecha_fin,  clave_agenda) {
+      var contadorError = 0;   
+
+  try {
+
+    const conn = await createConnection()
+
+
+    let fechaActual = new Date(fecha);
+    const fechaFin = new Date(fecha_fin);
+
+
+
+
+    // Bucle para recorrer cada día entre fecha y fecha_fin
+    while (fechaActual <= fechaFin) {
+
+  
+      const [result] = await conn.query(
+        "SELECT * FROM `horario` WHERE horario.fecha = ? AND clave_agenda = ? ",
+        [fechaActual.toISOString().split('T')[0], clave_agenda]
+      );
+
+      if (result.length === 0) {
+
+
+            await conn.query(
+              'INSERT INTO horario ( fecha,clave_agenda, descripcion) VALUES ( ?, ?, "vacaciones")',
+              [fechaActual.toISOString().split('T')[0], clave_agenda]
+            );
+       
+
+      } else {
+        fechaActual.setDate(fechaActual.getDate() + 1);
+        contadorError =+ 1;
+      }
+
+      // Avanzar al siguiente día
+      fechaActual.setDate(fechaActual.getDate() + 1);
+    }
+
+    console.log('Horarios generados y guardados con éxito.');
+  } catch (error) {
+    console.error('Error al generar los horarios:', error);
+  }
+  return contadorError
+},
+
+ 
+async holidaySchedule(fecha, fecha_fin,  clave_agenda) {
+      var contadorError = 0
+
+  try {
+    const conn = await createConnection()
+
+    let fechaActual = new Date(fecha);
+    const fechaFin = new Date(fecha_fin);
+
+    // Bucle para recorrer cada día entre fecha y fecha_fin
+    while (fechaActual <= fechaFin) {
+
+      
+  
+      const [result] = await conn.query(
+        "SELECT * FROM `horario` WHERE horario.fecha = ? AND clave_agenda = ? ",
+        [fechaActual.toISOString().split('T')[0], clave_agenda]
+      );
+
+      if (result.length === 0) {
+
+            await conn.query(
+              'INSERT INTO horario ( fecha,clave_agenda, descripcion) VALUES ( ?, ?, "feriado")',
+              [fechaActual.toISOString().split('T')[0], clave_agenda]
+            );
+
+      } else {
+        fechaActual.setDate(fechaActual.getDate() + 1);
+        contadorError =+ 1
+
+      }
+      // Avanzar al siguiente día
+      fechaActual.setDate(fechaActual.getDate() + 1);
+    }
+
+    console.log('Horarios generados y guardados con éxito.');
+  } catch (error) {
+    console.error('Error al generar los horarios:', error);
+  }
+
+  return contadorError;
+},
+
+//Busca en la tabla agenda por matricula de medico
+  ////parm 
+///matricula : matricula_medico
+
+  async getAgendaByMatricula(matricula){
+
+    try {
+      const conn = await createConnection()
+      const [agendaMedico] = await conn.query("SELECT * FROM `agenda` WHERE matricula_medico= ?;",
+        [matricula]
+      )
+
+      return agendaMedico
+    } catch (error) {
+      return false
+    }
+  }, 
+  async deleteAgenda(clave_agenda){
+    try {
+      const conn = await createConnection()
+      const [agendaMedico] = await conn.query("DELETE FROM `agenda` WHERE clave_agenda= ?;",
+        [clave_agenda]
+      )
+
+      return agendaMedico
+    } catch (error) {
+      return false
+    }
+  }
+  }
 
 
 

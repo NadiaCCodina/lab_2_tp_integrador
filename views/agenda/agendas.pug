@@ -1,62 +1,66 @@
 extends ../layoutOp
 
+block contenido  
+    h1 Agendas
+    .container.mt-4
+        .row.justify-content-center.mb-4
+            .col-md-8
+                h3.text-center.text-primary.mb-3 Seleccione la especialidad a buscar
+                form(action="/seleccionar/agendas/especialidad" method="get")
+                    .input-group
+                        select#especialidadInput.form-select(name='clave_especialidad')
+                            each especialidad in especialidades
+                                option(value=`${especialidad.clave_especialidad}`)= especialidad.nombre_especialidad
+                        button.btn.btn-primary(type="submit") Seleccionar
 
-block contenido     
-    h1  Agendas
-        h3.form-control-lg Seleccione la especialidad a buscar
-        
-        form.form-control-lg(action="/seleccionar/agendas/especialidad" method="get")
+        .row.justify-content-center.mb-4
+            .col-md-8
+                h3.text-center.text-secondary.mb-3 Ingrese el nombre del Médico
+                form(action="/seleccionar/agendas/medico" method="get")
+                    .input-group
+                        input.form-control(type='text' name='nombre_completo' placeholder='Nombre del Médico' required)
+                        button.btn.btn-primary(type="submit") Buscar
 
-            select#especialidadInput.form-control-lg(name='clave_especialidad')
-                each especialidad in especialidades
-                    option(value=`${especialidad.clave_especialidad}`)= especialidad.nombre_especialidad
 
-            input.btn.btn-primary(type="submit" value="Seleccionar")
-        form(action="/seleccionar/agendas/medico" method="get")
-        label.form-control-lg Ingrese el nombre del Medico
-            input(type='text' name='nombre_completo', require  )
-            input.btn.btn-primary(type="submit" value="Buscar")
-
-        .row.row-cols-1.row-cols-md-2.g-4    
-            each agenda in agendas
-            
-                .col
-                    .card.text-center
-                        .card-header.text-dark.bg-info 
-                            | Dr./Dra.
-                        .card-body
-                            h4.card-title #{agenda.nombre_completo}
-                            h5.card-text #{agenda.nombre_especialidad}
-                            br
-                            if !dni 
-                          
-                            
-                                form(method='get' action='/agendas/horario/medico')
-                                    input(type='hidden' name='clave_agenda', value=agenda.clave_agenda) 
-                                    input(type='hidden' name='nombre_completo', value=agenda.nombre_completo) 
-                                    input(type='hidden' name='nombre_especialidad', value=agenda.nombre_especialidad) 
-                            
-                                    button.btn.btn-outline-success.mx-2.p-2(style='width: 200px;' type='submit') Agendar Turno
-                                
-                                form(method='get' action='/turnos/agenda')
-                                    input(type='hidden' name='clave_agenda', value=agenda.clave_agenda)
-                                    button.btn.btn-outline-primary.mx-2.p-2(style='width: 200px;' type='submit') Gestionar Turnos    
-                                
-                                form(method='get' action='/gestorHorarios')
-                                    input(type='hidden' name='clave_agenda', value=agenda.clave_agenda)
-                                    button.btn.btn-outline-info.mx-2.p-2(style='width: 200px;' type='submit') Gestionar Horarios Agenda    
-
-                                form(method='get', action='/listaDeEspera')
-                                    input(type='hidden', name='clave_agenda', value=agenda.clave_agenda)
-                                    button.btn.btn-primary.mx-2.p-2(style='width: 200px;' type='submit') Lista de espera   
-                            else 
-                                form(method='get' action='/reprogramar/turno')
-                                    input(type='hidden' name='clave_agenda', value=agenda.clave_agenda) 
-                                    input(type='hidden' name='nombre_completo', value=agenda.nombre_completo) 
-                                    input(type='hidden' name='nombre_especialidad', value=agenda.nombre_especialidad) 
-                                    input(type='text' name='clave_horario_reprogamacion', value=clave_horario_reprogamacion  )    
-                                    input(type='hidden' name='dni', value=dni  )    
-                                    input(type='hidden' name='fecha', value=fecha  )  
-                                    button.btn.btn-outline-success.mx-2.p-2(style='width: 200px;' type='submit') Reprogramar Turno            
-                 
-    
+                if error
+                    .alert.alert-warning.mt-3
+                        p.mb-0 #{error}
+    .row.row-cols-1.row-cols-md-2.g-4.mt-4
+        each agenda in agendas
+            .col
+                .card.text-center.shadow-sm
+                    .card-header.text-white.bg-info
+                        | Dr./Dra.
+                    .card-body
+                        h4.card-title.text-dark #{agenda.nombre_completo}
+                        h5.card-text.text-muted #{agenda.nombre_especialidad}
+                        h6.card-text.text-muted  Agenda numero:
+                        h6.card-text.text-muted #{agenda.clave_agenda} 
+                        br
+                        if !dni 
+                            form(method='get' action='/agendas/horario/medico')
+                                input(type='hidden' name='clave_agenda' value=agenda.clave_agenda)
+                                input(type='hidden' name='nombre_completo' value=agenda.nombre_completo)
+                                input(type='hidden' name='nombre_especialidad' value=agenda.nombre_especialidad)
+                                button.btn.btn-outline-success.mx-2.p-2(style='width: 200px;' type='submit') Agendar Turno
+                            form(method='get' action='/turnos/agenda')
+                                input(type='hidden' name='clave_agenda' value=agenda.clave_agenda)
+                                button.btn.btn-outline-info.mx-2.p-2(style='width: 200px;' type='submit') Gestionar Turnos    
+                            form(method='get' action='/gestorHorarios')
+                                input(type='hidden' name='clave_agenda' value=agenda.clave_agenda)
+                                button.btn.btn-outline-info.mx-2.p-2(style='width: 200px;' type='submit') Gestionar Horarios Agenda    
+                            form(method='get' action='/listaDeEspera')
+                                input(type='hidden' name='clave_agenda' value=agenda.clave_agenda)
+                                button.btn.btn-outline-info.mx-2.p-2(style='width: 200px;' type='submit') Lista de espera
+                            form(method='get' action='/borrarAgenda')
+                                input(type='hidden' name='clave_agenda' value=agenda.clave_agenda)
+                                button.btn.btn-outline-info.mx-2.p-2(style='width: 200px;' type='submit') Borrar agenda
+                        else 
+                            form(method='get' action='/reprogramar/turno')
+                                input(type='hidden' name='clave_agenda', value=agenda.clave_agenda) 
+                                input(type='hidden' name='nombre_completo', value=agenda.nombre_completo) 
+                                input(type='hidden' name='nombre_especialidad', value=agenda.nombre_especialidad) 
+                                input(type='text' name='clave_horario_reprogamacion', value=clave_horario_reprogamacion  )    
+                                input(type='hidden' name='dni', value=dni  )    
+                                input(type='hidden' name='fecha', value=fecha  )  
+                                button.btn.btn-outline-success.mx-2.p-2(style='width: 200px;' type='submit') Reprogramar Turno            

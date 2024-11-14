@@ -33,7 +33,7 @@ router.post('/agregar/sobreturno', controlador.agregarSobreturnos);
 
 router.get('/agendas/turno/medico/online', controlador.horarioPorAgendaMedicoOnline);
 router.post('/seleccionar/online', controlador.seleccionarHorarioOnline);
-
+router.get("/borrarAgenda", controlador.borrarAgenda)
 router.get("/listaDeEspera", controlador.listaDeEspera )
 router.post("/lista", controlador.agregarALista )
 

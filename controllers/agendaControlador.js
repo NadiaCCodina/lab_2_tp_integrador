@@ -5,6 +5,8 @@ const Medico =
   require("../models/Medico");
 const Paciente =
   require("../models/Paciente");
+const Usuario =
+  require("../models/Usuario");
 
 module.exports = {
 
@@ -37,7 +39,8 @@ module.exports = {
       const clave_especialidad = req.query.clave_especialidad
       console.log(fecha + " fecha y dni de trasnferir" + dni + " " + clave_especialidad)
       console.log("Entrando a vistaAgenda");
-      const agendas = await Agenda.getAgendas()
+      const clave_sucursal = req.query.clave_sucursal
+      const agendas = await Agenda.getAgendasByBranch(clave_sucursal)
       const especialidades = await EspecialidadMedico.getEspecialidades();
 
 
@@ -54,9 +57,10 @@ module.exports = {
       console.log("Entrando a vistaAgenda");
       const agendas = await Agenda.getAgendas()
       const especialidades = await EspecialidadMedico.getEspecialidades();
+      const sucursales = await Usuario.getBranches();
 
 
-      res.render("agenda/agendasOnline", { agendas: agendas, especialidades: especialidades });
+      res.render("agenda/agendasOnline", { agendas: agendas, especialidades: especialidades, sucursales: sucursales });
     } catch (error) {
       console.error("Error al obtener la agenda: ", error);
       res.status(500).send("Error interno del servidor");
@@ -92,33 +96,99 @@ module.exports = {
 
   },
 
+/////Registra horario segun la descripcion del mismo
   async registrarHorario(req, res) {
-
     const { fecha, fecha_fin, hora_inicio, hora_fin, clave_agenda } = req.body;
-
-    const horaInicio = new Date(`1970-01-01T${hora_inicio}:00`);
-    const horaFin = new Date(`1970-01-01T${hora_fin}:00`);
+  
     const fechaInicio = new Date(fecha);
     const fechaFin = new Date(fecha_fin);
-
+  
     // Verificar si la hora de fin es menor que la hora de inicio
-    if (horaFin <= horaInicio || fechaFin < fechaInicio) {
+    if (fechaFin < fechaInicio) {
       return res.render("agenda/gestorHorarios", {
-        error: 'Rango de horario o fechas incorrecto.',
+        error: 'Rango fechas incorrecto.',
         clave_agenda: clave_agenda
       });
-    } try {
+    }
+  
+    switch (req.body.descripcion) {
+      case "vacaciones":
+        try {
+          const cont = await Agenda.vacationSchedule(fecha, fecha_fin,clave_agenda);
+  
+          if (cont > 0) {  res.render("agenda/gestorHorarios", {
+            error: 'Existen fechas ya registradas, revisar agenda',
+            clave_agenda: clave_agenda
+          }); }
+               else {
+            res.render("agenda/gestorHorarios", {
+              error: 'Horario ingresado.',
+              clave_agenda: clave_agenda
+            });
+          }
+  
+        } catch (error) {
+          console.error("Error al crear un nuevo horario: ", error);
+          res.status(500).send("Error interno del servidor");
+        }
+        break;
+  
+      case "disponible":
+        const horaInicio = new Date(`1970-01-01T${hora_inicio}:00`);
+        const horaFin = new Date(`1970-01-01T${hora_fin}:00`);
+  
+        // Verificar si la hora de fin es menor que la hora de inicio
+        if (horaFin <= horaInicio) {
+          return res.render("agenda/gestorHorarios", {
+            error: 'Rango de horario incorrecto.',
+            clave_agenda: clave_agenda
+          });
+        }
+  
+        try {
+          const cont = await Agenda.calculateSchedule(fecha, fecha_fin, hora_inicio, hora_fin, clave_agenda);
+  
+          if (cont > 0) {  res.render("agenda/gestorHorarios", {
+            error: 'Existen fechas ya registradas, revisar agenda',
+            clave_agenda: clave_agenda
+          }); } 
+                else {
+            res.render("agenda/gestorHorarios", {
+              error: 'Horario ingresado.',
+              clave_agenda: clave_agenda
+            });
+          }
+  
+        } catch (error) {
+          console.error("Error al crear un nuevo horario: ", error);
+          res.status(500).send("Error interno del servidor");
+        }
+        break;
+  
+      case "feriado":
+        try {
+           const cont = await Agenda.holidaySchedule(fecha, fecha_fin, clave_agenda);
 
-      await Agenda.calculateSchedule(fecha, fecha_fin, hora_inicio, hora_fin, clave_agenda)
-
-      res.render("agenda/gestorHorarios", {
-        error: 'Horario ingresado.',
-        clave_agenda: clave_agenda
-      });
-
-    } catch (error) {
-      console.error("Error al crear un nuevo horario: ", error);
-      res.status(500).send("Error interno del servidor");
+           if (cont > 0) {  res.render("agenda/gestorHorarios", {
+            error: 'Existen fechas ya registradas, revisar agenda',
+            clave_agenda: clave_agenda
+          }); } else {
+            res.render("agenda/gestorHorarios", {
+              error: 'Horario ingresado.',
+              clave_agenda: clave_agenda
+            });
+          }
+           
+  
+        } catch (error) {
+          console.error("Error al crear un nuevo horario: ", error);
+          res.status(500).send("Error interno del servidor");
+        }
+        break;
+  
+      default:
+        // Bloque de código que se ejecuta si ninguno de los casos coincide
+        break;
     }
   },
 
@@ -190,8 +260,7 @@ module.exports = {
 
   async verEspecialidades(req, res) {
     const especialidades = await EspecialidadMedico.getEspecialidades();
-
-
+    const clave_sucursal = req.query.clave_sucursal
 
     console.log(especialidades)
 
@@ -199,7 +268,7 @@ module.exports = {
 
 
     if (especialidades) {
-      res.render("agenda/nuevaAgenda", { especialidades: especialidades })
+      res.render("agenda/nuevaAgenda", { especialidades: especialidades, clave_sucursal })
       console.log("entro al if de especialidad agenda");
     } else {
 
@@ -207,15 +276,17 @@ module.exports = {
   },
 
   async medicosPorEspecialidad(req, res) {
-    const clave_especialidad = req.query.clave_especialidad
+    const clave_especialidad   = req.query.clave_especialidad
     console.log(clave_especialidad + "clave especialidad")
     const medicos_especialidad = await EspecialidadMedico.getMedicosEspecialidad(clave_especialidad)
-    const especialidades = await EspecialidadMedico.getEspecialidades();
-    const especialidad = await EspecialidadMedico.getEspecialidad(clave_especialidad)
+    const especialidades       = await EspecialidadMedico.getEspecialidades();
+    const especialidad         = await EspecialidadMedico.getEspecialidad(clave_especialidad)
+    const clave_sucursal       = req.query.clave_sucursal 
+
     console.log(especialidad)
     //console.log(medicos_especialidad)
     if (medicos_especialidad) {
-      res.render("agenda/nuevaAgenda", { especialidades: especialidades, medicos_especialidad: medicos_especialidad, especialidad: especialidad })
+      res.render("agenda/nuevaAgenda", { especialidades: especialidades, medicos_especialidad: medicos_especialidad, especialidad: especialidad, clave_sucursal })
 
 
     } else {
@@ -227,28 +298,42 @@ module.exports = {
 
 
   async mostrarConfiguracionAgenda(req, res) {
-    const matricula = req.params.matricula
+    const matricula       = req.params.matricula
+    const clave_sucursal  = req.body.clave_sucursal
+    const agenda          = await Agenda.getAgendaByMatricula(matricula)
     console.log("matricula agenda" + matricula)
+    const error           = 'Ya existe agenda para el profesional seleccionado'
     const clasificaciones = await Agenda.clasificacionCustom()
-    res.render("agenda/agendaConfiguracion", { matricula: matricula, clasificaciones: clasificaciones })
+    const especialidades  = await EspecialidadMedico.getEspecialidades();
+
+    if(agenda.length === 0){
+      res.render("agenda/agendaConfiguracion", { matricula: matricula, clasificaciones: clasificaciones, clave_sucursal })
+    }else{ 
+    res.render("agenda/nuevaAgenda", { especialidades: especialidades,  clave_sucursal, error })
+  }
   },
 
   async guardarNuevaAgenda(req, res) {
-    const matriculaAgenda = req.body.matricula
-    const sobreturnos = req.body.sobreturnos
+    const matricula         = req.body.matricula
+    const sobreturnos       = req.body.sobreturnos
     const intervalo_minutos = req.body.intervalo_minutos
-    const clasificacion = req.body.clasificacion
-    const clasificaciones = await Agenda.clasificacionCustom()
-    console.log(matriculaAgenda + " matricula de guardar agenda " + sobreturnos + " " + intervalo_minutos + " " + clasificacion)
+    const clasificacion     = req.body.clasificacion
+    const clave_sucursal    = req.body.clave_sucursal
+    const especialidades    = await EspecialidadMedico.getEspecialidades();
+
+
+
+    console.log(matricula + " matricula de guardar agenda " + sobreturnos + " " + intervalo_minutos + " " + clasificacion)
+   
     try {
-      if (await Agenda.creatAgenda(clasificacion, matriculaAgenda, sobreturnos, intervalo_minutos)) {
+      if (await Agenda.creatAgenda(clave_sucursal, clasificacion, matricula, sobreturnos, intervalo_minutos)) {
         console.log("entro al if de guardar agenda")
-        res.render("agenda/agendaConfiguracion", { matriculaAgenda: matriculaAgenda, clasificaciones: clasificaciones })
+        res.render("agenda/nuevaAgenda", { especialidades: especialidades,  clave_sucursal, error : 'Agenda creada con exito' })
       }
 
     } catch (error) {
       console.error('Error al guardar la agenda:', error);
-      res.render("agenda/agendaConfiguracion", { matriculaAgenda: matriculaAgenda, clasificaciones: clasificaciones, error: error })
+      res.render("agenda/nuevaAgenda", { especialidades: especialidades,  clave_sucursal, error: 'error al ingresar agenda' })    
     }
   },
 
@@ -455,14 +540,19 @@ module.exports = {
     }
   },
 
+  //// Busca las agendas por especialidad 
+
   async agendaPorEspecialidadOnline(req, res) {
     try {
       const clave_especialidad = req.query.clave_especialidad
-      const agendas = await Agenda.agendasPorEspecialidad(clave_especialidad);
+      const clave_sucursal = req.query.clave_sucursal
+      const agendas = await Agenda.agendasPorEspecialidadYSucursar(clave_especialidad, clave_sucursal);
 
       const especialidades = await EspecialidadMedico.getEspecialidades();
+      const sucursales = await Usuario.getBranches();
 
-      res.render("agenda/agendasOnline", { agendas: agendas, especialidades: especialidades });
+
+      res.render("agenda/agendasOnline", { agendas: agendas, especialidades: especialidades, sucursales: sucursales });
     } catch (error) {
       console.error('Error al obtener la agenda:', error);
       res.status(500).send('Error al obtener la agenda');
@@ -660,13 +750,20 @@ module.exports = {
       res.status(500).send('Error al obtener Turnos');
     }
   },
-  //CONTROLADOR PARA INSERTAR SOBRETURNOS
-  //PARAMETROS: fecha_sobreturno,clave_agenda, dni, clave_estado, motivo_consulta
-  async agregarSobreturnos(req, res) {
 
+  async borrarAgenda(req, res){
+    const clave_agenda = req.query.clave_agenda
+    const especialidades = await EspecialidadMedico.getEspecialidades();
+    const clave_sucursal = req.query.clave_sucursal
+    const agendas = await Agenda.getAgendasByBranch(clave_sucursal)
+    
 
+      try{
+         await Agenda.deleteAgenda(clave_agenda)
+         res.render("agenda/agendas", { agendas:agendas, especialidades: especialidades, error: 'La agenda se borro con exito' });
+      }catch{
 
-
-
+      }
   }
-}
+
+};
