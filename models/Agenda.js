@@ -65,11 +65,11 @@ const Agenda = {
   },
 
 
-  async creatAgenda(clave_clasificacion, matricula, sobreturnos, intervalo) {
+  async creatAgenda(clave_sucursal, clave_clasificacion, matricula, sobreturnos, intervalo) {
     try {
       const conn = await createConnection()
-      const [result] = await conn.query("INSERT INTO `agenda`(`clave_sucursal`, `clave_clasificacion`, `matricula_medico`, `cantidad_sobreturno`, `intervalo_minutos`) VALUES (1,?,?,?,?)",
-        [clave_clasificacion, matricula, sobreturnos, intervalo]
+      const [result] = await conn.query("INSERT INTO `agenda`(`clave_sucursal`, `clave_clasificacion`, `matricula_medico`, `cantidad_sobreturno`, `intervalo_minutos`) VALUES (?,?,?,?,?)",
+        [clave_sucursal, clave_clasificacion, matricula, sobreturnos, intervalo]
 
       )
       return result.affectedRows == 1
@@ -182,19 +182,22 @@ const Agenda = {
 
     try {
 
-      const conn = await createConnection()
+      const conn              = await createConnection()
 
-      const agenda = await this.getAgendaById(clave_agenda)
+      const agenda            = await this.getAgendaById(clave_agenda)
       const intervalo_minutos = agenda[0].intervalo_minutos
       // Convertir las fechas y horas a objetos Date
-      let fechaActual = new Date(fecha);
-      const fechaFin = new Date(fecha_fin);
-      const horaInicio = hora_inicio.split(':').map(Number);
-      const horaFin = hora_fin.split(':').map(Number);
+      let   fechaActual       = new Date(fecha);
+      const fechaFin          = new Date(fecha_fin);
+      const horaInicio        = hora_inicio.split(':').map(Number);
+      const horaFin           = hora_fin.split(':').map(Number);
+      let   resultDescription = []
+      let   result            = []
+      var   contadorError     = 0
+    
 
 
-
-
+      
       // Bucle para recorrer cada día entre fecha y fecha_fin
       while (fechaActual <= fechaFin) {
 
@@ -204,14 +207,24 @@ const Agenda = {
 
         let finTurno = new Date(fechaActual);
         finTurno.setHours(horaFin[0], horaFin[1], 0);
-
+       
+        try {
+          [resultDescription] = await conn.query(
+          "SELECT * FROM `horario` WHERE horario.fecha = ? and horario.descripcion != ? AND clave_agenda = ?",
+          [fechaActual.toISOString().split('T')[0], "",  clave_agenda ]
+        );
+        
         //consulta para controlar que no se repitan horarios
-        const [result] = await conn.query(
+          [result] = await conn.query(
           "SELECT * FROM `horario` WHERE horario.fecha = ? and horario.hora_inicio = ? AND clave_agenda = ?",
           [fechaActual.toISOString().split('T')[0], inicioTurno.toTimeString().split(' ')[0], clave_agenda ]
         );
+        } catch(error){
+          console.log(error)
+        };
 
-        if (result.length === 0) {
+
+        if (result.length === 0 & resultDescription.length === 0) {
 
 
           while (inicioTurno < finTurno) {
@@ -236,16 +249,22 @@ const Agenda = {
 
         } else {
           fechaActual.setDate(fechaActual.getDate() + 1);
+          contadorError =+ 1
+
         }
 
         // Avanzar al siguiente día
         fechaActual.setDate(fechaActual.getDate() + 1);
+        
+
       }
 
       console.log('Horarios generados y guardados con éxito.');
     } catch (error) {
       console.error('Error al generar los horarios:', error);
     }
+    return contadorError; 
+           
   },
 
 
@@ -490,7 +509,8 @@ const Agenda = {
   },
 
   
-async vacationSchedule(fecha, fecha_fin, hora_inicio, clave_agenda) {
+async vacationSchedule(fecha, fecha_fin,  clave_agenda) {
+      var contadorError = 0;   
 
   try {
 
@@ -523,6 +543,7 @@ async vacationSchedule(fecha, fecha_fin, hora_inicio, clave_agenda) {
 
       } else {
         fechaActual.setDate(fechaActual.getDate() + 1);
+        contadorError =+ 1;
       }
 
       // Avanzar al siguiente día
@@ -533,26 +554,23 @@ async vacationSchedule(fecha, fecha_fin, hora_inicio, clave_agenda) {
   } catch (error) {
     console.error('Error al generar los horarios:', error);
   }
+  return contadorError
 },
 
  
-async holidaySchedule(fecha, fecha_fin, hora_inicio, clave_agenda) {
+async holidaySchedule(fecha, fecha_fin,  clave_agenda) {
+      var contadorError = 0
 
   try {
-
     const conn = await createConnection()
-
 
     let fechaActual = new Date(fecha);
     const fechaFin = new Date(fecha_fin);
 
-
-
-
     // Bucle para recorrer cada día entre fecha y fecha_fin
     while (fechaActual <= fechaFin) {
 
-      let inicioTurno = new Date(fechaActual);
+      
   
       const [result] = await conn.query(
         "SELECT * FROM `horario` WHERE horario.fecha = ? AND clave_agenda = ? ",
@@ -568,6 +586,8 @@ async holidaySchedule(fecha, fecha_fin, hora_inicio, clave_agenda) {
 
       } else {
         fechaActual.setDate(fechaActual.getDate() + 1);
+        contadorError =+ 1
+
       }
       // Avanzar al siguiente día
       fechaActual.setDate(fechaActual.getDate() + 1);
@@ -577,6 +597,8 @@ async holidaySchedule(fecha, fecha_fin, hora_inicio, clave_agenda) {
   } catch (error) {
     console.error('Error al generar los horarios:', error);
   }
+
+  return contadorError;
 }
   }
 

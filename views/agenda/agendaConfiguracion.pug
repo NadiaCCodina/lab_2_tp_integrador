@@ -2,8 +2,8 @@ extends ../layoutOp
 
 
 block contenido  
-    if matriculaAgenda
-        h1 Se creo la agenda con la matricula #{matriculaAgenda}
+    if message
+        h1 Se creo la agenda con la matricula #{matricula}
     if error 
         h1 Error al guardar
     form(action="/agendanueva" method="post")
@@ -33,5 +33,7 @@ block contenido
             option(value='4') 4
             option(value='5') 5
 
-
+        input(type="hidden" name="clave_sucursal" value=clave_sucursal)
+        
+        
         button.btn.btn-danger(type="submit") Crear              

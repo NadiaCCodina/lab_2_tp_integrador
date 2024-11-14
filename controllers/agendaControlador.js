@@ -91,12 +91,18 @@ module.exports = {
     switch (req.body.descripcion) {
       case "vacaciones":
         try {
-          await Agenda.vacationSchedule(fecha, fecha_fin, hora_inicio, clave_agenda);
+          const cont = await Agenda.vacationSchedule(fecha, fecha_fin,clave_agenda);
   
-          res.render("agenda/gestorHorarios", {
-            error: 'Horario ingresado.',
+          if (cont > 0) {  res.render("agenda/gestorHorarios", {
+            error: 'Existen fechas ya registradas, revisar agenda',
             clave_agenda: clave_agenda
-          });
+          }); }
+               else {
+            res.render("agenda/gestorHorarios", {
+              error: 'Horario ingresado.',
+              clave_agenda: clave_agenda
+            });
+          }
   
         } catch (error) {
           console.error("Error al crear un nuevo horario: ", error);
@@ -117,12 +123,18 @@ module.exports = {
         }
   
         try {
-          await Agenda.calculateSchedule(fecha, fecha_fin, hora_inicio, hora_fin, clave_agenda);
+          const cont = await Agenda.calculateSchedule(fecha, fecha_fin, hora_inicio, hora_fin, clave_agenda);
   
-          res.render("agenda/gestorHorarios", {
-            error: 'Horario ingresado.',
+          if (cont > 0) {  res.render("agenda/gestorHorarios", {
+            error: 'Existen fechas ya registradas, revisar agenda',
             clave_agenda: clave_agenda
-          });
+          }); } 
+                else {
+            res.render("agenda/gestorHorarios", {
+              error: 'Horario ingresado.',
+              clave_agenda: clave_agenda
+            });
+          }
   
         } catch (error) {
           console.error("Error al crear un nuevo horario: ", error);
@@ -132,11 +144,18 @@ module.exports = {
   
       case "feriado":
         try {
-          await Agenda.holidaySchedule(fecha, fecha_fin, hora_inicio, clave_agenda);
-          res.render("agenda/gestorHorarios", {
-            error: 'Horario ingresado.',
+           const cont = await Agenda.holidaySchedule(fecha, fecha_fin, clave_agenda);
+
+           if (cont > 0) {  res.render("agenda/gestorHorarios", {
+            error: 'Existen fechas ya registradas, revisar agenda',
             clave_agenda: clave_agenda
-          });
+          }); } else {
+            res.render("agenda/gestorHorarios", {
+              error: 'Horario ingresado.',
+              clave_agenda: clave_agenda
+            });
+          }
+           
   
         } catch (error) {
           console.error("Error al crear un nuevo horario: ", error);
@@ -188,7 +207,7 @@ module.exports = {
 
   async verEspecialidades(req, res) {
     const especialidades = await EspecialidadMedico.getEspecialidades();
-
+    const clave_sucursal = req.query.clave_sucursal
 
 
     console.log(especialidades)
@@ -197,7 +216,7 @@ module.exports = {
 
 
     if (especialidades) {
-      res.render("agenda/nuevaAgenda", { especialidades: especialidades })
+      res.render("agenda/nuevaAgenda", { especialidades: especialidades, clave_sucursal })
       console.log("entro al if de especialidad agenda");
     } else {
 
@@ -205,15 +224,17 @@ module.exports = {
   },
 
   async medicosPorEspecialidad(req, res) {
-    const clave_especialidad = req.query.clave_especialidad
+    const clave_especialidad   = req.query.clave_especialidad
     console.log(clave_especialidad + "clave especialidad")
     const medicos_especialidad = await EspecialidadMedico.getMedicosEspecialidad(clave_especialidad)
-    const especialidades = await EspecialidadMedico.getEspecialidades();
-    const especialidad = await EspecialidadMedico.getEspecialidad(clave_especialidad)
+    const especialidades       = await EspecialidadMedico.getEspecialidades();
+    const especialidad         = await EspecialidadMedico.getEspecialidad(clave_especialidad)
+    const clave_sucursal       = req.query.clave_sucursal 
+
     console.log(especialidad)
     //console.log(medicos_especialidad)
     if (medicos_especialidad) {
-      res.render("agenda/nuevaAgenda", { especialidades: especialidades, medicos_especialidad: medicos_especialidad, especialidad: especialidad })
+      res.render("agenda/nuevaAgenda", { especialidades: especialidades, medicos_especialidad: medicos_especialidad, especialidad: especialidad, clave_sucursal })
 
 
     } else {
@@ -225,28 +246,31 @@ module.exports = {
 
 
   async mostrarConfiguracionAgenda(req, res) {
-    const matricula = req.params.matricula
+    const matricula      = req.params.matricula
+    const clave_sucursal = req.body.clave_sucursal
     console.log("matricula agenda" + matricula)
     const clasificaciones = await Agenda.clasificacionCustom()
-    res.render("agenda/agendaConfiguracion", { matricula: matricula, clasificaciones: clasificaciones })
+    res.render("agenda/agendaConfiguracion", { matricula: matricula, clasificaciones: clasificaciones, clave_sucursal })
   },
 
   async guardarNuevaAgenda(req, res) {
-    const matriculaAgenda = req.body.matricula
+    const matricula = req.body.matricula
+    const message = true
     const sobreturnos = req.body.sobreturnos
     const intervalo_minutos = req.body.intervalo_minutos
     const clasificacion = req.body.clasificacion
+    const clave_sucursal = req.body.clave_sucursal
     const clasificaciones = await Agenda.clasificacionCustom()
-    console.log(matriculaAgenda + " matricula de guardar agenda " + sobreturnos + " " + intervalo_minutos + " " + clasificacion)
+    console.log(matricula + " matricula de guardar agenda " + sobreturnos + " " + intervalo_minutos + " " + clasificacion)
     try {
-      if (await Agenda.creatAgenda(clasificacion, matriculaAgenda, sobreturnos, intervalo_minutos)) {
+      if (await Agenda.creatAgenda(clave_sucursal, clasificacion, matricula, sobreturnos, intervalo_minutos)) {
         console.log("entro al if de guardar agenda")
-        res.render("agenda/agendaConfiguracion", { matriculaAgenda: matriculaAgenda, clasificaciones: clasificaciones })
+        res.render("agenda/agendaConfiguracion", { message, matricula: matricula, clasificaciones: clasificaciones, clave_sucursal })
       }
 
     } catch (error) {
       console.error('Error al guardar la agenda:', error);
-      res.render("agenda/agendaConfiguracion", { matriculaAgenda: matriculaAgenda, clasificaciones: clasificaciones, error: error })
+      res.render("agenda/agendaConfiguracion", { matricula: matricula, clasificaciones: clasificaciones, clave_sucursal, error: error })
     }
   },
 
