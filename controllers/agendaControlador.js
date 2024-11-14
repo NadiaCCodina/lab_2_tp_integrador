@@ -490,6 +490,7 @@ module.exports = {
       const turnosAgenda = await Agenda.getTurnos(clave_agenda);
       const sobreTurnosAgenda = await Agenda.getSobreturnoPorAgenda(clave_agenda);
       const medico = await Agenda.getMedicoPorAgenda(clave_agenda);
+      
       turnosAgenda.forEach(horario => {
         const fecha = new Date(horario.fecha);
         horario.fecha = fecha.toLocaleDateString('es-AR', {
@@ -499,6 +500,7 @@ module.exports = {
         });
 
       });
+      if(sobreTurnosAgenda){
       sobreTurnosAgenda.forEach(horario => {
         const fecha = new Date(horario.fecha_sobreturno);
         horario.fecha_sobreturno = fecha.toLocaleDateString('es-AR', {
@@ -507,10 +509,10 @@ module.exports = {
           day: '2-digit'
         });
 
-      });
+      });}
 
       console.log(medico[0].nombre_completo + "turnos de agenda medico 9")
-      res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda: clave_agenda, medico: medico,sobreTurnosAgenda:sobreTurnosAgenda })
+      res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda: clave_agenda, medico: medico, sobreTurnosAgenda:sobreTurnosAgenda })
     } catch (error) {
       console.error('Error al obtener turnos:', error);
       res.status(500).send('Error al obtener la agenda');
