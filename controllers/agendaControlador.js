@@ -14,7 +14,7 @@ module.exports = {
     const clave_horario_reprogamacion = req.query.clave_horario_reprogamacion
     const fecha = req.query.fecha
     const clave_especialidad = req.query.clave_especialidad
-    console.log(fecha + " fecha y dni de trasnferir" + dni + " " + clave_especialidad + " " + clave_horario)
+    console.log(fecha + " fecha y dni de trasnferir" + dni + " " + clave_especialidad + " " + clave_horario+" "  +clave_especialidad)
     try {
       const agendas = await Agenda.agendasPorEspecialidad(clave_especialidad)
 
