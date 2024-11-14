@@ -5,7 +5,7 @@ block contenido
   div.container.mx-auto
     h1.text-center#encabezado Turnos del Dr./Dra: #{medico[0].nombre_completo}
     h1.text-center#encabezado Especialidad: #{medico[0].nombre_especialidad}
-    
+
     br
     if noHayTurnos
       h2.text-center No hay turnos
@@ -18,7 +18,7 @@ block contenido
       input(type="hidden" name="clave_agenda" value=clave_agenda)
       button.btn.btn-primary.me-5.p-2(type="submit") Seleccionar   
 
- 
+
     br 
     form.mx-5.text-center(action="/agenda/turnos/estado" method="get" )
       input(type="hidden" name="clave_agenda" value=clave_agenda)
@@ -35,7 +35,7 @@ block contenido
         option(value='8') En Consulta
         option(value='9') Atendido
       button.btn.btn-primary.me-5.p-2(type="submit") Seleccionar   
-
+    h1.text-center#encabezado Turnos
     table.text-center.table.table-bordered.table-hover
       thead.thead-light
         tr
@@ -49,12 +49,12 @@ block contenido
           tr
             td
               form.mx-5(action="/ver/paciente" method="post" )
-             
-  
+
+
                 input(type="hidden" name="dni" value=turno.dni)
                 input(type="hidden" name="clave_especialidad" value=`${medico[0].clave_especialidad}`)
                 button.btn.btn-primary.me-5.p-2(type="submit")    #{turno.nombre_completo}   
-          
+
             td= turno.hora_inicio  
             td= turno.fecha 
             td= turno.nombre_estado
@@ -74,10 +74,28 @@ block contenido
                   option(value='8') En Consulta
                   option(value='9') Atendido
                 button.btn.btn-primary.me-5.p-2(type="submit") Seleccionar   
-            td
+
               form.mx-5(action="/transferir/turno" method="get" )
                 input(type="hidden" name="fecha" value=turno.fecha )
                 input(type="hidden" name="clave_horario_reprogamacion" value=turno.clave_horario )
                 input(type="hidden" name="dni" value=turno.dni)
                 input(type="hidden" name="clave_especialidad" value=`${medico[0].clave_especialidad}`)
                 button.btn.btn-primary.me-5.p-2(type="submit") transferir turno     
+
+
+    h1.text-center#encabezado Sobreturnos
+    table.text-center.table.table-bordered.table-hover
+      thead.thead-light
+        tr
+          th Paciente
+
+          th Fecha
+       
+      tbody
+        each sobreturno in sobreTurnosAgenda
+          tr
+            td= sobreturno.nombre_completo  
+
+            td= sobreturno.fecha_sobreturno
+   
+        

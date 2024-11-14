@@ -521,11 +521,24 @@ async cantidadSobreturnoPorAgenda(clave_agenda){
   console.error("Error al contar sobreturnos", error);
   return false;
 }
+},
+
+async getSobreturnoPorAgenda(clave_agenda){
+  try {
+    const conn = await createConnection();
+    const [sobreturnos_agenda] = await conn.query("SELECT `clave_sobreturnos`,`fecha_sobreturno`,`clave_agenda`, sobre_turnos.dni,`clave_estado`,`motivo_consulta`, nombre_completo FROM `sobre_turnos`, persona WHERE `clave_agenda` = ? AND `fecha_sobreturno` = CURDATE() AND persona.dni = sobre_turnos.dni",
+      [clave_agenda]
+    )
+    return sobreturnos_agenda
+  }catch (error) {
+    console.error("Error al contar sobreturnos", error);
+    return false;
+  }
+
 }
+
+
 }
-
-
-
 
 
 module.exports = Agenda

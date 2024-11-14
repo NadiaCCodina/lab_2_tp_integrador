@@ -488,6 +488,7 @@ module.exports = {
       const clave_agenda = req.query.clave_agenda
       console.log(clave_agenda + " req de clave agenda")
       const turnosAgenda = await Agenda.getTurnos(clave_agenda);
+      const sobreTurnosAgenda = await Agenda.getSobreturnoPorAgenda(clave_agenda);
       const medico = await Agenda.getMedicoPorAgenda(clave_agenda);
       turnosAgenda.forEach(horario => {
         const fecha = new Date(horario.fecha);
@@ -498,13 +499,24 @@ module.exports = {
         });
 
       });
+      sobreTurnosAgenda.forEach(horario => {
+        const fecha = new Date(horario.fecha_sobreturno);
+        horario.fecha_sobreturno = fecha.toLocaleDateString('es-AR', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        });
+
+      });
+
       console.log(medico[0].nombre_completo + "turnos de agenda medico 9")
-      res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda: clave_agenda, medico: medico })
+      res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda: clave_agenda, medico: medico,sobreTurnosAgenda:sobreTurnosAgenda })
     } catch (error) {
       console.error('Error al obtener turnos:', error);
       res.status(500).send('Error al obtener la agenda');
     }
   },
+
   async updateEstadoTurno(req, res) {
     try {
       const dni = req.body.dni
