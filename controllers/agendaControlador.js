@@ -766,6 +766,13 @@ module.exports = {
       }  catch (error){
         console.error('Error al borrar turnos:', error);
       }
+  },
+  async agregarSobreturnos(req, res) {
+
+
+
+
+
   }
   }
 
