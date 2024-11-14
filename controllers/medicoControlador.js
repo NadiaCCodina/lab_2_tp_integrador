@@ -127,10 +127,11 @@ module.exports = {
     async desactivar(req, res) {
         const dni = req.params.dni;
         console.log(dni)
+        const especialidades = await EspecialidadMedico.getEspecialidades();
         const descativar = await Medico.updateStatusDisable(dni)
         if (descativar) {
             const medicos = await Medico.get();
-            res.render("medico/listaMedicos", { medicos: medicos })
+            res.render("medico/listaMedicos", { medicos: medicos, especialidades: especialidades })
         }
 
     },
@@ -139,9 +140,10 @@ module.exports = {
         const dni = req.params.dni;
         console.log(dni)
         const activar = await Medico.updateStatusActive(dni)
+        const especialidades = await EspecialidadMedico.getEspecialidades();
         if (activar) {
             const medicos = await Medico.get();
-            res.render("medico/listaMedicos", { medicos: medicos })
+            res.render("medico/listaMedicos", { medicos: medicos, especialidades: especialidades })
         }
 
     },

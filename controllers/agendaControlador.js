@@ -528,6 +528,7 @@ module.exports = {
 
   async agendaPorEspecialidad(req, res) {
     try {
+      const clave_sucursal = req.query.clave_sucursal;
       const clave_especialidad = req.query.clave_especialidad
       const agendas = await Agenda.agendasPorEspecialidad(clave_especialidad);
 
@@ -617,7 +618,7 @@ module.exports = {
         });
         res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda: clave_agenda, medico: medico })
       } else {
-        res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda: clave_agenda, medico: medico })
+        res.render("agenda/gestionTurnos", {  clave_agenda: clave_agenda, medico: medico })
       }
     } catch (error) {
       console.error('Error al actualizar turnos:', error);

@@ -137,7 +137,7 @@ const Agenda = {
   async getHorariosPorMedico(clave_agenda) {
     try {
       const conn = await createConnection()
-      const [horariosAgendaMedico] = await conn.query("SELECT `clave_horarios`, `fecha`, `hora_inicio`, clave_agenda FROM `horario` WHERE clave_agenda = ? AND estado=0 and fecha >= CURRENT_DATE();",
+      const [horariosAgendaMedico] = await conn.query("SELECT `clave_horarios`, `fecha`, `hora_inicio`, `descripcion`, clave_agenda FROM `horario` WHERE clave_agenda = ? AND estado=0 and fecha >= CURRENT_DATE();",
         [clave_agenda]
       )
       console.log(horariosAgendaMedico)
@@ -149,6 +149,7 @@ const Agenda = {
   },
 
   async agendasPorEspecialidad(clave_especialidad) {
+    
     try {
       const conn = await createConnection()
       const [agendasEspecialidad] = await conn.query("SELECT `clave_agenda`, `clave_sucursal`, `clave_clasificacion`, `matricula_medico`, `cantidad_sobreturno`, `intervalo_minutos`, nombre_especialidad, persona.nombre_completo FROM `agenda`, especialidad, especialidad_medico, medico, persona WHERE agenda.matricula_medico = especialidad_medico.matricula AND especialidad_medico.clave_especialidad = especialidad.clave_especialidad AND medico.dni= persona.dni  AND medico.clave_medico = especialidad_medico.clave_medico AND especialidad.clave_especialidad= ?",
@@ -683,19 +684,63 @@ async holidaySchedule(fecha, fecha_fin,  clave_agenda) {
       return false
     }
   }, 
+
   async deleteAgenda(clave_agenda){
+
+    let agendaMedico = []
+
     try {
+      const horario = await this.getScheduleByAgenda(clave_agenda);
+
+      if(horario){
+        await this.deleteScedule(clave_agenda)
+        const conn = await createConnection()
+        agendaMedico = await conn.query("DELETE FROM `agenda` WHERE clave_agenda= ?;",
+          [clave_agenda])
+      } else{ 
       const conn = await createConnection()
-      const [agendaMedico] = await conn.query("DELETE FROM `agenda` WHERE clave_agenda= ?;",
+       agendaMedico = await conn.query("DELETE FROM `agenda` WHERE clave_agenda= ?;",
         [clave_agenda]
-      )
+       )
+    }
 
       return agendaMedico
     } catch (error) {
-      return false
+      return console.log(error)
     }
-  }
-  }
+  },
+
+  async getScheduleByAgenda(clave_agenda){
+
+    try {
+
+      const conn = await createConnection()
+      const [horario] = await conn.query("SELECT * FROM `HORARIO` WHERE clave_agenda= ?;",
+        [clave_agenda]
+
+
+      )
+
+      return horario
+    } catch (error) {
+      return console.log(error)
+    }
+
+  },
+
+async deleteScedule(clave_agenda){
+try{ 
+  const conn = await createConnection()
+        const [horario] = await conn.query("DELETE FROM `horario` WHERE clave_agenda= ?;",
+          [clave_agenda] 
+        )
+ return horario
+        } catch(error){
+          console.log(error)
+        }
+
+}
+}
 
 
 

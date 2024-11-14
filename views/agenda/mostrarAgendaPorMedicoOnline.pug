@@ -26,9 +26,9 @@ block contenido
                         input(type="hidden" name="dni")
                         input(type="hidden" name="medico" value= medico)
                              
-                  if hora.descripcion === "vacaciones"
-                    p NO DISPONIBLE
-                  else if hora.descripcion === "feriado"  
-                    p NO DISPONIBLE
-                  else
-                    button.btn.btn-outline-primary(type='submit') #{hora.hora_inicio}
+                        if hora.descripcion === "vacaciones"
+                          p NO DISPONIBLE
+                        else if hora.descripcion === "feriado"  
+                          p NO DISPONIBLE
+                        else
+                          button.btn.btn-outline-primary(type='submit') #{hora.hora_inicio}
