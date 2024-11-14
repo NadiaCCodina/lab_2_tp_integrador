@@ -82,17 +82,17 @@ module.exports = {
 
     async actualizar(req, res) {
 
-
+        const especialidades = await EspecialidadMedico.getEspecialidades();
         const dni = req.body.dni;
         const nombre_completo = req.body.nombre_completo;
         const mail = req.body.mail;
         const telefono = req.body.telefono;
-
+        const medicos = await Medico.get();
         if (await Medico.update({ dni: dni, nombre_completo: nombre_completo, mail: mail, telefono: telefono })) {
-            const medicos = await Medico.get();
-            res.render("medico/listaMedicos", { medicos: medicos, nombre_completo: nombre_completo });
+           
+            res.render("medico/listaMedicos", { medicos: medicos, nombre_completo: nombre_completo,especialidades:especialidades });
         } else {
-            // res.render("listaMedicos", { medicos: medicos });
+            res.render("medico/listaMedicos", { medicos: medicos,especialidades:especialidades });
 
         }
 
