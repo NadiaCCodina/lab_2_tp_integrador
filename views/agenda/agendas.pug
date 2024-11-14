@@ -39,22 +39,27 @@ block contenido
                         h6.card-text.text-muted #{agenda.clave_agenda} 
                         br
                         if !dni 
-                            form(method='get' action='/agendas/horario/medico')
+                            form(method='get' action=`/agendas/horario/medico?clave_sucursal=${clave_sucursal}`)
                                 input(type='hidden' name='clave_agenda' value=agenda.clave_agenda)
                                 input(type='hidden' name='nombre_completo' value=agenda.nombre_completo)
                                 input(type='hidden' name='nombre_especialidad' value=agenda.nombre_especialidad)
+                                input(type='hidden' name='clave_sucursal' value=agenda.clave_sucursal)
                                 button.btn.btn-outline-success.mx-2.p-2(style='width: 200px;' type='submit') Agendar Turno
-                            form(method='get' action='/turnos/agenda')
+                            form(method='get' action=`/turnos/agenda?clave_sucursal=${clave_sucursal}`)
                                 input(type='hidden' name='clave_agenda' value=agenda.clave_agenda)
+                                input(type='hidden' name='clave_sucursal' value=agenda.clave_sucursal)
                                 button.btn.btn-outline-info.mx-2.p-2(style='width: 200px;' type='submit') Gestionar Turnos    
-                            form(method='get' action='/gestorHorarios')
+                            form(method='get' action=`/gestorHorarios?clave_sucursal=${clave_sucursal}`)
                                 input(type='hidden' name='clave_agenda' value=agenda.clave_agenda)
+                                input(type='hidden' name='clave_sucursal' value=agenda.clave_sucursal)
                                 button.btn.btn-outline-info.mx-2.p-2(style='width: 200px;' type='submit') Gestionar Horarios Agenda    
-                            form(method='get' action='/listaDeEspera')
+                            form(method='get' action=`/listaDeEspera?clave_sucursal=${clave_sucursal}`)
                                 input(type='hidden' name='clave_agenda' value=agenda.clave_agenda)
+                                input(type='hidden' name='clave_sucursal' value=agenda.clave_sucursal)
                                 button.btn.btn-outline-info.mx-2.p-2(style='width: 200px;' type='submit') Lista de espera
-                            form(method='get' action='/borrarAgenda')
+                            form(method='get' action=`/borrarAgenda?clave_sucursal=${clave_sucursal}`)
                                 input(type='hidden' name='clave_agenda' value=agenda.clave_agenda)
+                                input(type='hidden' name='clave_sucursal' value=agenda.clave_sucursal)
                                 button.btn.btn-outline-info.mx-2.p-2(style='width: 200px;' type='submit') Borrar agenda
                         else 
                             form(method='get' action='/reprogramar/turno')

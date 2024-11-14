@@ -6,7 +6,7 @@ block contenido
         h1 Se creo la agenda con la matricula #{matricula}
     if error 
         h1 Error al guardar
-    form(action="/agendanueva" method="post")
+    form(action = `/agendanueva?clave_sucursal=${clave_sucursal}` method="post")
         input(name="matricula" type="hidden", value= matricula, required)
         br
         h2.text-center Duracion de los turnos

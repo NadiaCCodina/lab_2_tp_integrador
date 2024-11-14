@@ -24,7 +24,7 @@ module.exports = {
       const especialidades = await EspecialidadMedico.getEspecialidades();
 
 
-      res.render("agenda/agendas", { agendas: agendas, especialidades: especialidades, dni, fecha, clave_horario, clave_horario_reprogamacion });
+      res.render("agenda/agendas", { agendas: agendas, especialidades: especialidades, dni, fecha, clave_horario, clave_horario_reprogamacion , clave_sucursal});
 
     } catch (error) {
       console.error("Error al obtener la agenda: ", error);
@@ -99,7 +99,7 @@ module.exports = {
 
 /////Registra horario segun la descripcion del mismo
   async registrarHorario(req, res) {
-    const { fecha, fecha_fin, hora_inicio, hora_fin, clave_agenda } = req.body;
+    const { fecha, fecha_fin, hora_inicio, hora_fin, clave_agenda, clave_sucursal } = req.body;
   
     const fechaInicio = new Date(fecha);
     const fechaFin = new Date(fecha_fin);
@@ -119,12 +119,14 @@ module.exports = {
   
           if (cont > 0) {  res.render("agenda/gestorHorarios", {
             error: 'Existen fechas ya registradas, revisar agenda',
-            clave_agenda: clave_agenda
+            clave_agenda: clave_agenda,
+            clave_sucursal
           }); }
                else {
             res.render("agenda/gestorHorarios", {
               error: 'Horario ingresado.',
-              clave_agenda: clave_agenda
+              clave_agenda: clave_agenda,
+              clave_sucursal
             });
           }
   
@@ -142,7 +144,8 @@ module.exports = {
         if (horaFin <= horaInicio) {
           return res.render("agenda/gestorHorarios", {
             error: 'Rango de horario incorrecto.',
-            clave_agenda: clave_agenda
+            clave_agenda: clave_agenda,
+            clave_sucursal
           });
         }
   
@@ -151,12 +154,12 @@ module.exports = {
   
           if (cont > 0) {  res.render("agenda/gestorHorarios", {
             error: 'Existen fechas ya registradas, revisar agenda',
-            clave_agenda: clave_agenda
+            clave_agenda: clave_agenda, clave_sucursal
           }); } 
                 else {
             res.render("agenda/gestorHorarios", {
               error: 'Horario ingresado.',
-              clave_agenda: clave_agenda
+              clave_agenda: clave_agenda, clave_sucursal
             });
           }
   
@@ -172,11 +175,11 @@ module.exports = {
 
            if (cont > 0) {  res.render("agenda/gestorHorarios", {
             error: 'Existen fechas ya registradas, revisar agenda',
-            clave_agenda: clave_agenda
+            clave_agenda: clave_agenda, clave_sucursal
           }); } else {
             res.render("agenda/gestorHorarios", {
               error: 'Horario ingresado.',
-              clave_agenda: clave_agenda
+              clave_agenda: clave_agenda, clave_sucursal
             });
           }
            
@@ -195,6 +198,7 @@ module.exports = {
 
   async seleccionarHorario(req, res) {
     const clave_horario = req.body.clave_horario;
+    const clave_sucursal = req.query.clave_sucursal
     const { clave_agenda, motivo_consulta, sobreturno } = req.body;
     const fecha_sobreturno = new Date;
     let year = fecha_sobreturno.getFullYear();
@@ -210,7 +214,7 @@ module.exports = {
     try {
 
 
-      res.render("paciente/nuevoPaciente", { clave_horario, fecha_sobreturno_formateada, clave_agenda, motivo_consulta, sobreturno })
+      res.render("paciente/nuevoPaciente", { clave_horario, fecha_sobreturno_formateada, clave_agenda, motivo_consulta, sobreturno, clave_sucursal })
 
     } catch (error) {
       console.error('Error al seleccionar horario:', error);
@@ -351,13 +355,14 @@ module.exports = {
 
   async agendaPorMedicoNombre(req, res) {
     try {
+      const clave_sucursal = req.body.clave_sucursal
       const nombre_completo = req.query.nombre_completo
       const agendaMedico = await Agenda.getAgendasPorMedicoNombre(nombre_completo)
       console.log(agendaMedico + " agenda de busqueda por nombre")
       console.log(nombre_completo + "nombre completo busqeuda agenda")
       const especialidades = await EspecialidadMedico.getEspecialidades();
 
-      res.render("agenda/agendas", { agendas: agendaMedico, especialidades: especialidades });
+      res.render("agenda/agendas", { agendas: agendaMedico, especialidades: especialidades , clave_sucursal});
     } catch (error) {
       console.error('Error al obtener la agenda:', error);
       res.status(500).send('Error al obtener la agenda');
@@ -422,7 +427,7 @@ module.exports = {
   },
   async horarioPorAgendaMedico(req, res) {
     try {
-      
+      const clave_sucursal =  req.query.clave_sucursal
       const dni = req.query.dni
       const fecha_turno = req.query.fecha
       console.log("fecha y dni reprogramacion en pagina de horarios de agenda " + dni + " " + fecha_turno)
@@ -482,7 +487,7 @@ module.exports = {
       });
       //console.log(gruposPorFecha)
 
-      res.render("agenda/mostrarAgendaPorMedico", { especialidad: especialidad, medico: medico, gruposPorFecha: gruposPorFecha, dni, sobreturno, clave_agenda, cantidadSobreturnosDisp });
+      res.render("agenda/mostrarAgendaPorMedico", { especialidad: especialidad, medico: medico, gruposPorFecha: gruposPorFecha, dni, sobreturno, clave_agenda, cantidadSobreturnosDisp, clave_sucursal  });
     } catch (error) {
       console.error('Error al obtener la agenda:', error);
       res.status(500).send('Error al obtener la agenda');
@@ -576,7 +581,7 @@ module.exports = {
   },
   //VER TURNOS POR AGENDA
   async verTurnos(req, res) {
-
+    const clave_sucursal = req.query.clave_sucursal
 
     try {
       const clave_agenda = req.query.clave_agenda
@@ -593,7 +598,7 @@ module.exports = {
 
       });
       console.log(medico[0].nombre_completo + "turnos de agenda medico 9")
-      res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda: clave_agenda, medico: medico })
+      res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda: clave_agenda, medico: medico, clave_sucursal  })
     } catch (error) {
       console.error('Error al obtener turnos:', error);
       res.status(500).send('Error al obtener la agenda');
@@ -601,6 +606,7 @@ module.exports = {
   },
   async updateEstadoTurno(req, res) {
     try {
+      const clave_sucursal = req.query.clave_sucursal
       const dni = req.body.dni
       const clave_estado = req.body.clave_estado
       const clave_horario = req.body.clave_horario
@@ -619,9 +625,9 @@ module.exports = {
           });
 
         });
-        res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda: clave_agenda, medico: medico })
+        res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda: clave_agenda, medico: medico, clave_sucursal })
       } else {
-        res.render("agenda/gestionTurnos", {  clave_agenda: clave_agenda, medico: medico })
+        res.render("agenda/gestionTurnos", {  clave_agenda: clave_agenda, medico: medico, clave_sucursal })
       }
     } catch (error) {
       console.error('Error al actualizar turnos:', error);
@@ -636,6 +642,7 @@ module.exports = {
 
   async verTurnosPorEstado(req, res) {
     try {
+      const clave_sucursal = req.query.clave_sucursal
       const clave_agenda = req.query.clave_agenda
       const clave_estado = req.query.clave_estado
       console.log(clave_agenda + " req de clave agenda")
@@ -652,7 +659,7 @@ module.exports = {
 
       });
       console.log(medico[0].nombre_completo + "turnos de agenda medico 9")
-      res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda: clave_agenda, medico: medico })
+      res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda: clave_agenda, medico: medico, clave_sucursal })
     } catch (error) {
       console.error('Error al obtener turnos:', error);
       res.status(500).send('Error al obtener la agenda');
@@ -725,6 +732,7 @@ module.exports = {
 
   async verTurnosPorPaciente(req, res) {
     try {
+      const clave_sucursal = req.query.clave_sucursal
       const clave_agenda = req.query.clave_agenda
       const dni = req.query.dni
       console.log(clave_agenda + " req de clave agenda")
@@ -744,10 +752,10 @@ module.exports = {
       console.log(medico[0].nombre_completo + "turnos de agenda medico 9")
       if (turnosAgenda.length == 0) {
         const noHayTurnos = "No se encuentra turnos"
-        res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda: clave_agenda, medico: medico, noHayTurnos: noHayTurnos })
+        res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda: clave_agenda, medico: medico, noHayTurnos: noHayTurnos, clave_sucursal })
       } else {
 
-        res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda: clave_agenda, medico: medico })
+        res.render("agenda/gestionTurnos", { turnosAgenda: turnosAgenda, clave_agenda: clave_agenda, medico: medico, clave_sucursal })
       }
     } catch (error) {
       console.error('Error al obtener turnos:', error);
@@ -766,7 +774,7 @@ module.exports = {
 
       try{
          await Agenda.deleteAgenda(clave_agenda)
-         res.render("agenda/agendas", { agendas:agendas, especialidades: especialidades, error: 'La agenda se borro con exito' });
+         res.render("agenda/agendas", { agendas:agendas, especialidades: especialidades, error: 'La agenda se borro con exito', clave_sucursal });
       }  catch (error){
         console.error('Error al borrar turnos:', error);
       }

@@ -4,8 +4,9 @@ const Paciente = require("../models/Paciente");
 module.exports = {
     async vistaCrearPaciente(req, res) {
 
+        const clave_sucursal = req.query.clave_sucursal
         console.log("entro al get")
-        res.render("paciente/nuevoPaciente", {})
+        res.render("paciente/nuevoPaciente", {clave_sucursal})
     },
 
     async vistaActualizarPaciente(req, res) {
@@ -15,10 +16,9 @@ module.exports = {
     },
     async guardar(req, res) {
         const { dni, nombre_completo, mail, telefono, obra_social, clave_horario, fecha_sobreturno, clave_agenda, motivo_consulta, sobreturno } = req.body;
-
-        const dni_imagen = req.file ? req.file.filename : null;
-
-        let PacienteEnLista = false;
+        const clave_sucursal = req.query.clave_sucursal
+        const dni_imagen     = req.file ? req.file.filename : null;
+        let PacienteEnLista  = false;
 
         if (nombre_completo) {
             await Paciente.insertPerson({ dni, nombre_completo, mail, telefono })
@@ -51,12 +51,13 @@ module.exports = {
         if (PacienteEnLista) {
             res.render("paciente/listaPacientes", {
                 pacientes: pacientes,
-                errorMessage: `Paciente dni: ${dni} eliminado de lista de espera, turno agendado`
+                errorMessage: `Paciente dni: ${dni} eliminado de lista de espera, turno agendado`,
+                clave_sucursal
             }
             );
 
         } else {
-            res.render("paciente/listaPacientes", { pacientes: pacientes }
+            res.render("paciente/listaPacientes", { pacientes: pacientes, clave_sucursal }
             );
 
         }
@@ -109,6 +110,7 @@ module.exports = {
     },
 
     async crearPaciente(req, res) {
+        const clave_sucursal = req.query.clave_sucursal
         const dni = req.body.dni;
         const turno = req.params.turno
         const clave_horario = req.body.clave_horario
@@ -120,7 +122,7 @@ module.exports = {
 
             console.log("existe????: ", exist);
             console.log(motivo_consulta)
-            res.render("paciente/paciente", { exist, dni, turno, clave_horario, fecha_sobreturno, clave_agenda, motivo_consulta, sobreturno });
+            res.render("paciente/paciente", { exist, dni, turno, clave_horario, fecha_sobreturno, clave_agenda, motivo_consulta, sobreturno,clave_sucursal });
 
         } catch (error) {
             console.error("Error al crear paciente:", error);
@@ -151,13 +153,14 @@ module.exports = {
 
 
     async mostrar(req, res) {
+        const clave_sucursal = req.query.clave_sucursal
         try {
             const pacientes = await Paciente.get();
 
             if (req.query.nombre_completo) {
-                res.render("paciente/listaPacientes", { pacientes: pacientes, nombre: nombre });
+                res.render("paciente/listaPacientes", { pacientes: pacientes, nombre: nombre, clave_sucursal });
             } else {
-                res.render("paciente/listaPacientes", { pacientes: pacientes });
+                res.render("paciente/listaPacientes", { pacientes: pacientes, clave_sucursal });
             }
         } catch (error) {
             console.error('Error al mostrar pacientes:', error);
@@ -169,12 +172,13 @@ module.exports = {
     async mostrarPorDni(req, res) {
         try {
             const dni = req.body.dni
+            const clave_sucursal = req.query.clave_sucursal
             const pacientes = await Paciente.getDni(dni);
 
             if (req.query.nombre_completo) {
-                res.render("paciente/listaPacientes", { pacientes: pacientes, nombre: nombre });
+                res.render("paciente/listaPacientes", { pacientes: pacientes, nombre: nombre, clave_sucursal });
             } else {
-                res.render("paciente/listaPacientes", { pacientes: pacientes });
+                res.render("paciente/listaPacientes", { pacientes: pacientes, clave_sucursal });
             }
         } catch (error) {
             console.error('Error al mostrar pacientes:', error);
@@ -186,12 +190,13 @@ module.exports = {
     async mostrarPorNombre(req, res) {
         try {
             const nombre = req.body.nombre
+            const clave_sucursal = req.query.clave_sucursal
             const pacientes = await Paciente.getByNombre(nombre);
             console.log(nombre+"nombre paciente busqueda nombre")
             if (req.query.nombre_completo) {
-                res.render("paciente/listaPacientes", { pacientes: pacientes, nombre: nombre });
+                res.render("paciente/listaPacientes", { pacientes: pacientes, nombre: nombre, clave_sucursal });
             } else {
-                res.render("paciente/listaPacientes", { pacientes: pacientes });
+                res.render("paciente/listaPacientes", { pacientes: pacientes, clave_sucursal });
             }
         } catch (error) {
             console.error('Error al mostrar pacientes:', error);

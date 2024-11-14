@@ -2,7 +2,7 @@ extends ../layoutOp
 
 block contenido 
     h1 Seleccione la especialidad a buscar
-    form(action="/seleccionar/medicoespecialidad" method="get")
+    form(action=`/seleccionar/medicoespecialidad?clave_sucursal=${clave_sucursal}` method="get")
         select#especialidadInput.form-control(name='clave_especialidad')
             each especialidad in especialidades
                 option(value=`${especialidad.clave_especialidad}`)= especialidad.nombre_especialidad

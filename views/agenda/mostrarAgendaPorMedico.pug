@@ -7,13 +7,14 @@ block contenido
             
             br
             if sobreturno
-                    form.mx-5(action="/seleccionar" method="POST" )   
+                    form.mx-5(action=`/seleccionar?clave_sucursal=${clave_sucursal}` method="POST" )   
                         h3 El dia de hoy ya no hay turno disponibles
                         h4 Cantidad de sobreturnos disponibles
                         h2= cantidadSobreturnosDisp
                         input(type="hidden" name="clave_agenda" value= clave_agenda)
                         input(type="hidden" name="motivo_consulta" value="sobreturno")
                         input(type="hidden" name="sobreturno" value="sobreturno") 
+                        input(type="hidden" name="clave_sucursal" value=hora.clave_sucursal)
                         button.btn.btn-outline-primary(type='submit') Sobreturno      
                  
    
@@ -28,10 +29,11 @@ block contenido
             td= horario[0].fecha  
             td
               each hora in horario
-                form.mx-5(action="/seleccionar" method="POST")
+                form.mx-5(action=`/seleccionar?clave_sucursal=${clave_sucursal}` method="POST")
                   input(type="hidden" name="fecha" value=hora.fecha)
                   input(type="hidden" name="hora_inicio" value=hora.hora_inicio)
                   input(type="hidden" name="clave_horario" value=hora.clave_horarios)
+                  input(type="hidden" name="clave_sucursal" value=hora.clave_sucursal)
                   input(type="hidden" name="dni")
 
                   

@@ -10,8 +10,9 @@ block contenido
         .alert.alert-warning
           p #{error}
 
-      form(method="POST" action="/horario/nuevo")
+      form(method="POST" action=`/horario/nuevo?clave_sucursal=${clave_sucursal}`)
         input(type='hidden' name='clave_agenda', value=clave_agenda)
+        input(type='hidden' name='clave_sucursal', value=clave_sucursal)       
         .form-group
           label(for="fecha") Fecha
           input.form-control(type="date" id="fecha" name="fecha" required)

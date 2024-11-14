@@ -158,19 +158,19 @@ module.exports = {
         }
     },
 
-    async logInOp(req, res) {
-        const clave_sucursal = req.body.sucursal
-        const sucursal = await Usuario.getBranchByKey(clave_sucursal)
-        const nombreSucursal = sucursal[0].nombre_sucursal
-        try {
+    // async logInOp(req, res) {
+    //     const clave_sucursal = req.body.sucursal
+    //     const sucursal = await Usuario.getBranchByKey(clave_sucursal)
+    //     const nombreSucursal = sucursal[0].nombre_sucursal
+    //     try {
 
-            res.render("headerOp", { nombreSucursal })
-        }
-        catch (error) {
-            console.log(error)
-        }
+    //         res.render("headerOp", { nombreSucursal })
+    //     }
+    //     catch (error) {
+    //         console.log(error)
+    //     }
 
-    },
+    // },
 
  async logInOp(req, res){
     const clave_sucursal = req.body.sucursal
