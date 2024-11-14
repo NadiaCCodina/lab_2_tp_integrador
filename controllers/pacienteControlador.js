@@ -9,7 +9,7 @@ module.exports = {
     },
 
     async vistaActualizarPaciente(req, res) {
-
+       
         console.log("entro al get")
         res.render("paciente/actualizarPaciente", {})
     },
@@ -19,7 +19,7 @@ module.exports = {
         const dni_imagen = req.file ? req.file.filename : null;
 
         let PacienteEnLista = false;
-
+        var msj= undefined
         if (nombre_completo) {
             await Paciente.insertPerson({ dni, nombre_completo, mail, telefono })
             await Paciente.insertPatient({ dni, obra_social, dni_imagen })
@@ -42,12 +42,13 @@ module.exports = {
                 PacienteEnLista = await Agenda.deleteRecordFromList(dni, clave_horario)
                 await Agenda.createTurno(dni, 4, clave_horario)
                 await Agenda.updateEstadoHorario(1, clave_horario)
+                  msj = "funciona el turno"
             }
         }
 
 
         const pacientes = await Paciente.get();
-
+       
         if (PacienteEnLista) {
             res.render("paciente/listaPacientes", {
                 pacientes: pacientes,
@@ -56,7 +57,7 @@ module.exports = {
             );
 
         } else {
-            res.render("paciente/listaPacientes", { pacientes: pacientes }
+            res.render("paciente/listaPacientes", { pacientes: pacientes, msj: msj }
             );
 
         }

@@ -74,7 +74,7 @@ block contenido
                   option(value='8') En Consulta
                   option(value='9') Atendido
                 button.btn.btn-primary.me-5.p-2(type="submit") Seleccionar   
-            td
+            
               form.mx-5(action="/transferir/turno" method="get" )
                 input(type="hidden" name="fecha" value=turno.fecha )
                 input(type="hidden" name="clave_horario_reprogamacion" value=turno.clave_horario )

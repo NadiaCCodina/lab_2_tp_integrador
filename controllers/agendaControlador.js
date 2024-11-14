@@ -217,7 +217,7 @@ module.exports = {
       res.status(500).json({ message: 'Error al seleccionar horario' });
     }
   },
-
+//REPROGRAMACION
   async reprogramarTurno(req, res) {
     try {
       const clave_nueva = req.body.clave_horarios
@@ -225,6 +225,7 @@ module.exports = {
       const clave_horario_reprogamacion = req.body.clave_horario_reprogamacion
       console.log(clave_horario_reprogamacion + " clave horarios de reprogramacion en guardar turno" + dni + " clave nueva " + clave_nueva)
       const reprogramacion = await Agenda.createTurno(dni, 4, clave_nueva)
+      await Agenda.updateEstadoHorario(1, clave_nueva)
       console.log(reprogramacion)
 
       await Agenda.updateEstadoTurnoAgenda(1, dni, clave_horario_reprogamacion)

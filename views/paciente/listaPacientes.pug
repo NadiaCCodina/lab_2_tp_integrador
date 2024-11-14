@@ -2,6 +2,8 @@ extends ../layoutOp
 
 block contenido
     h1.text-center.mt-4 Lista de Pacientes
+    if msj 
+       h1.alert.alert-warning.text-center Se agendo el turno
     if errorMessage
         .alert.alert-warning(role="alert") #{errorMessage}
     form.mx-5.text-center(action="/paciente/busqueda/dni" method="post")
